@@ -10,7 +10,7 @@ import NGODashboard from './pages/NGODashboard';
 
 export default function App() {
   return (
-    <div className="app-container">
+    <>
       <Navbar />
       <main className="main-content">
         <Routes>
@@ -22,6 +22,6 @@ export default function App() {
           <Route path="/dashboard/ngo" element={<NGODashboard />} />
         </Routes>
       </main>
-    </div>
+    </>
   );
 }
