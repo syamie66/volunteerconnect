@@ -12,22 +12,17 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="top-nav">
+    <nav className="transparent-nav">
       <div className="logo">VolunteerConnect</div>
-
       <div className="nav-links">
         <Link to="/">Home</Link>
         <Link to="/events">Events</Link>
-
         {!currentUser && <Link to="/login">Login</Link>}
-
         {currentUser && (
           <>
             {profile?.role === 'ngo' && <Link to="/dashboard/ngo">NGO</Link>}
             {profile?.role === 'volunteer' && <Link to="/dashboard">Dashboard</Link>}
-            <button className="link-like" onClick={handleLogout}>
-              Logout
-            </button>
+            <button className="link-like" onClick={handleLogout}>Logout</button>
           </>
         )}
       </div>
