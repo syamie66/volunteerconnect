@@ -1,0 +1,71 @@
+/* EventForm.css */
+.event-form-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff5f5; /* light burgundy/pink background */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: 'Roboto', sans-serif;
+}
+
+.event-form-container h2 {
+  text-align: center;
+  color: #800020; /* burgundy title */
+  margin-bottom: 1.5rem;
+}
+
+.event-form .form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.event-form .form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #4a0000;
+}
+
+.event-form .form-group input,
+.event-form .form-group textarea {
+  padding: 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.event-form .form-group input:focus,
+.event-form .form-group textarea:focus {
+  border: 2px solid #800020;
+}
+
+.event-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.event-form button {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #800020;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.event-form button:hover {
+  background-color: #a00030;
+}
+
+.form-message {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #4a0000;
+}

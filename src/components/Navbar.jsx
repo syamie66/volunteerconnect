@@ -20,8 +20,12 @@ export default function Navbar() {
         {!currentUser && <Link to="/login">Login</Link>}
         {currentUser && (
           <>
-            {profile?.role === 'ngo' && <Link to="/dashboard/ngo">NGO</Link>}
-            {profile?.role === 'volunteer' && <Link to="/dashboard">Dashboard</Link>}
+            {profile?.userType === 'NGO' && (
+              <Link to="/create-event">Create Event</Link>
+            )}
+            {profile?.userType === 'volunteer' && (
+              <Link to="/dashboard">Dashboard</Link>
+            )}
             <button className="link-like" onClick={handleLogout}>Logout</button>
           </>
         )}
@@ -29,4 +33,5 @@ export default function Navbar() {
     </nav>
   );
 }
+
 

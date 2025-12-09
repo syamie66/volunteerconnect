@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import NGODashboard from './pages/NGODashboard';
+import CreateEvent from './pages/CreateEvent';
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/dashboard/ngo" element={<NGODashboard />} />
+          <Route path="/create-event" element={<CreateEvent />} />
         </Routes>
       </main>
     </>
