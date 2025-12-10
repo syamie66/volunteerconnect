@@ -1,46 +1,82 @@
 import React, { useState, useEffect } from 'react';
-import { createEvent, listenEvents } from '../services/eventService';
+import { useAuth } from '../contexts/AuthContext';
+import { db } from '../firebase';
+import { collection, onSnapshot, doc, getDoc } from 'firebase/firestore';
 import EventCard from '../components/EventCard';
+import { useNavigate } from 'react-router-dom';
+import './NGODashboard.css';
 
 export default function NGODashboard() {
-  const [title, setTitle] = useState('');
-  const [date, setDate] = useState('');
-  const [location, setLocation] = useState('');
-  const [description, setDescription] = useState('');
+  const { currentUser, profile } = useAuth();
   const [events, setEvents] = useState([]);
+  const [participantsMap, setParticipantsMap] = useState({});
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const unsubscribe = listenEvents(setEvents);
-    return () => unsubscribe();
-  }, []);
+    if (!currentUser || !profile) return;
 
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    try {
-      await createEvent({ title, date, location, description });
-      alert('Event created');
-      setTitle(''); setDate(''); setLocation(''); setDescription('');
-    } catch (err) {
-      alert(err.message);
-    }
+    const q = collection(db, 'events');
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
+      const eventsData = snapshot.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .filter(e => e.createdBy === currentUser.uid); // only NGO's events
+      setEvents(eventsData);
+
+      const tempMap = {};
+      for (const event of eventsData) {
+        if (event.participants?.length > 0) {
+          const usersData = await Promise.all(
+            event.participants.map(async (uid) => {
+              const docSnap = await getDoc(doc(db, 'users', uid));
+              return docSnap.exists() ? docSnap.data() : { email: 'Unknown' };
+            })
+          );
+          tempMap[event.id] = usersData;
+        } else {
+          tempMap[event.id] = [];
+        }
+      }
+      setParticipantsMap(tempMap);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [currentUser, profile]);
+
+  if (!currentUser) return <p>Loading user...</p>;
+  if (!profile) return <p>Loading profile...</p>;
+  if (profile.userType !== 'NGO') return <p>Access denied. Only NGOs can view this page.</p>;
+  if (loading) return <p>Loading events...</p>;
+
+  const handleViewParticipants = (eventId) => {
+    navigate(`/event/${eventId}/participants`);
   };
 
   return (
-    <section className="section">
+    <section className="ngo-dashboard-container">
       <h2>NGO Dashboard</h2>
 
-      <form className="form" onSubmit={handleCreate}>
-        <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Event Title" required />
-        <input value={date} onChange={e => setDate(e.target.value)} placeholder="Date" required />
-        <input value={location} onChange={e => setLocation(e.target.value)} placeholder="Location" required />
-        <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Description" />
-        <button type="submit">Create Event</button>
-      </form>
+      {events.length === 0 && <p>No events created yet.</p>}
 
-      <h3 style={{ marginTop: '40px' }}>All Events</h3>
       <div className="event-list">
-        {events.map(ev => <EventCard key={ev.id} event={ev} />)}
+        {events.map(ev => (
+          <div key={ev.id} className="event-item">
+            <EventCard event={ev} />
+
+            <button
+              className="toggle-participants"
+              onClick={() => handleViewParticipants(ev.id)}
+            >
+              View Participants ({participantsMap[ev.id]?.length || 0})
+            </button>
+          </div>
+        ))}
       </div>
     </section>
   );
 }
+
+
+
+

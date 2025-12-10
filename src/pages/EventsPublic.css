@@ -1,7 +1,6 @@
 /* ==========================
-   EventsPublic.css - Burgundy Minimalist Theme (Button Visible with Images)
+   Container & Title
    ========================== */
-
 .events-public-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -17,17 +16,24 @@
   color: #6b0f1a;
 }
 
+/* ==========================
+   Grid Layout
+   ========================== */
 .events-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
-  justify-content: center;
+  justify-items: center;
 }
 
+/* ==========================
+   Event Card (No Image)
+   ========================== */
 .event-card {
   background: linear-gradient(135deg, #ffffff, #f5e6e8);
   border-radius: 1rem;
-  width: 300px;
+  width: 100%;
+  max-width: 320px;
   box-shadow: 0 6px 12px rgba(107, 15, 26, 0.1);
   border: 2px solid #6b0f1a;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -35,7 +41,7 @@
   flex-direction: column;
   position: relative;
   margin-bottom: 2rem;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .event-card::before {
@@ -48,20 +54,11 @@
   background-color: #6b0f1a;
 }
 
-.event-card img {
-  width: 100%;
-  max-height: 220px;
-  object-fit: cover;
-  border-bottom: 1px solid #cbd5e0;
-  transition: transform 0.4s ease;
-  border-radius: 1rem 1rem 0 0;
-}
-
 .event-card .content {
-  padding: 1.5rem;
+  padding: 1.2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.6rem;
 }
 
 .event-card h3 {
@@ -72,10 +69,15 @@
 }
 
 .event-card p {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #6b0f1a;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
+}
+
+.event-card .description {
+  font-style: italic;
+  color: #4a0a14;
 }
 
 .event-card .card-footer {
@@ -86,6 +88,9 @@
   z-index: 2;
 }
 
+/* ==========================
+   Buttons
+   ========================== */
 .event-card button {
   padding: 0.5rem 1rem;
   background-color: #b2224b;
@@ -108,15 +113,28 @@
   cursor: not-allowed;
 }
 
+/* ==========================
+   Card Hover Effects
+   ========================== */
 .event-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 16px 28px rgba(107, 15, 26, 0.25);
 }
 
-.event-card:hover img {
-  transform: scale(1.05);
+/* ==========================
+   Paragraph Spacing
+   ========================== */
+.event-card .content p + p {
+  margin-top: 0.3rem;
 }
 
-.event-card .content p + p {
-  margin-top: 0.4rem;
+/* ==========================
+   Responsive Adjustments
+   ========================== */
+@media (max-width: 768px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }
+

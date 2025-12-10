@@ -6,8 +6,12 @@ import EventForm from "../components/EventForm";
 export default function CreateEvent() {
   const { currentUser, profile } = useAuth();
 
-  // Only allow NGOs to access this page
-  if (!currentUser || profile?.userType !== "NGO") {
+  // auth state still loading
+  if (!currentUser) return <p>Loading user...</p>;
+  if (!profile) return <p>Loading profile...</p>;
+
+  // Only allow NGOs
+  if (profile.userType !== "NGO") {
     return <p>You must be logged in as an NGO to create events.</p>;
   }
 
@@ -18,3 +22,4 @@ export default function CreateEvent() {
     </div>
   );
 }
+

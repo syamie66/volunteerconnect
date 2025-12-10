@@ -17,21 +17,29 @@ export default function Navbar() {
       <div className="nav-links">
         <Link to="/">Home</Link>
         <Link to="/events">Events</Link>
+
         {!currentUser && <Link to="/login">Login</Link>}
+
         {currentUser && (
           <>
             {profile?.userType === 'NGO' && (
-              <Link to="/create-event">Create Event</Link>
+              <>
+                <Link to="/create-event">Create Event</Link>
+                <Link to="/dashboard/ngo">NGO Dashboard</Link>
+              </>
             )}
+
             {profile?.userType === 'volunteer' && (
               <Link to="/dashboard">Dashboard</Link>
             )}
-            <button className="link-like" onClick={handleLogout}>Logout</button>
+
+            <button className="link-like" onClick={handleLogout}>
+              Logout
+            </button>
           </>
         )}
       </div>
     </nav>
   );
 }
-
 

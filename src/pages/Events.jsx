@@ -1,4 +1,3 @@
-// pages/Events.jsx
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { db } from "../firebase";
@@ -22,8 +21,7 @@ export default function Events() {
   useEffect(() => {
     const q = query(collection(db, "events"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const eventsData = [];
-      snapshot.forEach((doc) => eventsData.push({ id: doc.id, ...doc.data() }));
+      const eventsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setEvents(eventsData);
     });
 
@@ -31,7 +29,7 @@ export default function Events() {
   }, []);
 
   const handleJoin = async (eventId) => {
-    if (!currentUser || profile?.role !== "volunteer") return;
+    if (!currentUser || profile?.userType !== "volunteer") return;
 
     setLoadingJoin((prev) => ({ ...prev, [eventId]: true }));
     try {
@@ -40,7 +38,8 @@ export default function Events() {
         participants: arrayUnion(currentUser.uid),
       });
       alert("You have joined the event!");
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert("Failed to join the event.");
     } finally {
       setLoadingJoin((prev) => ({ ...prev, [eventId]: false }));
@@ -52,6 +51,7 @@ export default function Events() {
       <h1 className="events-title">Upcoming Events</h1>
 
       <div className="events-grid">
+        {events.length === 0 && <p>No upcoming events.</p>}
         {events.map((event) => (
           <EventCard
             key={event.id}
@@ -66,3 +66,4 @@ export default function Events() {
     </div>
   );
 }
+

@@ -1,26 +1,30 @@
-// components/EventCard.jsx
 import React from "react";
-import { useNavigate } from "react-router-dom"; // for redirection
+import { useNavigate } from "react-router-dom";
 
 export default function EventCard({ event, onJoin, loading, currentUser, profile }) {
   const navigate = useNavigate();
 
   const handleClick = () => {
     if (!currentUser) {
-      navigate("/login"); // redirect to login if not logged in
+      navigate("/login"); // redirect if not logged in
     } else if (profile?.userType === "volunteer") {
-      onJoin(event.id); // allow volunteer to join
+      onJoin(event.id); // join event
     }
   };
 
   return (
     <div className="event-card">
-      {event.imageUrl && <img src={event.imageUrl} alt={event.title} />}
       <div className="content">
         <h3>{event.title}</h3>
-        <p><strong>Date:</strong> {event.date} | <strong>Time:</strong> {event.time}</p>
-        <p><strong>Location:</strong> {event.location}</p>
-        <p>{event.description}</p>
+        <p><strong>Organization:</strong> {event.organization}</p>
+        <p><span role="img" aria-label="calendar">📅</span> {event.date} | <span role="img" aria-label="clock">⏰</span> {event.time}</p>
+        <p><span role="img" aria-label="location">📍</span> {event.location}</p>
+        <p><strong>Registration:</strong> {event.registrationStart} to {event.registrationEnd}</p>
+        <p className="description">
+          {event.description.length > 100
+            ? event.description.slice(0, 100) + "..."
+            : event.description}
+        </p>
         <div className="card-footer">
           <span>Participants: {event.participants?.length || 0}</span>
           <button onClick={handleClick} disabled={loading}>
@@ -31,5 +35,7 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
     </div>
   );
 }
+
+
 
 

@@ -1,0 +1,59 @@
+/* EventParticipants.css */
+
+.participants-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: linear-gradient(135deg, #fff5f5, #fbeaea);
+  border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(107, 15, 26, 0.2);
+  color: #4a0a14;
+  font-family: 'Poppins', sans-serif;
+}
+
+.participants-container h2 {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #6b0f1a;
+  text-align: center;
+}
+
+.participants-container a {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #b2224b;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.participants-container a:hover {
+  color: #6b0f1a;
+}
+
+.participants-container ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.participants-container li {
+  background-color: #fff0f0;
+  padding: 0.8rem 1rem;
+  border-radius: 0.6rem;
+  margin-bottom: 0.8rem;
+  box-shadow: 0 4px 10px rgba(107, 15, 26, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.participants-container li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(107, 15, 26, 0.2);
+}
+
+.participants-container p {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b0f1a;
+}
+

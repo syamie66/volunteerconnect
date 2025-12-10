@@ -1,0 +1,64 @@
+.ngo-dashboard-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
+  text-align: center;
+  background-color: #fff5f5;
+}
+
+.ngo-dashboard-container h2 {
+  color: #6b0f1a;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.event-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.event-item {
+  background: linear-gradient(135deg, #ffffff, #f5e6e8);
+  border: 2px solid #6b0f1a;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 6px 12px rgba(107, 15, 26, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.event-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(107, 15, 26, 0.25);
+}
+
+.toggle-participants {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #b2224b;
+  color: #fff;
+  border: 1px solid #6b0f1a;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.toggle-participants:hover {
+  background-color: #6b0f1a;
+  transform: translateY(-2px);
+}
+
+.participant-list {
+  margin-top: 0.8rem;
+  text-align: left;
+  padding-left: 1rem;
+}
+
+.participant-list li {
+  margin-bottom: 0.3rem;
+  color: #4a0a14;
+  font-weight: 500;
+}
+
