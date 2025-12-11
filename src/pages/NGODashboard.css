@@ -1,3 +1,6 @@
+/* ================================
+   NGO Dashboard Container
+================================ */
 .ngo-dashboard-container {
   max-width: 1000px;
   margin: 2rem auto;
@@ -13,17 +16,32 @@
   margin-bottom: 2rem;
 }
 
+/* ================================
+   Event List — side-by-side layout
+================================ */
 .event-list {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 2rem;
+  justify-content: center;
 }
 
+/* ================================
+   Event Card Wrapper
+================================ */
 .event-item {
+  width: 300px;
+  min-height: 480px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
   background: linear-gradient(135deg, #ffffff, #f5e6e8);
   border: 2px solid #6b0f1a;
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 1.5rem;
+
   box-shadow: 0 6px 12px rgba(107, 15, 26, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -33,9 +51,13 @@
   box-shadow: 0 12px 24px rgba(107, 15, 26, 0.25);
 }
 
+/* ================================
+   Button
+================================ */
 .toggle-participants {
+  width: 100%; /* Prevent overflow */
   margin-top: 1rem;
-  padding: 0.5rem 1rem;
+  padding: 0.7rem 1rem;
   background-color: #b2224b;
   color: #fff;
   border: 1px solid #6b0f1a;
@@ -50,6 +72,9 @@
   transform: translateY(-2px);
 }
 
+/* ================================
+   Participant List
+================================ */
 .participant-list {
   margin-top: 0.8rem;
   text-align: left;
@@ -61,4 +86,5 @@
   color: #4a0a14;
   font-weight: 500;
 }
+
 

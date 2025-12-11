@@ -1,28 +1,49 @@
-/* Form Container */
+/* Register.css - Final Flowing Minimalist Style with Burgundy Accent */
+
+:root {
+  --color-primary-burgundy: #800020;    /* Your main Burgundy for accents */
+  --color-burgundy-light: #a00030;      
+  --color-text-dark: #343a40;           /* Dark text for primary reading */
+  --color-background-page: #f8f8f8;     /* Subtle page background (to define form edges) */
+  --color-border-input: #ccc;           /* Light gray bottom border for fields */
+  --color-placeholder: #999;
+  --color-input-highlight: #f7e6e8;     /* Very light pink/burgundy for optional highlight */
+}
+
+/* Base Body and Container */
+body {
+  background: var(--color-background-page);
+  font-family: 'Poppins', sans-serif;
+  color: var(--color-text-dark);
+}
+
 .section {
-  max-width: 450px;
-  margin: 50px auto;
-  padding: 30px;
-  border-radius: 12px;
-  background-color: #fff; /* clean white background */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* subtle shadow */
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* ENSURES NO BOX: Transparent background, centered content */
+  max-width: 650px; 
+  margin: 4rem auto;
+  padding: 0 1rem; 
+  background: transparent;
+  box-shadow: none;
 }
 
 /* Heading */
 .section h2 {
   text-align: center;
-  margin-bottom: 25px;
-  font-size: 28px;
-  color: #800020; /* burgundy */
-  font-weight: 600;
+  margin-bottom: 3rem;
+  font-size: 2.5rem;
+  color: var(--color-text-dark);
+  font-weight: 700;
 }
 
 /* Message */
 .message {
+  padding: 10px;
+  margin: 1rem 0;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--color-primary-burgundy);
   text-align: center;
-  color: #800020; /* burgundy for success/info */
-  margin-bottom: 15px;
+  border: 1px solid #d4a0a0;
   font-weight: 500;
 }
 
@@ -30,68 +51,106 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 30px; 
+  margin-top: 1rem;
 }
 
-/* Input and select styling */
+/* --- Section Headers (Burgundy Divider) --- */
+.form-section-header {
+  border-bottom: 1px solid var(--color-primary-burgundy); 
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-section-header h3 {
+  font-size: 1.3rem;
+  color: var(--color-primary-burgundy); /* Burgundy section heading */
+  font-weight: 600;
+}
+
+/* --- Grid Layout --- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; 
+}
+
+.full-width {
+  grid-column: 1 / -1; 
+}
+
+
+/* --- Input and Select Styling (No Box) --- */
 .form input,
-.form select {
-  padding: 12px 15px;
+.form select,
+.form textarea { 
+  padding: 12px 0; /* Minimal vertical padding to appear flat */
   font-size: 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+  border-radius: 0; 
+  
+  /* CRITICAL: Ensure no background, only a bottom border */
+  background-color: transparent !important; 
+  border: none !important;
+  border-bottom: 1px solid var(--color-border-input) !important;
+  
+  color: var(--color-text-dark); 
   width: 100%;
   box-sizing: border-box;
-  transition: border-color 0.3s, box-shadow 0.3s;
+  transition: border-bottom-color 0.3s;
 }
 
-/* Input focus */
+.form textarea {
+    resize: vertical;
+}
+
+/* Input focus (Burgundy bottom border) */
 .form input:focus,
-.form select:focus {
+.form select:focus,
+.form textarea:focus {
   outline: none;
-  border-color: #800020; /* burgundy */
-  box-shadow: 0 0 6px rgba(128, 0, 32, 0.3);
+  border-bottom-color: var(--color-primary-burgundy) !important; /* Burgundy accent on focus */
+  box-shadow: none !important; 
 }
 
-/* Button styling */
+/* --- OPTIONAL: Highlighted Field Style (Mimics the blue box in your screenshot) --- */
+.form .highlight-field {
+    background-color: var(--color-input-highlight) !important; /* Light Burgundy background */
+    border-radius: 8px !important;
+    padding: 12px 15px !important; 
+    border-bottom: 1px solid var(--color-input-highlight) !important;
+}
+.form .highlight-field:focus {
+    border-bottom: 1px solid var(--color-primary-burgundy) !important;
+    box-shadow: none;
+}
+
+
+/* --- Button Styling --- */
 .form button {
-  padding: 12px;
-  font-size: 16px;
+  padding: 15px;
+  font-size: 1.1rem;
   border-radius: 8px;
   border: none;
-  background-color: #800020; /* burgundy */
+  background-color: var(--color-primary-burgundy);
   color: #fff;
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   transition: background-color 0.3s, transform 0.2s;
+  margin-top: 2rem;
 }
 
-/* Button hover */
 .form button:hover:not(:disabled) {
-  background-color: #a00030; /* slightly lighter burgundy */
+  background-color: var(--color-burgundy-light);
   transform: translateY(-1px);
 }
 
-/* Disabled button */
-.form button:disabled {
-  background-color: #b98a8a;
-  cursor: not-allowed;
-}
-
-/* Placeholder styling */
-.form input::placeholder {
-  color: #999;
-}
-
-/* Responsive */
-@media (max-width: 500px) {
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
   .section {
-    margin: 30px 20px;
-    padding: 25px;
+    margin: 2rem 0.5rem;
+    padding: 0 0.5rem; 
   }
-
-  .section h2 {
-    font-size: 24px;
+  .form-grid {
+    grid-template-columns: 1fr; 
   }
 }
-

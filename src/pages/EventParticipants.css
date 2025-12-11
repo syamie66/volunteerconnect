@@ -1,59 +1,180 @@
-/* EventParticipants.css */
+/* EventParticipants.css - Image-Matched Burgundy Minimalist Version */
 
+:root {
+  --color-primary-burgundy: #592e35;    /* Deep Maroon/Burgundy (from image header text) */
+  --color-dark-text: #1f1f1f;          /* Near Black */
+  --color-background-outer: #9e7f7b;   /* The background color behind the main card in the image */
+  --color-container-background: #f5f0ed; /* The light beige/cream color of the main card */
+  --color-card-background: #f7f7f5;    /* Very slightly darker beige for participant cards */
+  --color-text-subtle: #575757;
+  --color-approve-bg: #cfa864;         /* Subtle Gold/Sand for Approve */
+  --color-reject-bg: #4a4a4a;          /* Dark Grey for Reject */
+}
+
+/* NOTE: To fully replicate the image's background, you would set the 
+  body/html background to --color-background-outer and use the 
+  .participants-container for the light beige inner content.
+*/
 .participants-container {
-  max-width: 800px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background: linear-gradient(135deg, #fff5f5, #fbeaea);
-  border-radius: 1rem;
-  box-shadow: 0 8px 20px rgba(107, 15, 26, 0.2);
-  color: #4a0a14;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 6rem 1rem 2rem 1rem;
+  background: var(--color-container-background);
+  border-radius: 1.5rem; /* Larger radius for a softer look */
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Softer, wider shadow */
+  color: var(--color-dark-text);
   font-family: 'Poppins', sans-serif;
 }
 
 .participants-container h2 {
-  font-size: 2rem;
+  font-size: 2.2rem;
   margin-bottom: 1.5rem;
-  color: #6b0f1a;
+  color: var(--color-dark-text); /* Black header text as seen in the image */
   text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .participants-container a {
   display: inline-block;
   margin-bottom: 1.5rem;
-  color: #b2224b;
+  color: var(--color-primary-burgundy); /* Matches 'Back to Events' color */
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 500;
   transition: color 0.2s ease;
+  padding-bottom: 2px;
+  /* Simple line style under link */
+  border-bottom: 1px solid var(--color-primary-burgundy); 
 }
 
 .participants-container a:hover {
-  color: #6b0f1a;
+  color: var(--color-dark-text);
+  border-bottom: 1px solid var(--color-dark-text);
 }
 
-.participants-container ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+.event-header p {
+  text-align: left; /* Aligned left below the title in the image */
+  margin: 0.3rem 0;
+  color: var(--color-text-subtle);
+  font-size: 1rem;
 }
 
-.participants-container li {
-  background-color: #fff0f0;
-  padding: 0.8rem 1rem;
-  border-radius: 0.6rem;
-  margin-bottom: 0.8rem;
-  box-shadow: 0 4px 10px rgba(107, 15, 26, 0.1);
+.participant-list {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.participant-card {
+  background: var(--color-card-background); /* Slightly different shade for card background */
+  padding: 1.5rem;
+  border-radius: 12px;
+  /* Very subtle shadow, barely visible */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03); 
+  display: flex;
+  flex-direction: column;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.participants-container li:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(107, 15, 26, 0.2);
+.participant-card:hover {
+  transform: none; /* Keep flat as in the minimalist image */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-.participants-container p {
-  text-align: center;
-  font-size: 1rem;
-  color: #6b0f1a;
+.participant-card h4 {
+  margin-bottom: 0.5rem;
+  color: var(--color-dark-text);
+  font-weight: 600;
+  font-size: 1.2rem;
 }
 
+.participant-card p {
+  margin: 2px 0;
+  color: var(--color-text-subtle);
+  font-size: 0.95rem;
+}
+
+.participant-details {
+  margin-top: 1rem;
+  /* Thin golden/orange separator line as seen in the image */
+  border-top: 1px solid #d2a45a; 
+  padding-top: 1rem;
+}
+
+.participant-actions {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 10px; /* Closer gap as seen in the image */
+}
+
+.participant-actions button,
+.view-btn {
+  padding: 8px 18px; /* Slightly smaller padding */
+  border: none;
+  cursor: pointer;
+  border-radius: 6px; /* Slightly smaller radius for buttons */
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: none; /* Flat buttons */
+}
+
+/* View Profile Button: Deep Burgundy */
+.view-btn {
+  background: var(--color-primary-burgundy);
+  color: white;
+}
+
+.view-btn:hover {
+  background: #401e22; /* Darker Burgundy */
+}
+
+/* Approve Button: Subtle Gold/Sand */
+.approve-btn {
+  background: var(--color-approve-bg);
+  color: white; /* White text on approval button */
+}
+
+.approve-btn:hover {
+  background: #b89152; 
+}
+
+/* Reject Button: Dark Grey */
+.reject-btn {
+  background: var(--color-reject-bg);
+  color: white;
+}
+
+.reject-btn:hover {
+  background: #303030;
+}
+
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .participants-container {
+    padding: 4rem 0.5rem 1rem 0.5rem;
+    border-radius: 0;
+  }
+  
+  .participant-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .participant-actions button,
+  .view-btn {
+    width: 100%;
+    padding: 10px 16px;
+  }
+}
+
+/* Delete Button: Use a slightly different background for admin actions, like a neutral dark red */
+.delete-btn {
+  background: #a02030; /* Darker, slightly muted red for permanent action */
+  color: white;
+}
+
+.delete-btn:hover {
+  background: #801825;
+}
