@@ -1,156 +1,247 @@
-/* Register.css - Final Flowing Minimalist Style with Burgundy Accent */
-
+/* =============== Global Theme =============== */
 :root {
-  --color-primary-burgundy: #800020;    /* Your main Burgundy for accents */
-  --color-burgundy-light: #a00030;      
-  --color-text-dark: #343a40;           /* Dark text for primary reading */
-  --color-background-page: #f8f8f8;     /* Subtle page background (to define form edges) */
-  --color-border-input: #ccc;           /* Light gray bottom border for fields */
-  --color-placeholder: #999;
-  --color-input-highlight: #f7e6e8;     /* Very light pink/burgundy for optional highlight */
+  --burgundy: #800020;
+  --burgundy-light: #a00030;
+  --text-dark: #2e2e2e;
+  --page-bg: #f5f5f5;
+  --input-bg: #ffffff;
+  --input-border: #dddddd;
+  --placeholder: #999;
 }
 
-/* Base Body and Container */
+/* Basic Reset */
 body {
-  background: var(--color-background-page);
-  font-family: 'Poppins', sans-serif;
-  color: var(--color-text-dark);
+  background: var(--page-bg);
+  font-family: "Poppins", sans-serif;
+  color: var(--text-dark);
+  margin: 0;
 }
+
+/* ====================================================== */
+/*                       HERO SECTION                     */
+/* ====================================================== */
+
+.hero-section {
+  width: 100%;
+  min-height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(
+      rgba(128, 0, 32, 0.5),
+      rgba(128, 0, 32, 0.7)
+    ),
+    url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d")
+      center/cover no-repeat;
+
+  padding: 4rem 2rem;
+  text-align: center;
+  color: white;
+}
+
+.hero-content h1 {
+  font-size: 3.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  max-width: 650px;
+  margin: 0 auto 2rem;
+  font-size: 1.15rem;
+  opacity: 0.95;
+}
+
+/* CTA Button */
+.hero-cta {
+  display: inline-block;
+  padding: 16px 36px;
+  font-size: 1.2rem;
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--burgundy);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+  transition: 0.25s;
+}
+
+.hero-cta:hover {
+  background: var(--burgundy-light);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* ====================================================== */
+/*                   REGISTRATION SECTION                 */
+/* ====================================================== */
 
 .section {
-  /* ENSURES NO BOX: Transparent background, centered content */
-  max-width: 650px; 
-  margin: 4rem auto;
-  padding: 0 1rem; 
-  background: transparent;
-  box-shadow: none;
+  max-width: 850px;
+  margin: -3rem auto 4rem;
+  padding: 3rem 3rem;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
 }
 
-/* Heading */
 .section h2 {
   text-align: center;
-  margin-bottom: 3rem;
   font-size: 2.5rem;
-  color: var(--color-text-dark);
+  color: var(--burgundy);
+  margin-bottom: 2rem;
   font-weight: 700;
 }
 
-/* Message */
+/* Success/Error Message */
 .message {
-  padding: 10px;
-  margin: 1rem 0;
-  border-radius: 6px;
-  background-color: transparent;
-  color: var(--color-primary-burgundy);
+  padding: 14px;
+  border-radius: 10px;
+  background: #ffe8ee;
+  border-left: 4px solid var(--burgundy);
+  color: var(--burgundy);
   text-align: center;
-  border: 1px solid #d4a0a0;
   font-weight: 500;
+  margin-bottom: 1.5rem;
 }
 
-/* Form layout */
+/* Form Layout */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 30px; 
-  margin-top: 1rem;
+  gap: 2rem;
 }
 
-/* --- Section Headers (Burgundy Divider) --- */
+/* Section Header */
 .form-section-header {
-  border-bottom: 1px solid var(--color-primary-burgundy); 
-  padding-bottom: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-top: 1rem;
+  border-left: 4px solid var(--burgundy);
+  padding-left: 0.8rem;
 }
 
 .form-section-header h3 {
-  font-size: 1.3rem;
-  color: var(--color-primary-burgundy); /* Burgundy section heading */
+  font-size: 1.4rem;
   font-weight: 600;
+  color: var(--burgundy);
 }
 
-/* --- Grid Layout --- */
+/* Grid */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem; 
+  gap: 1.5rem;
 }
 
 .full-width {
-  grid-column: 1 / -1; 
+  grid-column: 1 / -1;
 }
 
-
-/* --- Input and Select Styling (No Box) --- */
+/* Inputs */
 .form input,
 .form select,
-.form textarea { 
-  padding: 12px 0; /* Minimal vertical padding to appear flat */
-  font-size: 16px;
-  border-radius: 0; 
-  
-  /* CRITICAL: Ensure no background, only a bottom border */
-  background-color: transparent !important; 
-  border: none !important;
-  border-bottom: 1px solid var(--color-border-input) !important;
-  
-  color: var(--color-text-dark); 
+.form textarea {
   width: 100%;
+  padding: 16px 18px;
+  font-size: 16px;
+  background: var(--input-bg);
+  border-radius: 12px;
+  border: 1.5px solid var(--input-border);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+  transition: 0.25s;
   box-sizing: border-box;
-  transition: border-bottom-color 0.3s;
 }
 
 .form textarea {
-    resize: vertical;
+  min-height: 120px;
+  resize: vertical;
 }
 
-/* Input focus (Burgundy bottom border) */
 .form input:focus,
 .form select:focus,
 .form textarea:focus {
+  border-color: var(--burgundy);
+  box-shadow: 0 4px 14px rgba(128, 0, 32, 0.2);
   outline: none;
-  border-bottom-color: var(--color-primary-burgundy) !important; /* Burgundy accent on focus */
-  box-shadow: none !important; 
 }
 
-/* --- OPTIONAL: Highlighted Field Style (Mimics the blue box in your screenshot) --- */
-.form .highlight-field {
-    background-color: var(--color-input-highlight) !important; /* Light Burgundy background */
-    border-radius: 8px !important;
-    padding: 12px 15px !important; 
-    border-bottom: 1px solid var(--color-input-highlight) !important;
-}
-.form .highlight-field:focus {
-    border-bottom: 1px solid var(--color-primary-burgundy) !important;
-    box-shadow: none;
+/* Highlighted Field */
+.highlight-field {
+  background: #f8e6ea !important;
+  border-color: var(--burgundy-light) !important;
 }
 
-
-/* --- Button Styling --- */
+/* Submit Button */
 .form button {
-  padding: 15px;
-  font-size: 1.1rem;
-  border-radius: 8px;
+  width: 100%;
+  padding: 18px;
+  font-size: 1.25rem;
+  border-radius: 14px;
   border: none;
-  background-color: var(--color-primary-burgundy);
+  background: var(--burgundy);
   color: #fff;
-  cursor: pointer;
   font-weight: 600;
-  transition: background-color 0.3s, transform 0.2s;
-  margin-top: 2rem;
+  cursor: pointer;
+
+  box-shadow: 0 5px 18px rgba(128, 0, 32, 0.25);
+  transition: 0.25s ease;
 }
 
-.form button:hover:not(:disabled) {
-  background-color: var(--color-burgundy-light);
-  transform: translateY(-1px);
+.form button:hover {
+  background: var(--burgundy-light);
+  transform: translateY(-2px);
+  box-shadow: 0 7px 22px rgba(128, 0, 32, 0.3);
 }
 
-/* --- Responsive Adjustments --- */
+/* ====================================================== */
+/*                     SCROLL ANIMATIONS                 */
+/* ====================================================== */
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 1.2s ease-out forwards;
+}
+
+.fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeUp 1.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ====================================================== */
+/*                     RESPONSIVE DESIGN                 */
+/* ====================================================== */
+
 @media (max-width: 768px) {
-  .section {
-    margin: 2rem 0.5rem;
-    padding: 0 0.5rem; 
+  .hero-content h1 {
+    font-size: 2.2rem;
   }
+
+  .section {
+    padding: 2rem 1.5rem;
+    margin: -2rem 1rem 2rem;
+  }
+
   .form-grid {
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
   }
 }
+

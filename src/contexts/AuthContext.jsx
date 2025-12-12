@@ -1,7 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  signOut, 
+  onAuthStateChanged 
+} from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 const AuthContext = createContext();
 
@@ -21,14 +26,13 @@ export function AuthProvider({ children }) {
 
       if (user) {
         try {
-          // Fetch profile from 'users' collection
+          // Fetch profile from Firestore
           const docRef = doc(db, 'users', user.uid);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
             setProfile(docSnap.data());
           } else {
-            console.warn('User profile does not exist in Firestore.');
             setProfile(null);
           }
         } catch (err) {
@@ -45,26 +49,20 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  // Register function
-  const register = async (email, password, userType = 'user') => {
+  // --- AUTH FUNCTIONS ---
+
+  // Register: only create Firebase Auth user
+  const register = async (email, password) => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Save user profile in Firestore
-      await setDoc(doc(db, 'users', user.uid), {
-        email: user.email,
-        userType, // "NGO" or "user"
-      });
-
-      return user;
+      return userCredential.user;
     } catch (err) {
       console.error('Error registering user:', err);
       throw err;
     }
   };
 
-  // Login function
+  // Login
   const login = async (email, password) => {
     try {
       return await signInWithEmailAndPassword(auth, email, password);
@@ -74,7 +72,7 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Logout function
+  // Logout
   const logout = async () => {
     try {
       await signOut(auth);
@@ -91,4 +89,5 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
 

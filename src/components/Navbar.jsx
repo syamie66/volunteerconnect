@@ -22,6 +22,8 @@ export default function Navbar() {
 
         {currentUser && (
           <>
+            {profile?.userType === 'admin' && <Link to="/admin">Admin</Link>}
+
             {profile?.userType === 'NGO' && (
               <>
                 <Link to="/create-event">Create Event</Link>
@@ -42,4 +44,5 @@ export default function Navbar() {
     </nav>
   );
 }
+
 
