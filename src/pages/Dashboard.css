@@ -1,20 +1,20 @@
-/* Dashboard.css - Burgundy Theme with Status Badges */
+/* Dashboard.css - Burgundy Theme with Status Badges (Minimalist Version) */
 
 :root {
-    --color-primary-burgundy: #800020;    /* Main Burgundy */
-    --color-status-approved: #28a745;   /* Green for Approved */
-    --color-status-rejected: #dc3545;   /* Red for Rejected */
-    --color-status-pending: #cfa864;    /* Gold/Beige for Pending */
+    --color-primary-burgundy: #800020;
+    --color-status-approved: #28a745;
+    --color-status-rejected: #dc3545;
+    --color-status-pending: #cfa864;
     --color-text-dark: #343a40;
     --color-text-subtle: #6c757d;
-    --color-background-page: #f8f9fa;   /* Light gray page background */
+    --color-background-page: #f8f9fa;
 }
 
-/* Base Layout and Container */
+/* --- Base Layout --- */
 .dashboard-container {
     max-width: 900px;
     margin: 40px auto;
-    padding: 20px;
+    padding: 15px;
     font-family: 'Poppins', sans-serif;
     color: var(--color-text-dark);
 }
@@ -22,18 +22,18 @@
 .dashboard-title {
     text-align: center;
     color: var(--color-primary-burgundy);
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     font-size: 32px;
     font-weight: 700;
 }
 
-/* Dashboard Cards (The main white containers) */
+/* --- Cards --- */
 .dashboard-card {
     background: #fff;
-    padding: 30px;
+    padding: 25px;
     border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); 
-    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
 }
 
 .dashboard-card h2 {
@@ -45,32 +45,45 @@
     padding-bottom: 5px;
 }
 
-/* --- Personal Information Layout --- */
-
+/* --- User Info Card --- */
 .user-info-card p {
-    line-height: 1.8; 
-    border-bottom: 1px dotted #eee; 
+    line-height: 1.8;
+    border-bottom: 1px dotted #eee;
     padding-bottom: 5px;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .user-info-card strong {
-    min-width: 150px; 
+    min-width: 150px;
     display: inline-block;
     color: var(--color-text-dark);
 }
 
-/* Styling for the new Update Profile button */
+.user-info-card h2 {
+    display: block;
+    margin-bottom: 15px;
+}
+
+.profile-details {
+    clear: both;
+    padding-top: 8px;
+}
+
+.skills-area {
+    border-bottom: none !important;
+    padding-top: 8px;
+    white-space: pre-wrap;
+}
+
 .update-profile-btn {
     display: inline-block;
-    float: right; 
     padding: 8px 15px;
     background-color: var(--color-primary-burgundy);
     color: white;
     text-decoration: none;
     border-radius: 6px;
     font-weight: 500;
-    margin-top: -30px; 
+    margin-top: 15px;
     transition: background-color 0.2s;
 }
 
@@ -78,35 +91,23 @@
     background-color: #a00030;
 }
 
-.user-info-card h2 {
-    display: inline-block; 
-    width: auto;
-}
-.profile-details {
-    clear: both; /* Ensures details start below the floated button */
-    padding-top: 10px;
-}
-.skills-area {
-    border-bottom: none !important; 
-    padding-top: 10px;
-    white-space: pre-wrap; /* Preserve formatting for skills list */
-}
-
-
-/* --- Participated Events List --- */
-
+/* --- Participated Events (Vertical Stack) --- */
 .event-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    display: flex;
+    flex-direction: column; /* stack events vertically */
+    gap: 10px; /* spacing between events */
 }
 
 .event-item {
-    padding: 15px 0;
-    border-bottom: 1px solid #f0e6e6;
-    display: flex; /* Align details and status badge */
-    justify-content: space-between;
-    align-items: center;
+    display: flex;
+    flex-direction: column; /* stack title and status vertically */
+    align-items: flex-start;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #f0e6e6;
     transition: background 0.2s;
 }
 
@@ -118,31 +119,19 @@
     background-color: #f9f9f9;
 }
 
-/* --- Status Badge Styles --- */
-
 .event-status {
+    align-self: flex-start; /* badge below event title */
+    margin-top: 5px;
     padding: 6px 12px;
-    border-radius: 20px; /* Pill shape */
+    border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 600;
     text-transform: uppercase;
-    color: white;
-    min-width: 90px;
-    text-align: center;
 }
 
-.status-approved {
-    background-color: var(--color-status-approved);
-}
-
-.status-rejected {
-    background-color: var(--color-status-rejected);
-}
-
-.status-pending {
-    background-color: var(--color-status-pending);
-    color: var(--color-text-dark);
-}
+.status-approved { background-color: var(--color-status-approved); }
+.status-rejected { background-color: var(--color-status-rejected); }
+.status-pending { background-color: var(--color-status-pending); color: var(--color-text-dark); }
 
 .no-event {
     font-style: italic;
@@ -156,11 +145,11 @@
     color: var(--color-primary-burgundy);
 }
 
-/* Responsive adjustments */
+/* --- Responsive --- */
 @media (max-width: 600px) {
     .dashboard-container {
         margin: 20px 10px;
-        padding: 0;
+        padding: 10px;
     }
 
     .dashboard-title {
@@ -171,10 +160,14 @@
     .dashboard-card {
         padding: 20px;
     }
-    
-    .event-item {
-        flex-direction: column; 
+
+    .event-item-dashboard {
+        flex-direction: column;
         align-items: flex-start;
         gap: 8px;
     }
 }
+
+
+
+

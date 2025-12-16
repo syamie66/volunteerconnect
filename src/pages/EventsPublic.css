@@ -138,3 +138,15 @@
   }
 }
 
+.read-more {
+  color: #b71c1c;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.event-card,
+.event-card .content,
+.event-card p,
+.event-card h3 {
+  text-align: left;
+}

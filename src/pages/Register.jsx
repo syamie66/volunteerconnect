@@ -129,20 +129,6 @@ export default function Register() {
           </div>
           <div className="form-grid">
             <input
-              type="email"
-              placeholder="Email Address *"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password (min 6 characters) *"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <input
               type="tel"
               placeholder="Phone Number *"
               value={phone}

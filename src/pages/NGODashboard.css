@@ -1,90 +1,111 @@
 /* ================================
-   NGO Dashboard Container
+   Dashboard Container
 ================================ */
 .ngo-dashboard-container {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 2rem auto;
   padding: 1rem;
-  text-align: center;
   background-color: #fff5f5;
 }
 
 .ngo-dashboard-container h2 {
+  text-align: center;
   color: #6b0f1a;
-  font-size: 2rem;
-  font-weight: 700;
   margin-bottom: 2rem;
 }
 
 /* ================================
-   Event List — side-by-side layout
+   Grid Layout
 ================================ */
-.event-list {
-  display: flex;
-  flex-wrap: wrap;
+.event-grid-ngo {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  justify-content: center;
 }
 
 /* ================================
-   Event Card Wrapper
+   Event Card
 ================================ */
-.event-item {
-  width: 300px;
-  min-height: 480px;
+.event-card-ngo {
+  background: #ffffff;
+  border: 2px solid #6b0f1a;
+  border-radius: 1rem;
+  padding: 1.5rem;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  background: linear-gradient(135deg, #ffffff, #f5e6e8);
-  border: 2px solid #6b0f1a;
-  border-radius: 1rem;
-  padding: 1.5rem;
-
-  box-shadow: 0 6px 12px rgba(107, 15, 26, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 480px;
+  box-shadow: 0 8px 18px rgba(107, 15, 26, 0.12);
 }
 
-.event-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(107, 15, 26, 0.25);
+.event-title-ngo {
+  color: #6b0f1a;
+  margin-bottom: 0.8rem;
+}
+
+.event-desc-ngo {
+  margin-top: 0.8rem;
+  font-style: italic;
+  color: #4a0a14;
 }
 
 /* ================================
-   Button
+   Footer / Buttons
 ================================ */
-.toggle-participants {
-  width: 100%; /* Prevent overflow */
-  margin-top: 1rem;
-  padding: 0.7rem 1rem;
-  background-color: #b2224b;
-  color: #fff;
+.event-footer-ngo {
+  margin-top: 1.2rem;
+}
+
+.view-btn-ngo {
+  width: 100%;
+  padding: 0.7rem;
+  background-color: #f2f2f2;
   border: 1px solid #6b0f1a;
+  border-radius: 0.6rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.view-btn-ngo:hover {
+  background-color: #e6e6e6;
+}
+
+/* ================================
+   Admin Actions
+================================ */
+.event-admin-actions-ngo {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+
+.edit-btn-ngo {
+  flex: 1;
+  background-color: #b2224b;
+  color: white;
+  border: none;
+  padding: 0.6rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-.toggle-participants:hover {
+.edit-btn-ngo:hover {
   background-color: #6b0f1a;
-  transform: translateY(-2px);
 }
 
-/* ================================
-   Participant List
-================================ */
-.participant-list {
-  margin-top: 0.8rem;
-  text-align: left;
-  padding-left: 1rem;
+.delete-btn-ngo {
+  flex: 1;
+  background-color: #ddd;
+  color: #6b0f1a;
+  border: 1px solid #6b0f1a;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }
 
-.participant-list li {
-  margin-bottom: 0.3rem;
-  color: #4a0a14;
-  font-weight: 500;
+.delete-btn-ngo:hover {
+  background-color: #f3d6db;
 }
-
 

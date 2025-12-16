@@ -69,3 +69,15 @@
   font-weight: 500;
   color: #4a0000;
 }
+
+/* Push entire section below fixed navbar */
+.section {
+  margin-top: 6.5rem; /* adjust if navbar height changes */
+}
+
+/* Mobile tweak */
+@media (max-width: 768px) {
+  .section {
+    margin-top: 5.5rem;
+  }
+}
