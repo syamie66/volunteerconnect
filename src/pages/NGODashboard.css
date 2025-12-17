@@ -1,111 +1,412 @@
-/* ================================
-   Dashboard Container
-================================ */
-.ngo-dashboard-container {
-  max-width: 1100px;
-  margin: 2rem auto;
-  padding: 1rem;
-  background-color: #fff5f5;
+/* NGO DASHBOARD - SAGE GREEN & VOLUNTEER THEME
+   Fully scoped to .ngo-dashboard-wrapper 
+*/
+
+.ngo-dashboard-wrapper {
+    /* Color Variables */
+    --sage-green: #8A9A5B;
+    --dark-sage: #5d6d3e;
+    --cream-bg: #c7e2ab;
+    --text-main: #2d3431;
+    --text-muted: #7a8279;
+    --border-light: #eef2e9;
+    --card-shadow: 0 10px 30px rgba(138, 154, 91, 0.08);
+
+    background-color: var(--cream-bg);
+    min-height: 100vh;
+    padding: 60px 5% 100px;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text-main);
+    position: relative;
+    overflow-x: hidden;
 }
 
-.ngo-dashboard-container h2 {
-  text-align: center;
-  color: #6b0f1a;
-  margin-bottom: 2rem;
+/* 1. VOLUNTEER THEMED BACKGROUND PATTERN */
+.dashboard-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(var(--sage-green) 0.5px, transparent 0.5px);
+    background-size: 30px 30px;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
 }
 
-/* ================================
-   Grid Layout
-================================ */
-.event-grid-ngo {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 2rem;
+/* 2. HEADER & NAVIGATION */
+.dashboard-header {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 1100px;
+    margin: 0 auto 50px;
 }
 
-/* ================================
-   Event Card
-================================ */
-.event-card-ngo {
-  background: #ffffff;
-  border: 2px solid #6b0f1a;
-  border-radius: 1rem;
-  padding: 1.5rem;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  min-height: 480px;
-  box-shadow: 0 8px 18px rgba(107, 15, 26, 0.12);
+.header-badge {
+    display: inline-block;
+    background: #eef2e9;
+    color: var(--dark-sage);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
 }
 
-.event-title-ngo {
-  color: #6b0f1a;
-  margin-bottom: 0.8rem;
+.dashboard-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 40px;
+    letter-spacing: -1.5px;
 }
 
-.event-desc-ngo {
-  margin-top: 0.8rem;
-  font-style: italic;
-  color: #4a0a14;
+.dashboard-sub-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e6db;
+    padding-bottom: 12px;
 }
 
-/* ================================
-   Footer / Buttons
-================================ */
-.event-footer-ngo {
-  margin-top: 1.2rem;
+.tabs {
+    display: flex;
+    gap: 35px;
 }
 
-.view-btn-ngo {
-  width: 100%;
-  padding: 0.7rem;
-  background-color: #f2f2f2;
-  border: 1px solid #6b0f1a;
-  border-radius: 0.6rem;
-  font-weight: 600;
-  cursor: pointer;
+.tab {
+    font-weight: 600;
+    color: #aeb6ac;
+    cursor: pointer;
+    font-size: 0.95rem;
+    position: relative;
+    padding-bottom: 14px;
+    transition: color 0.3s;
 }
 
-.view-btn-ngo:hover {
-  background-color: #e6e6e6;
+.tab.active {
+    color: var(--text-main);
 }
 
-/* ================================
-   Admin Actions
-================================ */
-.event-admin-actions-ngo {
-  display: flex;
-  gap: 0.6rem;
-  margin-top: 0.6rem;
+.tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--sage-green);
 }
 
-.edit-btn-ngo {
-  flex: 1;
-  background-color: #b2224b;
-  color: white;
-  border: none;
-  padding: 0.6rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
+/* 3. FLOATING ACTION BUTTON (FAB) */
+.create-fab {
+    background-color: var(--sage-green);
+    color: white;
+    border: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    font-size: 1.8rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.edit-btn-ngo:hover {
-  background-color: #6b0f1a;
+.create-fab:hover {
+    background-color: var(--dark-sage);
+    transform: translateY(-3px) rotate(90deg);
+    box-shadow: 0 8px 20px rgba(138, 154, 91, 0.3);
 }
 
-.delete-btn-ngo {
-  flex: 1;
-  background-color: #ddd;
-  color: #6b0f1a;
-  border: 1px solid #6b0f1a;
-  padding: 0.6rem;
-  border-radius: 0.5rem;
-  cursor: pointer;
+/* 4. EVENT GRID & CARDS */
+.event-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.delete-btn-ngo:hover {
-  background-color: #f3d6db;
+.event-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid var(--border-light);
+    box-shadow: var(--card-shadow);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(138, 154, 91, 0.12);
+}
+
+.card-content {
+    padding: 35px;
+    flex-grow: 1;
+}
+
+.card-label-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.category-tag {
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: var(--sage-green);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-dot {
+    font-size: 0.65rem;
+    background: #f0f4e8;
+    color: var(--dark-sage);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.event-card-title {
+    font-size: 1.45rem;
+    line-height: 1.3;
+    margin-bottom: 18px;
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.event-info-list {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.event-info-list p {
+    margin: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.event-description-text {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: #555;
+    margin-top: 12px;
+}
+
+.read-more-link {
+    background: none;
+    border: none;
+    color: var(--sage-green);
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 6px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 0;
+}
+
+.read-more-link:hover {
+    color: var(--dark-sage);
+}
+
+/* 5. CARD FOOTER & ACTIONS */
+.card-footer {
+    padding: 25px 35px;
+    background-color: #fbfcf9;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.participant-summary-btn {
+    background: #f0f4e8;
+    border: 1px solid #e1e9d6;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: var(--dark-sage);
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+
+.participant-summary-btn:hover {
+    background: #e2ebd2;
+    transform: scale(1.01);
+}
+
+.card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 5px;
+}
+
+.action-btn.edit { color: var(--sage-green); }
+.action-btn.delete { color: #c07d7d; }
+.action-btn:hover { opacity: 0.7; }
+
+/* 6. MODAL POPUP STYLES */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(45, 52, 49, 0.5); 
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 650px;
+    padding: 50px;
+    border-radius: 30px;
+    position: relative;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+    animation: modalSlideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+@keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-close {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+    background: #f0f2ed;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.4rem;
+    color: #888;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.modal-close:hover {
+    background: #e0e6db;
+    color: var(--text-main);
+}
+
+.modal-title {
+    font-size: 2rem;
+    margin: 10px 0 15px;
+    color: var(--text-main);
+    font-weight: 800;
+}
+
+.modal-info {
+    color: var(--dark-sage);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 25px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f2ed;
+    display: flex;
+    gap: 15px;
+}
+
+.modal-body {
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #4a4a4a;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding-right: 15px;
+}
+
+/* Custom Scrollbar for Modal Body */
+.modal-body::-webkit-scrollbar {
+    width: 5px;
+}
+.modal-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.modal-body::-webkit-scrollbar-thumb {
+    background: var(--sage-green);
+    border-radius: 10px;
+}
+
+/* 7. UTILITY & LOADING */
+.status-msg, .empty-state {
+    text-align: center;
+    padding: 120px 20px;
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    position: relative;
+    z-index: 1;
+}
+
+/* Search Bar Styling */
+.search-container {
+    max-width: 500px;
+    margin: 0 auto 30px;
+    position: relative;
+    z-index: 2;
+}
+
+.dashboard-search-input {
+    width: 100%;
+    padding: 14px 25px;
+    border-radius: 30px;
+    border: 1px solid #e0e6db;
+    background: white;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    transition: all 0.3s ease;
+}
+
+.dashboard-search-input:focus {
+    outline: none;
+    border-color: var(--sage-green);
+    box-shadow: 0 4px 20px rgba(138, 154, 91, 0.15);
+}
+
+.dashboard-search-input::placeholder {
+    color: #b0b8ac;
 }
 
