@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
@@ -12,6 +12,7 @@ export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [age, setAge] = useState('');
   const [userType, setUserType] = useState('');
   const [phone, setPhone] = useState('');
   const [icNumber, setIcNumber] = useState('');
@@ -26,151 +27,109 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setMessage('');
-
-    if (!userType) {
-      setMessage('Please select a role (Volunteer or NGO).');
-      setLoading(false);
-      return;
-    }
-
     try {
-      // 1. Create Firebase Auth user
       const user = await register(email, password);
-
-      // 2. Save full profile in Firestore
       await setDoc(doc(db, 'users', user.uid), {
-        name,
-        email,
-        userType,          // volunteer or NGO
-        phone,
-        icNumber,
-        address,
-        emergencyContact,
-        gender,
-        skills,
+        name, email, age: parseInt(age), userType, phone,
+        icNumber, address, emergencyContact, gender, skills,
         createdAt: serverTimestamp(),
       });
-
-      setMessage('Registration successful! Redirecting...');
+      setMessage('Registration successful!');
       setTimeout(() => navigate('/'), 1500);
-
     } catch (err) {
-      console.error(err);
-      if (err.code === 'auth/email-already-in-use') {
-        setMessage('This email is already registered.');
-      } else if (err.code === 'auth/invalid-email') {
-        setMessage('Invalid email format.');
-      } else if (err.code === 'auth/weak-password') {
-        setMessage('Password should be at least 6 characters.');
-      } else {
-        setMessage(err.message);
-      }
+      setMessage(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="register-page">
-      <section id="registerForm" className="section fade-up">
-        <h2>Create Your Account</h2>
-        {message && <p className="message">{message}</p>}
+    <div className="login-container register-wide-mode">
+      <div className="wide-card">
+        {/* FORM SIDE (LEFT) */}
+        <div className="wide-form-content">
+          <div className="form-header">
+            <h2>Create Your Account</h2>
+            <div className="washi-tape-horizontal"></div>
+          </div>
 
-        {/* ===================== ROLE SELECTION ===================== */}
-        <div className="form-section-header">
-          <h3>Choose Your Role</h3>
+          <form onSubmit={handleSubmit} className="triple-grid-form">
+            {/* Row 1 */}
+            <div className="input-group">
+              <label>Role</label>
+              <select value={userType} onChange={(e) => setUserType(e.target.value)} required className="custom-select">
+                <option value="" disabled>Select Role</option>
+                <option value="volunteer">Volunteer</option>
+                <option value="NGO">NGO</option>
+              </select>
+            </div>
+            <div className="input-group">
+              <label>Email</label>
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="email@link.com" required />
+            </div>
+            <div className="input-group">
+              <label>Password</label>
+              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+            </div>
+
+            {/* Row 2 */}
+            <div className="input-group">
+              <label>Full Name</label>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
+            </div>
+            <div className="input-group">
+              <label>Age</label>
+              <input type="number" value={age} onChange={(e) => setAge(e.target.value)} required />
+            </div>
+            <div className="input-group">
+              <label>Gender</label>
+              <select value={gender} onChange={(e) => setGender(e.target.value)} required className="custom-select">
+                <option value="" disabled>Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>
+            </div>
+
+            {/* Row 3 */}
+            <div className="input-group">
+              <label>IC Number</label>
+              <input type="text" value={icNumber} onChange={(e) => setIcNumber(e.target.value)} required />
+            </div>
+            <div className="input-group">
+              <label>Phone</label>
+              <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+            </div>
+            <div className="input-group">
+              <label>Emergency Contact</label>
+              <input type="tel" value={emergencyContact} onChange={(e) => setEmergencyContact(e.target.value)} required />
+            </div>
+
+            {/* Row 4 - Full Width items */}
+            <div className="input-group span-two">
+              <label>Mailing Address</label>
+              <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
+            </div>
+            <div className="input-group">
+              <label>Skills</label>
+              <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="Photography, etc." />
+            </div>
+
+            <div className="form-footer">
+              <button type="submit" className="login-btn" disabled={loading}>
+                {loading ? 'Processing...' : 'Register Now'}
+              </button>
+              <p>Already a member? <Link to="/login">Login</Link></p>
+            </div>
+          </form>
         </div>
-        <div className="form-grid">
-          <select
-            value={userType}
-            onChange={(e) => setUserType(e.target.value)}
-            className="full-width"
-            required
-          >
-            <option value="" disabled>Select Your Role *</option>
-            <option value="volunteer">Volunteer</option>
-            <option value="NGO">NGO / Organization</option>
-          </select>
+
+        {/* PHOTO SIDE (RIGHT) */}
+        <div className="wide-photo-side">
+          <div className="image-placeholder">
+            <div className="photo-caption">Be the <br/><span>change</span></div>
+          </div>
         </div>
-
-        <form onSubmit={handleSubmit} className="form">
-
-          {/* 1. Account & Identity */}
-          <div className="form-section-header">
-            <h3>Account & Identity</h3>
-          </div>
-          <div className="form-grid">
-            <input
-              type="text"
-              placeholder="Full Name *"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
-            <input
-              type="text"
-              placeholder="IC Number *"
-              value={icNumber}
-              onChange={(e) => setIcNumber(e.target.value)}
-              required
-            />
-            <select value={gender} onChange={(e) => setGender(e.target.value)} required>
-              <option value="" disabled>Select Gender *</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other / Prefer not to say</option>
-            </select>
-          </div>
-
-          {/* 2. Contact & Access */}
-          <div className="form-section-header">
-            <h3>Contact & Access</h3>
-          </div>
-          <div className="form-grid">
-            <input
-              type="tel"
-              placeholder="Phone Number *"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-            <input
-              type="tel"
-              placeholder="Emergency Contact Phone *"
-              value={emergencyContact}
-              onChange={(e) => setEmergencyContact(e.target.value)}
-              required
-            />
-          </div>
-
-          {/* 3. Location & Skills */}
-          <div className="form-section-header">
-            <h3>Location & Skills</h3>
-          </div>
-          <div className="form-grid">
-            <input
-              type="text"
-              placeholder="Full Mailing Address *"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-              className="full-width"
-            />
-            <textarea
-              placeholder="Skills & Expertise (Optional)"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-              rows="3"
-              className="full-width"
-            ></textarea>
-          </div>
-
-          <button type="submit" disabled={loading}>
-            {loading ? 'Creating Account...' : 'Create Account'}
-          </button>
-        </form>
-      </section>
+      </div>
     </div>
   );
 }
