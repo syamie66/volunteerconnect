@@ -1,26 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase';
-import {
-  collection,
-  onSnapshot,
-  doc,
-  getDoc,
-  deleteDoc
-} from 'firebase/firestore';
+import { collection, onSnapshot, doc, getDoc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import './NGODashboard.css';
 
 export default function NGODashboard() {
   const { currentUser, profile } = useAuth();
   const [events, setEvents] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); // New search state
   const [participantsMap, setParticipantsMap] = useState({});
   const [loading, setLoading] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!currentUser || !profile) return;
-
     const q = collection(db, 'events');
     const unsubscribe = onSnapshot(q, async (snapshot) => {
       const eventsData = snapshot.docs
@@ -28,100 +23,111 @@ export default function NGODashboard() {
         .filter(e => e.createdBy === currentUser.uid);
 
       setEvents(eventsData);
-
       const tempMap = {};
-      for (const event of eventsData) {
-        if (event.participants?.length > 0) {
-          const usersData = await Promise.all(
-            event.participants.map(async (uid) => {
-              const docSnap = await getDoc(doc(db, 'users', uid));
-              return docSnap.exists() ? docSnap.data() : { email: 'Unknown' };
-            })
-          );
-          tempMap[event.id] = usersData;
-        } else {
-          tempMap[event.id] = [];
-        }
-      }
-
+      eventsData.forEach(event => { tempMap[event.id] = event.participants || []; });
       setParticipantsMap(tempMap);
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, [currentUser, profile]);
 
-  if (!currentUser) return <p>Loading user...</p>;
-  if (!profile) return <p>Loading profile...</p>;
-  if (profile.userType !== 'NGO') return <p>Access denied.</p>;
-  if (loading) return <p>Loading events...</p>;
+  // Logic to filter events based on search input
+  const filteredEvents = events.filter(event =>
+    event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    event.location.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const handleViewParticipants = (eventId) => {
-    navigate(`/event/${eventId}/participants`);
-  };
-
-  const handleEditEvent = (eventId) => {
-    navigate(`/event/${eventId}/edit`);
-  };
-
-  const handleDeleteEvent = async (eventId) => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
-      await deleteDoc(doc(db, 'events', eventId));
-    }
-  };
+  if (!currentUser || !profile || loading) {
+    return <div className="ngo-dashboard-wrapper"><p className="status-msg">🌱 Cultivating your dashboard...</p></div>;
+  }
 
   return (
-    <section className="ngo-dashboard-container">
-      <h2>NGO Dashboard</h2>
+    <div className="ngo-dashboard-wrapper">
+      <div className="dashboard-bg-overlay"></div>
 
-      {events.length === 0 && <p>No events created yet.</p>}
+      <header className="dashboard-header">
+        <div className="header-badge">Community Impact</div>
+        <h1 className="dashboard-title">Events</h1>
 
-      <div className="event-grid-ngo">
-        {events.map(ev => (
-          <div key={ev.id} className="event-card-ngo">
+        {/* Search Bar Implementation */}
+        <div className="search-container">
+          <input 
+            type="text" 
+            placeholder="Search by title or location..." 
+            className="dashboard-search-input"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        
+        <div className="dashboard-sub-nav">
+          <div className="tabs">
+            <span className="tab active">Published ({filteredEvents.length})</span>
+          </div>
+          <button className="create-fab" onClick={() => navigate('/create-event')}>+</button>
+        </div>
+      </header>
 
-            <div className="event-body-ngo">
-              <h3 className="event-title-ngo">{ev.title}</h3>
+      <main className="event-grid">
+        {filteredEvents.length === 0 ? (
+          <div className="empty-state">
+            <p>No events match your search. 🔎</p>
+          </div>
+        ) : (
+          filteredEvents.map(ev => (
+            <div key={ev.id} className="event-card">
+              <div className="card-content">
+                <div className="card-label-row">
+                  <span className="category-tag">{ev.organization || 'NGO Partner'}</span>
+                  <span className="status-dot">Live</span>
+                </div>
+                <h3 className="event-card-title">{ev.title}</h3>
+                <div className="event-info-list">
+                  <p><span>📅</span> {ev.date}</p>
+                  <p><span>📍</span> {ev.location}</p>
+                </div>
+                <p className="event-description-text">
+                  {ev.description?.substring(0, 100)}...
+                  <button className="read-more-link" onClick={() => setSelectedEvent(ev)}>Read More</button>
+                </p>
+              </div>
 
-              <p><strong>🏢 Organization:</strong> {ev.organization}</p>
-              <p><strong>📅 Date:</strong> {ev.date}</p>
-              <p><strong>⏰ Time:</strong> {ev.time}</p>
-              <p><strong>📍 Location:</strong> {ev.location}</p>
-
-              <p className="event-desc-ngo">{ev.description}</p>
-            </div>
-
-            <div className="event-footer-ngo">
-              <button
-                className="view-btn-ngo"
-                onClick={() => handleViewParticipants(ev.id)}
-              >
-                👥 Participants ({participantsMap[ev.id]?.length || 0})
-              </button>
-
-              <div className="event-admin-actions-ngo">
-                <button
-                  className="edit-btn-ngo"
-                  onClick={() => handleEditEvent(ev.id)}
-                >
-                  ✏️ Edit
+              <div className="card-footer">
+                <button className="participant-summary-btn" onClick={() => navigate(`/event/${ev.id}/participants`)}>
+                  <span className="leaf-icon">🌱</span>
+                  {participantsMap[ev.id]?.length || 0} Volunteers Enrolled
                 </button>
-
-                <button
-                  className="delete-btn-ngo"
-                  onClick={() => handleDeleteEvent(ev.id)}
-                >
-                  🗑 Delete
-                </button>
+                <div className="card-actions">
+                  <button className="action-btn edit" onClick={() => navigate(`/event/${ev.id}/edit`)}>Edit</button>
+                  <button className="action-btn delete" onClick={() => {if(window.confirm('Delete?')) deleteDoc(doc(db, 'events', ev.id))}}>Delete</button>
+                </div>
               </div>
             </div>
+          ))
+        )}
+      </main>
 
+      {/* Popup Modal Logic remains the same */}
+      {selectedEvent && (
+        <div className="modal-overlay" onClick={() => setSelectedEvent(null)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={() => setSelectedEvent(null)}>&times;</button>
+            <span className="category-tag">{selectedEvent.organization}</span>
+            <h2 className="modal-title">{selectedEvent.title}</h2>
+            <div className="modal-info">📅 {selectedEvent.date} | 📍 {selectedEvent.location}</div>
+            <div className="modal-body"><p>{selectedEvent.description}</p></div>
           </div>
-        ))}
-      </div>
-    </section>
+        </div>
+      )}
+    </div>
   );
 }
+
+
+
+
+
+
 
 
 
