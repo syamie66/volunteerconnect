@@ -6,18 +6,16 @@ import EventForm from "../components/EventForm";
 export default function CreateEvent() {
   const { currentUser, profile } = useAuth();
 
-  // auth state still loading
   if (!currentUser) return <p>Loading user...</p>;
   if (!profile) return <p>Loading profile...</p>;
 
-  // Only allow NGOs
   if (profile.userType !== "NGO") {
     return <p>You must be logged in as an NGO to create events.</p>;
   }
 
+  // REMOVED: maxWidth, margin, and padding to let EventForm handle the full layout
   return (
-    <div style={{ maxWidth: "600px", margin: "2rem auto", padding: "1rem" }}>
-      <h1>Create New Event</h1>
+    <div>
       <EventForm currentUser={currentUser} profile={profile} />
     </div>
   );
