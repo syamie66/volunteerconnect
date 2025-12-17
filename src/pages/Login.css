@@ -1,95 +1,184 @@
 /* ====================================== */
-/* LOGIN PAGE – EVENT CARD STYLE BOXED LOGIN */
+/* THE SAGE & GRID LOGIN LAYOUT           */
 /* ====================================== */
+
 .login-container {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
   min-height: 100vh;
-  padding-top: 6rem; /* space below navbar */
-  background: #fffdfd;
+  padding: 2rem;
+  /* Matching your Home Page Background */
+  background-color: var(--bg-light);
+  background-image: 
+    linear-gradient(#00000008 1px, transparent 1px),
+    linear-gradient(90deg, #00000008 1px, transparent 1px);
+  background-size: 25px 25px;
 }
 
-/* White card with rounded edges and outline */
+/* THE MAIN SPLIT CARD */
+.split-wrapper {
+  display: flex;
+  width: 100%;
+  max-width: 1100px;
+  min-height: 650px;
+  background: #465445;
+  border-radius: var(--radius); /* Using your 35px variable */
+  border: 1.5px solid var(--primary); /* Matching your nav/card borders */
+  box-shadow: 12px 12px 0px var(--primary); /* High contrast shadow */
+  overflow: hidden;
+}
+
+/* LEFT SIDE: PHOTO AREA */
+.photo-side {
+  flex: 1.1;
+  padding: 25px;
+  display: flex;
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #f0f0f0; 
+  border-radius: 25px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 40px;
+  border: 1px solid rgba(0,0,0,0.1);
+  /* Future: background-image: url(...) cover; */
+}
+
+.photo-caption {
+  font-family: var(--font-serif);
+  color: white;
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
+  z-index: 2;
+  text-shadow: 3px 3px 0px var(--primary);
+}
+
+/* RIGHT SIDE: FORM AREA */
+.form-side {
+  flex: 0.9;
+  background-color: #f8b8d3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  position: relative;
+}
+
 .login-box {
   width: 100%;
-  max-width: 400px;
-  background: #fff;
-  border-radius: 20px;                /* rounded edges */
-  border: 2px solid var(--burgundy);  /* colored outline around box */
-  padding: 2.5rem;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.1);
-  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+  max-width: 360px;
+  position: relative;
 }
 
+/* SCRAPBOOK DECORATION: THE PINK TAPE */
+.login-box::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 110px;
+  height: 35px;
+  background-color: var(--accent); /* Signature Pink */
+  border: 1.2px solid var(--primary);
+  z-index: 5;
+}
 
-
-/* Title */
 .login-box h2 {
+  font-family: var(--font-serif);
   text-align: center;
-  margin-bottom: 1.8rem;
-  color: var(--burgundy);
-  font-weight: 700;
-  font-size: 2rem;
+  font-size: 2.5rem;
+  font-weight: 900;
+  margin-bottom: 2rem;
 }
 
-/* Form layout */
+/* FORM STYLING */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* spacing between inputs */
+  gap: 20px;
 }
 
-/* Labels */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .login-form label {
-  font-weight: 500;
-  margin-bottom: 0.3rem;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* Inputs */
 .login-form input {
-  padding: 14px 16px;
+  padding: 15px;
   border-radius: 12px;
-  border: 1.5px solid #ccc;
-  font-size: 16px;
-  transition: 0.25s;
-}
-
-/* Focus input */
-.login-form input:focus {
-  border-color: var(--burgundy);
-  outline: none;
-  box-shadow: 0 4px 12px rgba(128,0,32,0.2);
-}
-
-/* Button */
-.login-form button {
-  margin-top: 1rem;
-  padding: 14px;
-  border: none;
-  border-radius: 14px;
-  background:#e29898 ;
-  color: #ede7e7;
+  border: 1.5px solid var(--primary);
+  font-family: var(--font-primary);
   font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.25s;
+  transition: 0.2s ease;
 }
 
+.login-form input:focus {
+  outline: none;
+  background: var(--accent-blue); /* Soft blue highlight */
+  box-shadow: 4px 4px 0px var(--primary);
+  transform: translate(-2px, -2px);
+}
 
+/* BUTTON STYLING */
+.login-form button {
+  margin-top: 10px;
+  padding: 16px;
+  background: var(--accent); /* Signature Pink */
+  color: #000;
+  border: 1.5px solid var(--primary);
+  border-radius: 100px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 5px 5px 0px var(--primary);
+  transition: all 0.2s ease;
+}
 
-/* Register link */
+.login-form button:hover:not(:disabled) {
+  background: var(--accent-blue);
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0px var(--primary);
+}
+
+/* REGISTER LINK */
 .login-box p {
   text-align: center;
-  margin-top: 1rem;
-  font-size: 0.95rem;
+  margin-top: 25px;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .login-box {
-    padding: 2rem 1.5rem;
+.login-box p a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 3px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 850px) {
+  .split-wrapper {
+    flex-direction: column;
+    margin: 20px;
+    height: auto;
+  }
+  .photo-side {
+    height: 300px;
   }
 }
-
 
