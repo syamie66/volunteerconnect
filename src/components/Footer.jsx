@@ -1,9 +1,11 @@
 import React from 'react';
 
+
 export default function Footer() {
   return (
-    <footer className="footer">
+    <footer className="home-container-unique footer-main">
       <div className="footer-container">
+        
         <div className="footer-section">
           <h3>Quick Links</h3>
           <ul>
@@ -15,26 +17,27 @@ export default function Footer() {
 
         <div className="footer-section">
           <h3>Contact Us</h3>
-          <p>Email: info@volunteerconnect.my</p>
-          <p>Phone: +60 12-345 6789</p>
-          <p>Penang, Malaysia</p>
+          <div className="contact-details">
+            <p>Email: info@volunteerconnect.my</p>
+            <p>Phone: +60 12-345 6789</p>
+            <p>Penang, Malaysia</p>
+          </div>
         </div>
 
         <div className="footer-section">
           <h3>Newsletter</h3>
-          <form>
+          <p className="newsletter-text">Join our community updates.</p>
+          <form className="footer-form">
             <input type="email" placeholder="Your email" required />
-            <button type="submit">Subscribe</button>
+            <button type="submit" className="footer-sub-btn">Subscribe</button>
           </form>
         </div>
       </div>
 
       <div className="footer-bottom">
-        © 2025 VolunteerConnect. All Rights Reserved.
+        <div className="footer-line"></div>
+        <p>© 2025 VolunteerConnect. All Rights Reserved.</p>
       </div>
     </footer>
   );
 }
-
-
-
