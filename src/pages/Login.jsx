@@ -18,13 +18,18 @@ export default function Login() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // Fetch user role from Firestore to redirect appropriately
       const docRef = doc(db, 'users', user.uid);
       const docSnap = await getDoc(docRef);
       const profile = docSnap.exists() ? docSnap.data() : null;
 
-      if (profile?.role === 'ngo') navigate('/dashboard/ngo');
-      else if (profile?.role === 'volunteer') navigate('/dashboard');
-      else navigate('/');
+      if (profile?.role === 'ngo') {
+        navigate('/dashboard/ngo');
+      } else if (profile?.role === 'volunteer') {
+        navigate('/dashboard');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       alert(err.message);
     } finally {
@@ -34,34 +39,63 @@ export default function Login() {
 
   return (
     <div className="login-container">
-      <div className="login-box">
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit} className="login-form">
-          <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-          />
+      {/* Main Split-Screen Wrapper */}
+      <div className="split-wrapper">
+        
+        {/* LEFT SIDE: Image Section (Matches the layout of the reference image) */}
+        <div className="photo-side">
+          <div className="image-placeholder">
+            {/* Dark gradient overlay can be added via CSS to make text pop */}
+            <div className="photo-caption">
+              Find a place <br /> 
+              you'll <span>love</span>
+            </div>
+          </div>
+        </div>
 
-          <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            required
-          />
+        {/* RIGHT SIDE: Scrapbook Form Section */}
+        <div className="form-side">
+          <div className="login-box">
+            <h2>Login</h2>
+            
+            <form onSubmit={handleSubmit} className="login-form">
+              <div className="input-group">
+                <label>Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="hello@example.com"
+                  required
+                />
+              </div>
 
-          <button type="submit" disabled={loading}>
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
-        <p>
-          Don't have an account? <Link to="/register">Register now</Link>
-        </p>
+              <div className="input-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+
+              <button 
+                type="submit" 
+                className="login-btn" 
+                disabled={loading}
+              >
+                {loading ? 'Logging in...' : 'Login'}
+              </button>
+            </form>
+
+            <p className="register-text">
+              Don't have an account? <Link to="/register">Register now</Link>
+            </p>
+          </div>
+        </div>
+
       </div>
     </div>
   );
