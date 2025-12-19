@@ -91,3 +91,18 @@ export default function Dashboard() {
                         {appliedEvents.map(event => {
                             const status = getEventStatus(event.id);
                             const statusClass = getStatusClass(status);
+                        return (
+                                <li key={event.id} className="event-item">
+                                    <div className="event-details">
+                                        <strong>{event.title}</strong> — {event.date} @ {event.time}
+                                    </div>
+                                    <span className={event-status ${statusClass}}>{status}</span>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                )}
+            </section>
+        </div>
+    );
+}
