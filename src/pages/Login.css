@@ -1,42 +1,66 @@
-/* ====================================== */
-/* THE SAGE & GRID LOGIN LAYOUT           */
-/* ====================================== */
+/* ====================================================== */
+/* LOGIN PAGE - LARGE CARD, NO GRID, SCROLLABLE           */
+/* ====================================================== */
 
-.login-container {
+.iso-login-container {
+  /* 1. SCROLLABLE LAYOUT */
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  padding: 2rem;
-  /* Matching your Home Page Background */
-  background-color: var(--bg-light);
-  background-image: 
-    linear-gradient(#00000008 1px, transparent 1px),
-    linear-gradient(90deg, #00000008 1px, transparent 1px);
-  background-size: 25px 25px;
+  
+  /* Ensures it takes at least full screen, but grows if needed */
+  min-height: 100vh; 
+  width: 100%;
+  
+  padding: 4rem 2rem; /* Add generous padding top/bottom for scrolling space */
+  box-sizing: border-box;
+  
+  /* 2. BACKGROUND UPDATES */
+   background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
+  /* If you want it to perfectly match your global app background, 
+     you can use var(--bg-light) instead if you have it defined */
+  
+  font-family: 'Inter', sans-serif;
 }
 
-/* THE MAIN SPLIT CARD */
-.split-wrapper {
+/* ====================================================== */
+/* LARGE CARD STYLES (Restored Size)                      */
+/* ====================================================== */
+
+.iso-login-container .split-wrapper {
   display: flex;
   width: 100%;
+  
+  /* RESTORED LARGER DIMENSIONS */
   max-width: 1100px;
-  min-height: 650px;
-  background: #465445;
-  border-radius: var(--radius); /* Using your 35px variable */
-  border: 1.5px solid var(--primary); /* Matching your nav/card borders */
-  box-shadow: 12px 12px 0px var(--primary); /* High contrast shadow */
-  overflow: hidden;
+  min-height: 650px; 
+  
+  background: #465445; 
+  border-radius: 35px;
+  overflow: hidden; 
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  
+  border: 1.5px solid #2d332d;
+  box-shadow: 12px 12px 0px #2d332d;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 10;
 }
 
-/* LEFT SIDE: PHOTO AREA */
-.photo-side {
-  flex: 1.1;
-  padding: 25px;
+.iso-login-container .split-wrapper:hover {
+  transform: translateY(-5px);
+  box-shadow: 16px 16px 0px #2d332d;
+}
+
+/* LEFT SIDE (Photo) */
+.iso-login-container .photo-side {
+  flex: 1.1; 
+  padding: 25px; 
   display: flex;
+  background-color: #465445;
 }
 
-.image-placeholder {
+.iso-login-container .image-placeholder {
   width: 100%;
   height: 100%;
   background-color: #f0f0f0; 
@@ -44,40 +68,47 @@
   position: relative;
   display: flex;
   align-items: flex-end;
-  padding: 40px;
+  padding: 40px; 
+  box-sizing: border-box;
   border: 1px solid rgba(0,0,0,0.1);
-  /* Future: background-image: url(...) cover; */
+  overflow: hidden;
 }
 
-.photo-caption {
-  font-family: var(--font-serif);
+/* Large Text Restored */
+.iso-login-container .photo-caption {
+  font-family: serif; 
   color: white;
-  font-size: 3.5rem;
+  font-size: 3.5rem; 
   font-weight: 900;
   line-height: 1;
   z-index: 2;
-  text-shadow: 3px 3px 0px var(--primary);
+  text-shadow: 3px 3px 0px #2d332d;
+  margin: 0;
 }
 
-/* RIGHT SIDE: FORM AREA */
-.form-side {
+.iso-login-container .photo-caption span {
+    font-style: italic; /* Optional: adds style to "love" */
+}
+
+/* RIGHT SIDE (Form) */
+.iso-login-container .form-side {
   flex: 0.9;
-  background-color: #f8b8d3;
+  background-color: #f8b8d3; /* Pink */
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 40px;
+  padding: 50px;
   position: relative;
 }
 
-.login-box {
+.iso-login-container .login-box {
   width: 100%;
   max-width: 360px;
   position: relative;
 }
 
-/* SCRAPBOOK DECORATION: THE PINK TAPE */
-.login-box::before {
+/* Tape Decoration */
+.iso-login-container .login-box::before {
   content: '';
   position: absolute;
   top: -50px;
@@ -85,100 +116,139 @@
   transform: translateX(-50%) rotate(-2deg);
   width: 110px;
   height: 35px;
-  background-color: var(--accent); /* Signature Pink */
-  border: 1.2px solid var(--primary);
+  background-color: #ff9eb5;
+  border: 1.2px solid #2d332d;
   z-index: 5;
 }
 
-.login-box h2 {
-  font-family: var(--font-serif);
+.iso-login-container h2 {
+  font-family: serif;
   text-align: center;
   font-size: 2.5rem;
   font-weight: 900;
   margin-bottom: 2rem;
+  color: #000;
 }
 
-/* FORM STYLING */
-.login-form {
+/* Inputs */
+.iso-login-container .login-form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-.input-group {
+.iso-login-container .input-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.login-form label {
+.iso-login-container label {
   font-weight: 800;
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  color: #000;
 }
 
-.login-form input {
+.iso-login-container input {
   padding: 15px;
   border-radius: 12px;
-  border: 1.5px solid var(--primary);
-  font-family: var(--font-primary);
+  border: 1.5px solid #2d332d;
   font-size: 1rem;
-  transition: 0.2s ease;
+  background: white;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.login-form input:focus {
+.iso-login-container input:focus {
   outline: none;
-  background: var(--accent-blue); /* Soft blue highlight */
-  box-shadow: 4px 4px 0px var(--primary);
+  box-shadow: 4px 4px 0px #2d332d;
   transform: translate(-2px, -2px);
 }
 
-/* BUTTON STYLING */
-.login-form button {
+.iso-login-container button {
   margin-top: 10px;
   padding: 16px;
-  background: var(--accent); /* Signature Pink */
+  background: #ff9eb5;
   color: #000;
-  border: 1.5px solid var(--primary);
+  border: 1.5px solid #2d332d;
   border-radius: 100px;
   font-weight: 800;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 5px 5px 0px var(--primary);
+  box-shadow: 5px 5px 0px #2d332d;
   transition: all 0.2s ease;
 }
 
-.login-form button:hover:not(:disabled) {
-  background: var(--accent-blue);
-  transform: translate(-3px, -3px);
-  box-shadow: 8px 8px 0px var(--primary);
+.iso-login-container button:hover {
+  background: #ffc2d1;
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0px #2d332d;
 }
 
-/* REGISTER LINK */
-.login-box p {
+.iso-login-container p {
   text-align: center;
   margin-top: 25px;
   font-size: 0.9rem;
   font-weight: 700;
+  color: #000;
 }
 
-.login-box p a {
-  color: var(--primary);
+.iso-login-container a {
+  color: #2d332d;
   text-decoration: underline;
-  text-decoration-color: var(--accent);
+  text-decoration-color: #ff9eb5;
   text-decoration-thickness: 3px;
 }
 
 /* RESPONSIVE */
 @media (max-width: 850px) {
-  .split-wrapper {
+  .iso-login-container .split-wrapper {
     flex-direction: column;
-    margin: 20px;
     height: auto;
   }
-  .photo-side {
+  
+  .iso-login-container .photo-side {
     height: 300px;
+    flex: none;
   }
+  
+  /* Ensure padding is comfortable on mobile */
+  .iso-login-container .form-side {
+      padding: 40px 20px;
+  }
+}/* --- Password Toggle Styling (Isolated) --- */
+
+.iso-login-container .password-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
+.iso-login-container .password-wrapper input {
+  width: 100%;
+  padding-right: 40px; /* Make space for the icon so text doesn't overlap */
+}
+
+.iso-login-container .password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666; /* Neutral color, modify to match your sage/burgundy theme if desired */
+  transition: color 0.3s ease;
+}
+
+
+
+/* Ensure the focus outline on the button doesn't look messy */
+.iso-login-container .password-toggle-btn:focus {
+  outline: none;
+}

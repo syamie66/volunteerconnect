@@ -1,177 +1,282 @@
-/* ==========================
-   Container & Title
-   ========================== */
+/* --- 1. THE FIXED WALLPAPER --- */
+/* This ensures the gradient is behind the Navbar and covers the whole screen */
+.events-wallpaper-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* Sends it to the back */
+  
+  /* The Matcha & Strawberry Gradient */
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%);
+  
+  margin: 0;
+  padding: 0;
+}
+
+/* --- 2. MAIN CONTENT CONTAINER --- */
 .events-public-container {
+  position: relative; 
   max-width: 1200px;
   margin: 0 auto;
-  padding: 4rem 1rem;
+  padding: 40px 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+}
+
+/* --- HERO & SEARCH SECTION --- */
+.events-hero {
   text-align: center;
-  /* Removed pink background to let body grid show through */
-  background-color: transparent; 
+  /* Add top margin to ensure it clears the Navbar visually */
+  margin-top: 60px; 
+  margin-bottom: 50px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  
+  /* Glass Effect */
+  background: rgba(255, 255, 255, 0.4); 
+  padding: 30px;
+  border-radius: 20px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255,255,255,0.6);
 }
 
 .events-title {
-  font-family: var(--font-serif);
-  font-size: 3rem;
-  font-weight: 900;
-  margin-bottom: 3rem;
-  color: var(--primary);
-  position: relative;
-  display: inline-block;
+  color: #556b2f;
+  margin-bottom: 10px;
+  font-size: 2.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-/* Hand-drawn underline for the title */
-.events-title::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 10%;
-  width: 80%;
-  height: 8px;
-  background: var(--accent-pink);
-  border-radius: 50%;
-  z-index: -1;
-  opacity: 0.7;
+.events-subtitle {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 30px;
 }
 
-/* ==========================
-   Grid Layout
-   ========================== */
+.search-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.event-search-bar {
+  flex-grow: 1;
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: 2px solid #8A9A5B;
+  font-size: 1rem;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+.event-search-bar:focus {
+  box-shadow: 0 0 0 3px rgba(138, 154, 91, 0.3);
+}
+
+.search-btn {
+  padding: 12px 30px;
+  background-color: #8A9A5B;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.search-btn:hover {
+  background-color: #556b2f;
+}
+
+/* --- GRID LAYOUT --- */
 .events-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 30px;
-  justify-items: center;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 25px;
+  width: 100%;
 }
 
-/* ==========================
-   Event Card (Theme Compatible)
-   ========================== */
-.event-card {
-  background: var(--bg-white);
-  border-radius: 20px;
-  width: 100%;
-  max-width: 340px;
-  /* High contrast black border and pop-shadow */
-  border: 2px solid var(--primary);
-  box-shadow: 8px 8px 0px var(--primary); 
+@media (max-width: 1024px) {
+  .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #556b2f;
+  margin-top: 20px;
+  font-weight: 500;
+}
+
+/* --- EVENT CARD STYLES --- */
+.event-card-horizontal {
+  display: flex;
+  flex-direction: row; 
+  background: rgba(255, 255, 255, 0.95); 
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  height: 100%; 
+}
+
+.event-card-horizontal:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(138, 154, 91, 0.25);
+  background: #fff;
+}
+
+.event-date-box {
+  background-color: #8A9A5B;
+  color: white;
+  width: 90px;
   display: flex;
   flex-direction: column;
-  position: relative;
-  margin-bottom: 2rem;
-  overflow: visible; /* Changed to visible for the tape effect */
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  text-align: center;
+  flex-shrink: 0;
 }
 
-/* Scrapbook "Tape" decoration at the top */
-.event-card::before {
+.event-date-day {
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.event-date-weekday {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  opacity: 0.9;
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+.event-date-month {
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-top: 5px;
+  border-top: 1px solid rgba(255,255,255,0.4);
+  padding-top: 5px;
+  width: 100%;
+}
+
+.event-details {
+  padding: 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.event-details::before {
   content: '';
   position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%) rotate(-2deg);
-  width: 100px;
-  height: 30px;
-  background-color: rgba(251, 198, 208, 0.8); /* Semi-transparent accent-pink */
-  border: 1px solid rgba(0,0,0,0.1);
-  z-index: 2;
+  left: 0;
+  top: 15px;
+  bottom: 15px;
+  width: 3px;
+  background-color: #D8A7B1;
+  border-radius: 0 3px 3px 0;
 }
 
-.event-card .content {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-.event-card h3 {
-  font-family: var(--font-serif);
-  font-size: 1.5rem;
+.event-name {
+  font-size: 1.1rem;
   font-weight: 700;
-  color: var(--primary);
-  margin-bottom: 0.5rem;
+  color: #333;
+  margin: 0 0 5px 0;
+  line-height: 1.3;
 }
 
-.event-card p {
-  font-family: var(--font-main);
-  font-size: 0.95rem;
-  color: var(--primary);
-  margin: 0;
+.event-org {
+  font-size: 0.8rem;
+  color: #777;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.pink-accent { color: #D8A7B1; font-weight: 600; }
+
+.event-meta {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column; 
+  gap: 5px;
+}
+
+.event-description-text {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 10px;
   line-height: 1.4;
 }
 
-.event-card .description {
-  font-style: normal; /* Removed italic for a cleaner modern look */
-  color: #333;
-  opacity: 0.8;
-}
-
-.event-card .card-footer {
-  margin-top: auto;
-  padding: 0 1.5rem 1.5rem;
+.card-footer-styled {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 10px;
+  border-top: 1px dashed #eee;
 }
 
-/* ==========================
-   Buttons (Theme Compatible)
-   ========================== */
-.event-card button {
-  padding: 0.6rem 1.2rem;
-  background-color: var(--accent-pink);
-  color: var(--primary);
-  border: 2px solid var(--primary);
-  border-radius: 100px; /* Capsule shape */
-  cursor: pointer;
-  font-weight: 800;
-  text-transform: uppercase;
+.participant-count { font-size: 0.75rem; color: #666; }
+.pink-icon { color: #D8A7B1; margin-right: 4px; }
+
+.join-btn {
+  padding: 6px 15px;
   font-size: 0.8rem;
-  transition: all 0.2s ease;
-  box-shadow: 3px 3px 0px var(--primary);
-}
-
-.event-card button:hover {
-  background-color: var(--accent-blue);
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px var(--primary);
-}
-
-.event-card button:disabled {
-  background-color: #eee;
-  border-color: #999;
-  color: #999;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
-/* ==========================
-   Card Hover Effects
-   ========================== */
-.event-card:hover {
-  transform: translate(-4px, -4px);
-  box-shadow: 12px 12px 0px var(--primary);
-}
-
-/* ==========================
-   Special Text
-   ========================== */
-.read-more {
-  color: var(--primary);
-  text-decoration: underline;
-  cursor: pointer;
+  background-color: white;
+  color: #8A9A5B;
+  border: 2px solid #8A9A5B;
+  border-radius: 15px;
   font-weight: 700;
-  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.event-card,
-.event-card .content,
-.event-card p,
-.event-card h3 {
-  text-align: left;
+.join-btn:hover {
+  background-color: #8A9A5B;
+  color: white;
+}
+.join-btn:disabled {
+  background-color: #eee;
+  border-color: #ccc;
+  color: #999;
 }
 
-/* Alternate card colors like the benefits section */
-.events-grid .event-card:nth-child(even) {
-  background-color: #fff9fb; /* Very slight pink tint */
+/* Hiding unused elements */
+.read-more {
+  display: inline-block; /* Changed from 'none' to show the button */
+  color: #8A9A5B;        /* Sage Green */
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 0.8rem;
+}
+
+.read-more:hover {
+  text-decoration: underline;
+  color: #556b2f;
 }

@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase';
-import { collection, onSnapshot, doc, getDoc, deleteDoc } from 'firebase/firestore';
+// 1. Ensure deleteDoc is imported
+import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import './NGODashboard.css';
 
 export default function NGODashboard() {
   const { currentUser, profile } = useAuth();
   const [events, setEvents] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(''); // New search state
+  const [searchTerm, setSearchTerm] = useState('');
   const [participantsMap, setParticipantsMap] = useState({});
   const [loading, setLoading] = useState(true);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [expandedEvents, setExpandedEvents] = useState({}); 
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,19 +25,51 @@ export default function NGODashboard() {
         .filter(e => e.createdBy === currentUser.uid);
 
       setEvents(eventsData);
+      
+      // Calculate participants count for each event
       const tempMap = {};
       eventsData.forEach(event => { tempMap[event.id] = event.participants || []; });
       setParticipantsMap(tempMap);
+      
       setLoading(false);
     });
     return () => unsubscribe();
   }, [currentUser, profile]);
 
-  // Logic to filter events based on search input
+  // --- DELETE FUNCTION ---
+  const handleDelete = async (eventId) => {
+    const confirmDelete = window.confirm("Are you sure you want to permanently delete this event?");
+    if (confirmDelete) {
+      try {
+        await deleteDoc(doc(db, "events", eventId));
+        // No need to manually remove from state; onSnapshot will update the list automatically.
+      } catch (error) {
+        console.error("Error deleting event:", error);
+        alert("Failed to delete event. Please try again.");
+      }
+    }
+  };
+
+  const getDateDetails = (dateStr) => {
+    if (!dateStr) return { day: '--', month: '---', weekday: '---' };
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return { day: '??', month: '???', weekday: '???' };
+
+    return {
+      day: date.getDate(),
+      month: date.toLocaleString('default', { month: 'short' }).toUpperCase(),
+      weekday: date.toLocaleString('default', { weekday: 'long' }).toUpperCase()
+    };
+  };
+
   const filteredEvents = events.filter(event =>
     event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     event.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const toggleDescription = (id) => {
+    setExpandedEvents(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   if (!currentUser || !profile || loading) {
     return <div className="ngo-dashboard-wrapper"><p className="status-msg">🌱 Cultivating your dashboard...</p></div>;
@@ -47,9 +81,8 @@ export default function NGODashboard() {
 
       <header className="dashboard-header">
         <div className="header-badge">Community Impact</div>
-        <h1 className="dashboard-title">Events</h1>
-
-        {/* Search Bar Implementation */}
+        <h1 className="dashboard-title">Events Calendar</h1>
+        
         <div className="search-container">
           <input 
             type="text" 
@@ -61,9 +94,6 @@ export default function NGODashboard() {
         </div>
         
         <div className="dashboard-sub-nav">
-          <div className="tabs">
-            <span className="tab active">Published ({filteredEvents.length})</span>
-          </div>
           <button className="create-fab" onClick={() => navigate('/create-event')}>+</button>
         </div>
       </header>
@@ -74,62 +104,84 @@ export default function NGODashboard() {
             <p>No events match your search. 🔎</p>
           </div>
         ) : (
-          filteredEvents.map(ev => (
-            <div key={ev.id} className="event-card">
-              <div className="card-content">
-                <div className="card-label-row">
-                  <span className="category-tag">{ev.organization || 'NGO Partner'}</span>
-                  <span className="status-dot">Live</span>
+          filteredEvents.map(ev => {
+            const isExpanded = expandedEvents[ev.id];
+            const { day, month, weekday } = getDateDetails(ev.date);
+            
+            return (
+              <div key={ev.id} className="event-card-horizontal">
+                
+                {/* LEFT: Date Box */}
+                <div className="event-date-box">
+                  <span className="event-date-day">{day}</span>
+                  <span className="event-date-weekday">{weekday}</span>
+                  <span className="event-date-month">{month}</span>
                 </div>
-                <h3 className="event-card-title">{ev.title}</h3>
-                <div className="event-info-list">
-                  <p><span>📅</span> {ev.date}</p>
-                  <p><span>📍</span> {ev.location}</p>
-                </div>
-                <p className="event-description-text">
-                  {ev.description?.substring(0, 100)}...
-                  <button className="read-more-link" onClick={() => setSelectedEvent(ev)}>Read More</button>
-                </p>
-              </div>
 
-              <div className="card-footer">
-                <button className="participant-summary-btn" onClick={() => navigate(`/event/${ev.id}/participants`)}>
-                  <span className="leaf-icon">🌱</span>
-                  {participantsMap[ev.id]?.length || 0} Volunteers Enrolled
-                </button>
-                <div className="card-actions">
-                  <button className="action-btn edit" onClick={() => navigate(`/event/${ev.id}/edit`)}>Edit</button>
-                  <button className="action-btn delete" onClick={() => {if(window.confirm('Delete?')) deleteDoc(doc(db, 'events', ev.id))}}>Delete</button>
+                {/* RIGHT: Content */}
+                <div className="event-details">
+                  
+                  <div className="event-header-row">
+                     <div>
+                       <span className="event-org">{ev.organization || 'NGO Partner'}</span>
+                       <h3 className="event-name">{ev.title}</h3>
+                     </div>
+                     <span className="status-dot">● Live</span>
+                  </div>
+
+                  <div className="event-meta">
+                    <div className="meta-row">
+                      <span className="pink-icon">⏰</span> 
+                      {ev.startTime || 'TBD'} - {ev.endTime || 'TBD'}
+                    </div>
+                    <div className="meta-row">
+                      <span className="pink-icon">📍</span> 
+                      {ev.location}
+                    </div>
+                  </div>
+
+                  <div className="reg-compact-box">
+                    <small>Registration: <span className="pink-accent">{ev.registrationStart}</span> ➜ <span className="pink-accent">{ev.registrationEnd}</span></small>
+                  </div>
+
+                  <div className="event-description-text">
+                    {isExpanded ? ev.description : `${ev.description?.substring(0, 60)}...`}
+                    {ev.description?.length > 60 && (
+                      <button className="read-more" onClick={() => toggleDescription(ev.id)}>
+                        {isExpanded ? 'Less' : 'More'}
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="card-footer-styled">
+                    <div className="participant-count">
+                      <span className="pink-icon">👥</span>
+                      {participantsMap[ev.id]?.length || 0} / {ev.maxParticipants || '∞'} Joined
+                    </div>
+                    
+                    <div className="action-buttons">
+                      {/* EDIT BUTTON */}
+                      <button className="icon-btn edit" title="Edit" onClick={() => navigate(`/event/${ev.id}/edit`)}>✏️</button>
+                      
+                      {/* DELETE BUTTON (Now connected to handleDelete) */}
+                      <button 
+                        className="icon-btn delete" 
+                        title="Delete" 
+                        onClick={() => handleDelete(ev.id)}
+                      >
+                        🗑️
+                      </button>
+                      
+                      <button className="join-btn" onClick={() => navigate(`/event/${ev.id}/participants`)}>View List</button>
+                    </div>
+                  </div>
+
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </main>
-
-      {/* Popup Modal Logic remains the same */}
-      {selectedEvent && (
-        <div className="modal-overlay" onClick={() => setSelectedEvent(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={() => setSelectedEvent(null)}>&times;</button>
-            <span className="category-tag">{selectedEvent.organization}</span>
-            <h2 className="modal-title">{selectedEvent.title}</h2>
-            <div className="modal-info">📅 {selectedEvent.date} | 📍 {selectedEvent.location}</div>
-            <div className="modal-body"><p>{selectedEvent.description}</p></div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-

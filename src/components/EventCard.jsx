@@ -5,11 +5,39 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
 
+  // --- Date Parsing Helper ---
+  // This extracts Day, Month, and Weekday for the green box layout
+  const getDateParts = (dateInput) => {
+    let dateObj;
+    
+    // Check if it's a Firebase Timestamp (has toDate method)
+    if (dateInput && typeof dateInput.toDate === 'function') {
+      dateObj = dateInput.toDate();
+    } else if (dateInput) {
+      // Try to parse string
+      dateObj = new Date(dateInput);
+    } else {
+      // Fallback
+      return { day: "00", month: "???", weekday: "" };
+    }
+
+    // Check if date is invalid
+    if (isNaN(dateObj)) return { day: "??", month: "???", weekday: "" };
+
+    return {
+      day: dateObj.getDate(),
+      month: dateObj.toLocaleString("default", { month: "short" }),
+      weekday: dateObj.toLocaleString("default", { weekday: "long" }),
+    };
+  };
+
+  const { day, month, weekday } = getDateParts(event.date);
+
   const handleClick = () => {
     if (!currentUser) {
       navigate("/login");
     } else if (profile?.userType === "volunteer") {
-        onJoin(event.id);
+      onJoin(event.id);
     }
   };
 
@@ -20,23 +48,39 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
       : event.description.slice(0, 100) + "...";
 
   return (
-    <div className="event-card">
-      <div className="content">
-        <h3>{event.title}</h3>
+    <div className="event-card-horizontal">
+      {/* LEFT SIDE: SAGE GREEN DATE BOX */}
+      <div className="event-date-box">
+        <span className="event-date-day">{day}</span>
+        <span className="event-date-weekday">{weekday}</span>
+        <span className="event-date-month">{month}</span>
+      </div>
 
-        <p><strong>Organization:</strong> {event.organization}</p>
-        <p>📅 {event.date} | ⏰ {event.time}</p>
-        <p>📍 {event.location}</p>
-
-        {/* Registration dates displayed separately */}
-        <p>
-          <strong>Registration Opens:</strong> {event.registrationStart}
+      {/* RIGHT SIDE: DETAILS */}
+      <div className="event-details">
+        <h3 className="event-name">{event.title}</h3>
+        
+        <p className="event-org">
+          <span className="pink-accent">By:</span> {event.organization}
         </p>
-        <p>
-          <strong>Registration Closes:</strong> {event.registrationEnd}
-        </p>
 
-        <p className="description">
+        {/* Icons & Meta Data */}
+        <div className="event-meta">
+          <span className="event-meta-item">
+             ⏰ {event.time}
+          </span>
+          <span className="event-meta-item">
+             📍 {event.location}
+          </span>
+        </div>
+
+        {/* Registration Dates (Smaller text) */}
+        <div className="event-reg-dates">
+           Registration: {event.registrationStart} — {event.registrationEnd}
+        </div>
+
+        {/* Description */}
+        <p className="event-description-text">
           {descriptionText}
           {isLong && (
             <span
@@ -48,9 +92,17 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
           )}
         </p>
 
-        <div className="card-footer">
-          <span>Participants: {event.participants?.length || 0}</span>
-          <button onClick={handleClick} disabled={loading}>
+        {/* Footer: Participants count + Button */}
+        <div className="card-footer-styled">
+          <span className="participant-count">
+            <i className="pink-icon">♥</i> {event.participants?.length || 0} Volunteers
+          </span>
+          
+          <button 
+            className="join-btn" 
+            onClick={handleClick} 
+            disabled={loading}
+          >
             {loading ? "Joining..." : "Apply Now"}
           </button>
         </div>
@@ -58,4 +110,3 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
     </div>
   );
 }
-

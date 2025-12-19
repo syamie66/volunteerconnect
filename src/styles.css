@@ -1,262 +1,547 @@
-/* --- GLOBAL CONTAINER & VARIABLES --- */
+/* --- 1. VARIABLES & MAIN CONTAINER --- */
 .home-container-unique {
-    --matcha-bg: #f8f9f1;        /* Creamy background */
-    --matcha-main: #a3b18a;      /* Rich matcha green */
-    --matcha-light: #d8e2dc;     /* Milky matcha */
-    --strawberry-main: #fb6f92;  /* Ripe strawberry pink */
-    --strawberry-soft: #ffafcc;  /* Light strawberry pink */
-    --text-moss: #3a4737;        /* Dark green-black for readability */
-    
-    background-color: var(--matcha-bg);
-    color: var(--text-moss);
-    font-family: 'Georgia', serif;
+  /* Theme Colors */
+  --matcha-dark: #344E41;
+  --matcha-main: #588157;
+  --matcha-light: #A3B18A;
+  --sage-bg: #dad7cd;
+  --strawberry-main: #FFB5A7;
+  --strawberry-soft: #ffe5e0;
+  --cream-white: #fafbf8;
+  --text-dark: #2C332B;
+  --grid-line: rgba(88, 129, 87, 0.08);
+
+  font-family: 'Inter', sans-serif;
+  color: var(--text-dark);
+  
+  /* CSS Grid Background Pattern */
+  background-color: var(--cream-white);
+  background-image: 
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* --- NAVIGATION WRAPPER --- */
+/* --- 2. NAVBAR STYLES (Scoped) --- */
+/* Matches class names from Navbar.jsx: home-navbar-wrapper, rounded-nav, pill-cta */
+
+/* --- GLOBAL NAVBAR STYLES --- */
+:root {
+  --matcha-bg: #F8F9F4;
+  --matcha-main: #588157;
+  --strawberry-main: #FFB5A7;
+  --strawberry-soft: #ffe5e0;
+}
+
+
+body {
+  margin: 0;
+  padding: 0;
+  /* The Matcha & Strawberry Gradient */
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%);
+  
+  /* Ensures the background stays fixed in place while you scroll */
+  background-attachment: fixed; 
+  min-height: 100vh;
+}
+
+/* Wrapper for the whole nav area */
 .home-navbar-wrapper {
-    background-color: var(--matcha-bg);
-    padding: 15px 20px;
-    width: 100%;
-    box-sizing: border-box;
+
+  background-color: transparent; 
+  padding: 20px 0;
+  width: 100%;
 }
 
-/* The Rounded Capsule Bar */
-.home-navbar-wrapper .rounded-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: var(--matcha-main); /* Matcha Green Bar */
-    padding: 8px 30px;
-    border-radius: 100px;
-    max-width: 1200px;
-    margin: 0 auto;
-    box-shadow: 0 4px 12px rgba(163, 177, 138, 0.3);
+/* The Rounded Capsule */
+.rounded-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--matcha-main);
+  padding: 10px 30px;
+  border-radius: 100px;
+  max-width: 1100px;
+  margin: 0 auto;
+  box-shadow: 0 4px 15px rgba(88, 129, 87, 0.25);
 }
 
-/* Logo Section */
-.home-navbar-wrapper .nav-logo-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/* Logo */
+.nav-logo-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.home-navbar-wrapper .logo-badge {
-    background: white;
-    color: var(--strawberry-main); /* Pink badge text */
-    font-size: 0.65rem;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-weight: 900;
-    border: 1px solid var(--strawberry-main);
-    letter-spacing: 0.5px;
+.logo-badge {
+  background: white;
+  color: var(--strawberry-main);
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
 }
 
-.home-navbar-wrapper .logo-text {
-    font-family: 'Georgia', serif;
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: rgb(32, 6, 6); /* White text on green bar */
+.logo-text {
+  font-family: 'Georgia', serif;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: white;
 }
 
-/* Navigation Links */
-.home-navbar-wrapper .nav-links {
-    display: flex;
-    gap: 24px;
-    align-items: center;
+/* Links */
+.nav-links {
+  display: flex;
+  gap: 25px;
+  align-items: center;
 }
 
-.home-navbar-wrapper .nav-links a {
-    text-decoration: none;
-    color: rgb(125, 51, 51);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    transition: opacity 0.3s ease;
+.nav-links a {
+  text-decoration: none;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: 0.3s;
 }
 
-.home-navbar-wrapper .nav-links a:hover {
-    color: var(--strawberry-soft);
+.nav-links a:hover {
+  color: var(--strawberry-main);
 }
 
-/* Right Side Buttons */
-.home-navbar-wrapper .work-with-us-btn, .pill-cta {
-    background-color: white;
-    color: var(--matcha-main);
-    padding: 10px 22px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-size: 0.75rem;
-    font-weight: 800;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
+/* Buttons */
+.pill-cta {
+  background-color: white;
+  color: var(--matcha-main);
+  padding: 8px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.home-navbar-wrapper .work-with-us-btn:hover {
-    background-color: var(--strawberry-soft);
-    color: white;
-    transform: translateY(-1px);
+.pill-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Specific Logout Styling */
-.home-navbar-wrapper .logout-btn, .pill-cta.logout {
-    background-color: var(--strawberry-main); /* Strawberry Pink */
-    color: white;
+.pill-cta.logout {
+  background-color: var(--strawberry-main);
+  color: white;
 }
 
-.home-navbar-wrapper .logout-btn:hover {
-    background-color: var(--strawberry-soft);
+.home-container-unique .pill-cta {
+  background-color: white;
+  color: var(--matcha-main);
+  padding: 8px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-/* --- HERO STYLES --- */
-.hero-split { display: flex; min-height: 75vh; }
-
-.hero-left-stripe {
-    flex: 1; 
-    /* Strawberry & Cream Stripes */
-    background: repeating-linear-gradient(90deg, #ffe5ec, #ffe5ec 20px, #ffffff 20px, #ffffff 40px);
-    display: flex; justify-content: center; align-items: center; padding: 40px;
+.home-container-unique .pill-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.hero-image-frame { 
-    width: 80%; 
-    aspect-ratio: 4/5; 
-    background: var(--matcha-light); 
-    border: 12px solid white; 
-    border-radius: 120px 120px 0 0; 
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05); 
+.home-container-unique .pill-cta.logout {
+  background-color: var(--strawberry-main);
+  color: white;
 }
 
-.hero-right-content { flex: 1; padding: 60px; display: flex; flex-direction: column; justify-content: center; }
-
-.display-serif { 
-    font-size: 3.2rem; 
-    color: var(--matcha-main); /* Green Heading */
-    line-height: 1.1; 
-    margin: 15px 0; 
+/* --- 3. HERO SECTION --- */
+.home-container-unique .hero-section {
+  display: flex;
+  align-items: center;
+  padding: 60px 10% 120px; /* Bottom padding creates space for overlap */
+  gap: 50px;
+  position: relative;
+  /* Soft pink glow behind hero */
+  background: radial-gradient(circle at 80% 20%, var(--strawberry-soft), transparent 50%);
 }
 
-.outline-pill { 
-    border: 1px solid var(--strawberry-main); 
-    padding: 10px 25px; 
-    border-radius: 50px; 
-    color: var(--strawberry-main); 
-    text-decoration: none; 
-    width: fit-content; 
-    font-size: 0.8rem; 
-    font-weight: bold; 
+.home-container-unique .hero-text-content {
+  flex: 1;
+  z-index: 2;
 }
 
-.orange-divider { 
-    background: var(--strawberry-main); /* Replacing orange with strawberry */
-    color: white; 
-    text-align: center; 
-    padding: 12px; 
-    font-size: 0.7rem; 
-    letter-spacing: 2px; 
-    font-weight: bold; 
+.home-container-unique .welcome-tag {
+  color: var(--matcha-main);
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  display: block;
 }
 
-/* --- MISSION STYLES --- */
-.mission-split { 
-    background: var(--matcha-main); /* Green Section */
-    padding: 80px 10%; 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 40px; 
+.home-container-unique .display-serif {
+  font-family: 'Georgia', serif;
+  font-size: 3.5rem;
+  line-height: 1.1;
+  margin-bottom: 25px;
+  color: var(--matcha-dark);
 }
 
-.mission-card { 
-    background: var(--matcha-bg); 
-    padding: 40px; 
-    border-radius: 20px; 
-    border-bottom: 4px solid var(--strawberry-soft); /* Pink accent edge */
+.home-container-unique .highlight-pink { color: var(--strawberry-main); }
+
+.home-container-unique .hero-subtext {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 35px;
+  color: #555;
+  max-width: 90%;
 }
 
-.mission-card h2 { 
-    font-style: italic; 
-    color: var(--matcha-main);
-    border-bottom: 1px solid var(--matcha-light); 
-    padding-bottom: 10px; 
-    margin-bottom: 15px; 
+.home-container-unique .main-cta-btn {
+  background-color: var(--matcha-dark);
+  color: white;
+  padding: 15px 40px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: 0.3s;
 }
 
-/* --- BENEFITS GRID --- */
-.benefits-section { padding: 80px 10%; text-align: center; }
-
-.section-title-italic { 
-    font-size: 2.5rem; 
-    font-style: italic; 
-    margin-bottom: 40px; 
-    color: var(--strawberry-main); /* Pink Heading */
+.home-container-unique .main-cta-btn:hover {
+  background-color: var(--matcha-main);
+  box-shadow: 0 5px 15px rgba(88, 129, 87, 0.3);
 }
 
-.benefits-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-
-.benefit-item { 
-    background: #f1f4ed; /* Pale matcha wash */
-    padding: 30px; 
-    border-radius: 15px; 
-    text-align: left; 
-    border: 1px solid var(--matcha-light); 
+.home-container-unique .hero-image-wrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
-.tags { 
-    margin-top: 15px; 
-    font-size: 0.6rem; 
-    color: var(--strawberry-main); 
-    font-weight: bold; 
+/* The Organic Blob Shape */
+.home-container-unique .blob-image-placeholder {
+  width: 100%;
+  height: 450px;
+  background-color: #d8e2dc;
+  border: 4px dashed var(--matcha-light);
+  /* This creates the wave shape from the template */
+  border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  position: relative;
+  box-shadow: 20px 20px 0px rgba(255, 181, 167, 0.3); /* Pink shadow */
 }
 
-/* --- TEAM STYLES --- */
-.team-area { padding: 40px 10%; text-align: center; }
-.team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.team-circle { 
-    width: 100px; height: 100px; 
-    background: var(--matcha-light); 
-    border-radius: 50%; 
-    margin: 0 auto 15px; 
-    border: 4px solid white; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+/* --- 4. MISSION GRID (Overlapping Cards) --- */
+.home-container-unique .mission-section {
+  padding: 0 10%;
+  margin-top: -80px; /* Overlap effect */
+  position: relative;
+  z-index: 10;
 }
 
-/* --- FOOTER STYLES --- */
-.footer-area { padding: 60px 10% 20px; border-top: 1px solid var(--matcha-light); }
-.footer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; margin-bottom: 40px; }
-
-.footer-grid h4 { 
-    font-style: italic; 
-    color: var(--matcha-main); 
-    margin-bottom: 15px; 
+.home-container-unique .mission-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
 }
 
-.footer-grid a { text-decoration: none; color: var(--text-moss); font-size: 0.9rem; }
-.footer-grid a:hover { color: var(--strawberry-main); }
-
-.footer-form { display: flex; gap: 10px; margin-top: 10px; }
-.footer-form input { 
-    background: transparent; 
-    border: 1px solid var(--matcha-main); 
-    border-radius: 50px; 
-    padding: 8px 15px; 
-    flex: 1; 
-}
-.footer-form button { 
-    background: var(--matcha-main); 
-    color: white; 
-    border: none; 
-    border-radius: 50px; 
-    padding: 0 15px; 
-    cursor: pointer; 
+.home-container-unique .mission-card {
+  height: 340px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(52, 78, 65, 0.15);
+  background: white;
+  display: flex;
+  flex-direction: column;
 }
 
-.footer-bottom { 
-    text-align: center; 
-    font-size: 0.7rem; 
-    color: var(--matcha-main); 
-    opacity: 0.6;
-    border-top: 1px solid var(--matcha-light); 
-    padding-top: 20px; 
+.home-container-unique .card-img-placeholder {
+  flex: 1;
+  background-color: #eee;
+  border-bottom: 3px solid var(--matcha-light);
+}
+
+.home-container-unique .mission-overlay {
+  background: var(--matcha-dark);
+  color: white;
+  padding: 25px;
+  text-align: center;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.home-container-unique .mission-overlay h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  color: var(--strawberry-main);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.home-container-unique .mission-overlay p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+/* --- 5. WHAT WE DO (SDG & Icons) --- */
+.home-container-unique .what-we-do-section {
+  padding: 120px 10% 80px;
+  text-align: center;
+}
+
+.home-container-unique .section-header h2 {
+  font-size: 2rem;
+  margin-bottom: 50px;
+  color: var(--matcha-dark);
+  font-family: 'Georgia', serif;
+}
+
+.home-container-unique .services-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.home-container-unique .service-card {
+  background: white;
+  padding: 40px 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  border: 1px solid rgba(88, 129, 87, 0.1);
+  transition: transform 0.3s;
+}
+
+.home-container-unique .service-card:hover {
+  transform: translateY(-10px);
+}
+
+/* Active Pink Card */
+.home-container-unique .active-card {
+  background-color: var(--strawberry-main);
+  color: var(--matcha-dark);
+  border: none;
+}
+.home-container-unique .active-card p { color: #344E41; }
+
+.home-container-unique .icon-area {
+  height: 70px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.home-container-unique .sdg-icon { height: 65px; width: auto; }
+.home-container-unique .text-icon { font-size: 3rem; }
+
+.home-container-unique .service-card h4 {
+  margin-bottom: 15px;
+  font-weight: 800;
+}
+
+.home-container-unique .service-card p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #666;
+}
+
+/* --- 6. IMPACT SECTION --- */
+.home-container-unique .impact-section {
+  padding: 80px 10%;
+  /* Light Sage Overlay */
+  background-color: rgba(163, 177, 138, 0.15); 
+  border-top: 1px solid var(--matcha-light);
+}
+
+.home-container-unique .section-header-left { margin-bottom: 40px; }
+.home-container-unique .section-header-left h2 {
+  font-size: 2.2rem;
+  color: var(--matcha-dark);
+  margin-bottom: 5px;
+}
+.home-container-unique .section-header-left .subtitle {
+  font-size: 1.2rem;
+  color: var(--matcha-main);
+  font-family: 'Georgia', serif;
+  font-style: italic;
+}
+
+.home-container-unique .impact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+
+.home-container-unique .impact-item {
+  display: flex;
+  gap: 25px;
+  align-items: flex-start;
+}
+
+.home-container-unique .impact-image-placeholder {
+  width: 140px;
+  height: 100px;
+  background-color: #d8e2dc;
+  border-radius: 10px;
+  flex-shrink: 0;
+  border: 2px dashed var(--matcha-main);
+}
+
+.home-container-unique .impact-number {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--strawberry-main);
+  line-height: 1;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.home-container-unique .impact-content h4 {
+  font-size: 1.2rem;
+  margin: 0 0 10px 0;
+  text-decoration: underline;
+  text-decoration-color: var(--strawberry-main);
+}
+
+/* --- 7. TEAM SECTION --- */
+.home-container-unique .team-section {
+  padding: 80px 10%;
+  text-align: center;
+}
+.home-container-unique .team-section h2 {
+  font-size: 2rem;
+  color: var(--matcha-dark);
+  font-family: 'Georgia', serif;
+}
+
+.home-container-unique .team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  margin-top: 50px;
+}
+
+.home-container-unique .team-photo-placeholder {
+  width: 140px;
+  height: 140px;
+  background-color: #eee;
+  border-radius: 50%;
+  margin: 0 auto 20px;
+  border: 3px solid var(--matcha-light);
+  box-shadow: 0 0 0 5px var(--strawberry-soft);
+}
+
+/* --- 8. FOOTER STYLES (Scoped) --- */
+/* Matches class names from Footer.jsx: footer-area, footer-grid, footer-col, footer-form */
+
+.home-container-unique .footer-area {
+  padding: 80px 10% 20px;
+  background: var(--matcha-dark); /* Dark Green Footer */
+  color: white;
+  margin-top: 40px;
+  border-top: 5px solid var(--strawberry-main);
+}
+
+.home-container-unique .footer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 50px;
+  margin-bottom: 50px;
+}
+
+.home-container-unique .footer-col h4 {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  color: var(--strawberry-main);
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+}
+
+.home-container-unique .footer-col p {
+  line-height: 1.6;
+  opacity: 0.8;
+}
+
+.home-container-unique .footer-col a {
+  text-decoration: none;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.95rem;
+  display: block;
+  margin-bottom: 12px;
+  transition: 0.3s;
+}
+
+.home-container-unique .footer-col a:hover {
+  color: var(--strawberry-main);
+  padding-left: 5px;
+}
+
+.home-container-unique .footer-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.home-container-unique .footer-form input {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid var(--matcha-light);
+  border-radius: 50px;
+  padding: 10px 20px;
+  flex: 1;
+  color: white;
+  outline: none;
+}
+
+.home-container-unique .footer-form input::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+.home-container-unique .footer-form button {
+  background: var(--strawberry-main);
+  color: var(--matcha-dark);
+  border: none;
+  border-radius: 50px;
+  padding: 0 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.home-container-unique .footer-form button:hover {
+  background: white;
+}
+
+.home-container-unique .footer-bottom {
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 25px;
+}
+
+/* --- 9. RESPONSIVE --- */
+@media (max-width: 900px) {
+  .home-container-unique .hero-section { flex-direction: column; text-align: center; }
+  .home-container-unique .mission-grid, 
+  .home-container-unique .services-grid, 
+  .home-container-unique .impact-grid, 
+  .home-container-unique .team-grid,
+  .home-container-unique .footer-grid { grid-template-columns: 1fr; }
+  
+  .home-container-unique .hero-image-wrapper { display: none; }
+  .home-container-unique .mission-section { margin-top: 40px; }
+  
+  /* Navbar mobile adjust */
+  .home-container-unique .rounded-nav { flex-direction: column; gap: 20px; border-radius: 20px; }
+  .home-container-unique .nav-links { flex-direction: column; gap: 15px; }
 }

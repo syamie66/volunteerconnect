@@ -1,0 +1,238 @@
+/* SCOPE: All variables and styles are now locked inside 
+   the .profile-page-container class. They will not exist outside it.
+*/
+
+.profile-page-container {
+  /* Local Variables (moved from :root) */
+  --bg-cream: #FFFDF7;
+  --nature-green-dark: #1B4332;
+  --nature-green-light: #2D6A4F;
+  --soft-pink: #FFD1D6;
+  --text-dark: #1F2421;
+  --text-grey: #5A6C5F;
+  --white: #FFFFFF;
+
+  /* Main Container Styles */
+  background-color: var(--bg-cream);
+  min-height: 100vh;
+  padding: 60px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box; /* Ensures padding doesn't break width */
+}
+
+/* 2. Top Header */
+.profile-page-container .profile-header {
+  text-align: center;
+  max-width: 700px;
+  margin-bottom: 50px;
+}
+
+.profile-page-container .tiny-label {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--nature-green-light);
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  display: block; /* Ensures it sits on its own line */
+}
+
+.profile-page-container .main-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+  margin-top: 0;
+}
+
+.profile-page-container .profile-description {
+  color: var(--text-grey);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+/* 3. The Green Pill (Floating Stats) */
+.profile-page-container .stats-pill-container {
+  width: 100%;
+  max-width: 800px;
+  z-index: 10;
+  position: relative;
+  margin-bottom: -40px;
+  display: flex;
+  justify-content: center;
+}
+
+.profile-page-container .stats-pill {
+  background-color: var(--nature-green-dark);
+  color: var(--white);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px 40px;
+  border-radius: 50px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(27, 67, 50, 0.25);
+  box-sizing: border-box;
+}
+
+.profile-page-container .stat-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.profile-page-container .icon-circle {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.profile-page-container .stat-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-page-container .stat-label {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.profile-page-container .stat-value {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.profile-page-container .divider-line {
+  width: 1px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 4. Bottom White Card */
+.profile-page-container .content-card {
+  background-color: var(--white);
+  width: 100%;
+  max-width: 900px;
+  border-radius: 30px;
+  padding: 80px 60px 60px 60px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.profile-page-container .split-layout {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.profile-page-container .split-column {
+  flex: 1;
+}
+
+.profile-page-container .column-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.profile-page-container .header-icon {
+  font-size: 1.5rem;
+  color: var(--nature-green-dark);
+}
+
+.profile-page-container .split-column h3 {
+  color: var(--nature-green-dark);
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.profile-page-container .column-text {
+  color: var(--text-grey);
+  line-height: 1.7;
+  font-size: 0.95rem;
+}
+
+.profile-page-container .vertical-divider {
+  width: 1px;
+  background-color: #EEE;
+}
+
+/* Tags */
+.profile-page-container .tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.profile-page-container .pink-tag {
+  background-color: var(--soft-pink);
+  color: #8B3A44;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Button */
+.profile-page-container .action-area {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.profile-page-container .contact-btn {
+  background-color: var(--nature-green-dark);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.profile-page-container .contact-btn:hover {
+  background-color: var(--nature-green-light);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(27, 67, 50, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile-page-container .stats-pill {
+    flex-direction: column;
+    gap: 20px;
+    border-radius: 30px;
+    align-items: flex-start;
+  }
+  
+  .profile-page-container .divider-line {
+    display: none;
+  }
+
+  .profile-page-container .split-layout {
+    flex-direction: column;
+  }
+
+  .profile-page-container .vertical-divider {
+    display: none;
+  }
+  
+  .profile-page-container .content-card {
+    padding: 80px 30px 40px 30px;
+  }
+}

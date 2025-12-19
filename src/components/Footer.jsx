@@ -1,43 +1,28 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 
 export default function Footer() {
   return (
-    <footer className="home-container-unique footer-main">
-      <div className="footer-container">
-        
-        <div className="footer-section">
-          <h3>Quick Links</h3>
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/events">Events</a></li>
-            <li><a href="/login">Login</a></li>
-          </ul>
+    <footer className="footer-area">
+      <div className="footer-grid">
+        <div className="footer-col">
+          <h4>Quick Links</h4>
+          <Link to="/">Home</Link>
+          <Link to="/events">Events</Link>
         </div>
-
-        <div className="footer-section">
-          <h3>Contact Us</h3>
-          <div className="contact-details">
-            <p>Email: info@volunteerconnect.my</p>
-            <p>Phone: +60 12-345 6789</p>
-            <p>Penang, Malaysia</p>
-          </div>
+        <div className="footer-col">
+          <h4>Contact Us</h4>
+          <p>info@volunteerconnect.my<br/>Penang, Malaysia</p>
         </div>
-
-        <div className="footer-section">
-          <h3>Newsletter</h3>
-          <p className="newsletter-text">Join our community updates.</p>
+        <div className="footer-col">
+          <h4>Newsletter</h4>
           <form className="footer-form">
-            <input type="email" placeholder="Your email" required />
-            <button type="submit" className="footer-sub-btn">Subscribe</button>
+            <input type="email" placeholder="Email" />
+            <button type="submit">GO</button>
           </form>
         </div>
       </div>
-
-      <div className="footer-bottom">
-        <div className="footer-line"></div>
-        <p>© 2025 VolunteerConnect. All Rights Reserved.</p>
-      </div>
+      <div className="footer-bottom">© 2025 VolunteerConnect. All Rights Reserved.</div>
     </footer>
   );
 }

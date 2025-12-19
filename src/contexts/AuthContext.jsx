@@ -6,7 +6,7 @@ import {
   signOut, 
   onAuthStateChanged 
 } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'; 
 
 const AuthContext = createContext();
 
@@ -26,13 +26,14 @@ export function AuthProvider({ children }) {
 
       if (user) {
         try {
-          // Fetch profile from Firestore
+          // 1. Fetch from the single 'users' collection
           const docRef = doc(db, 'users', user.uid);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
             setProfile(docSnap.data());
           } else {
+            console.log("No profile found for this user.");
             setProfile(null);
           }
         } catch (err) {
@@ -51,37 +52,83 @@ export function AuthProvider({ children }) {
 
   // --- AUTH FUNCTIONS ---
 
-  // Register: only create Firebase Auth user
-  const register = async (email, password) => {
+  // 1. Standard Register (For Volunteers)
+  const register = async (email, password, fullName = '') => {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      return userCredential.user;
+      const user = userCredential.user;
+
+      // Create the Volunteer document in 'users'
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        email: email,
+        fullName: fullName,
+        userType: 'Volunteer', // <--- Distinct userType
+        createdAt: serverTimestamp(),
+      });
+
+      return user;
     } catch (err) {
-      console.error('Error registering user:', err);
+      throw err;
+    }
+  };
+
+  // 2. Register specifically for NGOs
+  const registerNGO = async (email, password, additionalData) => {
+    try {
+      // Create Auth User
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Save NGO details to 'users' collection (SAME collection as volunteers)
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        email: email,
+        userType: 'NGO', // <--- Distinct userType
+        createdAt: serverTimestamp(),
+        ...additionalData 
+      });
+
+      // Manually set profile state immediately
+      setProfile({
+        uid: user.uid,
+        email: email,
+        userType: 'NGO',
+        createdAt: new Date(),
+        ...additionalData
+      });
+
+      return user;
+    } catch (err) {
+      console.error('Error registering NGO:', err);
       throw err;
     }
   };
 
   // Login
   const login = async (email, password) => {
-    try {
-      return await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      console.error('Error logging in:', err);
-      throw err;
-    }
+    return await signInWithEmailAndPassword(auth, email, password);
   };
 
   // Logout
   const logout = async () => {
     try {
       await signOut(auth);
+      setProfile(null);
+      setCurrentUser(null);
     } catch (err) {
       console.error('Error signing out:', err);
     }
   };
 
-  const value = { currentUser, profile, register, login, logout };
+  const value = { 
+    currentUser, 
+    profile, 
+    register, 
+    registerNGO, 
+    login, 
+    logout 
+  };
 
   return (
     <AuthContext.Provider value={value}>
@@ -89,5 +136,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
-
