@@ -1,3 +1,5 @@
+dashboard.jsx
+
 // src/pages/Dashboard.jsx
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
@@ -36,7 +38,7 @@ export default function Dashboard() {
     }, [currentUser]);
 
     const getEventStatus = (eventId) => {
-        return userInfo?.eventRegistrations?.[eventId]?.status || 'Pending';
+        return userInfo?.eventRegistrations?.[eventId]?.status  'Pending';
     };
 
     const getStatusClass = (status) => {
@@ -53,7 +55,7 @@ export default function Dashboard() {
     return (
         <div className="dashboard-container">
             <h1 className="dashboard-title">
-                👤 Welcome, {userInfo?.name || currentUser.displayName || currentUser.email}
+                👤 Welcome, {userInfo?.name  currentUser.displayName  currentUser.email}
             </h1>
 
             {/* Personal Information */}
@@ -61,15 +63,15 @@ export default function Dashboard() {
                 <h2>Personal Information & Profile</h2>
                 
                 <div className="profile-details">
-                    <p><strong>Full Name:</strong> {userInfo?.name || 'N/A'}</p>
+                    <p><strong>Full Name:</strong> {userInfo?.name  'N/A'}</p>
                     <p><strong>Email:</strong> {currentUser.email}</p>
-                    <p><strong>Gender:</strong> {userInfo?.gender || 'N/A'}</p>
-                    <p><strong>Phone:</strong> {userInfo?.phone || 'N/A'}</p>
-                    <p><strong>IC Number:</strong> {userInfo?.icNumber || 'N/A'}</p>
-                    <p><strong>Address:</strong> {userInfo?.address || 'N/A'}</p>
-                    <p><strong>Emergency Contact:</strong> {userInfo?.emergencyContact || 'N/A'}</p>
+                    <p><strong>Gender:</strong> {userInfo?.gender  'N/A'}</p>
+                    <p><strong>Phone:</strong> {userInfo?.phone  'N/A'}</p>
+                    <p><strong>IC Number:</strong> {userInfo?.icNumber  'N/A'}</p>
+                    <p><strong>Address:</strong> {userInfo?.address  'N/A'}</p>
+                    <p><strong>Emergency Contact:</strong> {userInfo?.emergencyContact  'N/A'}</p>
                     <p className="skills-area">
-                        <strong>Skills/Expertise:</strong> {userInfo?.skills || 'None listed'}
+                        <strong>Skills/Expertise:</strong> {userInfo?.skills  'None listed'}
                     </p>
                 </div>
 
@@ -89,19 +91,3 @@ export default function Dashboard() {
                         {appliedEvents.map(event => {
                             const status = getEventStatus(event.id);
                             const statusClass = getStatusClass(status);
-
-                            return (
-                                <li key={event.id} className="event-item">
-                                    <div className="event-details">
-                                        <strong>{event.title}</strong> — {event.date} @ {event.time}
-                                    </div>
-                                    <span className={`event-status ${statusClass}`}>{status}</span>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                )}
-            </section>
-        </div>
-    );
-}
