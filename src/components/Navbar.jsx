@@ -71,11 +71,6 @@ export default function Navbar() {
                 <Link to={getDashboardPath()}>Dashboard</Link>
               )}
 
-              {/* 2. NEW: MY PROFILE LINK (Only for NGOs) */}
-              {userType === 'NGO' && (
-                 <Link to={`/ngo/${currentUser.uid}`}>My Profile</Link>
-              )}
-
               <button onClick={handleLogout} className="pill-cta logout">LOGOUT</button>
             </>
           ) : (

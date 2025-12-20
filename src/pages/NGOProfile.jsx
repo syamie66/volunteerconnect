@@ -1,25 +1,44 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom'; 
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase'; // Adjust path if your firebase.js is elsewhere
+import { useAuth } from '../contexts/AuthContext'; 
+import { db } from '../firebase';
 import './NGOProfile.css';
 
 const NGOProfile = () => {
-  const { id } = useParams(); // 1. Get the ID from the URL (e.g., /ngo/123)
+  const { id } = useParams(); 
+  const location = useLocation(); // Hook to receive data from EventCard
+  const { currentUser } = useAuth();
+  
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 2. Fetch data from Firestore when the component mounts
   useEffect(() => {
     const fetchProfile = async () => {
+      // 1. PRIORITY: Check if ID was passed from EventCard
+      const passedId = location.state?.targetNgoId;
+      
+      // 2. Determine which ID to use
+      const targetId = passedId || id || currentUser?.uid;
+
+      console.log("Fetching Profile for ID:", targetId);
+
+      if (!targetId) {
+        console.warn("No Target ID found. User might not be logged in or no ID passed.");
+        setLoading(false);
+        return;
+      }
+
       try {
-        const docRef = doc(db, "users", id); // Assuming NGOs are stored in 'users' collection
+        // IMPORTANT: Ensure your NGOs are in the "users" collection. 
+        // If they are in a collection named "ngos", change "users" to "ngos" below.
+        const docRef = doc(db, "users", targetId); 
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
           setProfile(docSnap.data());
         } else {
-          console.log("No such document!");
+          console.log("No profile document found!");
         }
       } catch (error) {
         console.error("Error fetching NGO profile:", error);
@@ -28,12 +47,10 @@ const NGOProfile = () => {
       }
     };
 
-    if (id) {
-      fetchProfile();
-    }
-  }, [id]);
+    fetchProfile();
+  }, [id, currentUser, location.state]); 
 
-  // 3. Loading State
+  // --- Loading State ---
   if (loading) {
     return (
       <div className="profile-page-container" style={{justifyContent:'center'}}>
@@ -42,12 +59,13 @@ const NGOProfile = () => {
     );
   }
 
-  // 4. Error State (if ID is wrong)
+  // --- Error State ---
   if (!profile) {
     return (
       <div className="profile-page-container" style={{justifyContent:'center'}}>
-        <h2>NGO Not Found</h2>
-        <p>The organization you are looking for does not exist.</p>
+        <h2>Profile Not Found</h2>
+        <p>We couldn't find the organization details.</p>
+        <p style={{fontSize: '0.8rem', color: '#666'}}>Debug ID: {location.state?.targetNgoId || currentUser?.uid || "None"}</p>
       </div>
     );
   }
@@ -58,9 +76,9 @@ const NGOProfile = () => {
       {/* 1. TOP HEADER SECTION */}
       <div className="profile-header">
         <h4 className="tiny-label">NGO PROFILE</h4>
-        <h1 className="main-title">{profile.orgName}</h1>
+        <h1 className="main-title">{profile.organizationName || profile.orgName || "Organization Name"}</h1>
         <p className="profile-description">
-          {profile.description}
+          {profile.description || "No description provided."}
         </p>
       </div>
 
@@ -81,7 +99,7 @@ const NGOProfile = () => {
 
           <div className="divider-line"></div>
 
-          {/* Stat 2: Verification (Static for now, or fetch if you have a field) */}
+          {/* Stat 2: Verification */}
           <div className="stat-item">
             <div className="icon-circle">
               <span role="img" aria-label="shield">🛡️</span>
@@ -102,7 +120,6 @@ const NGOProfile = () => {
             <div className="stat-text">
               <span className="stat-label">Contact</span>
               <span className="stat-value">
-                 {/* Opens user's default email client */}
                  <a href={`mailto:${profile.email}`} style={{color: 'white', textDecoration: 'none'}}>
                    Email Us
                  </a>
@@ -113,7 +130,7 @@ const NGOProfile = () => {
         </div>
       </div>
 
-      {/* 3. BOTTOM WHITE CARD (Vision & Mission Layout) */}
+      {/* 3. BOTTOM WHITE CARD */}
       <div className="content-card">
         <div className="split-layout">
           
@@ -159,7 +176,6 @@ const NGOProfile = () => {
           </button>
         </div>
       </div>
-
     </div>
   );
 };

@@ -280,3 +280,36 @@
   text-decoration: underline;
   color: #556b2f;
 }
+/* Container to align the NGO name and the button */
+.event-org-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap; /* Ensures it doesn't break on small screens */
+}
+
+/* Ensure paragraph doesn't add extra margin */
+.event-org-row .event-org {
+  margin: 0;
+}
+
+/* The "Get to know us" button styling */
+.ngo-visit-btn {
+  background: transparent;
+  border: 1px solid #dbafab; /* Soft pink border to match theme */
+  color: #c06c6c; /* Darker pink text */
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ngo-visit-btn:hover {
+  background: #fdf2f2; /* Very light pink background on hover */
+  border-color: #c06c6c;
+  transform: translateY(-1px);
+}

@@ -1,180 +1,218 @@
-/* EventParticipants.css - Image-Matched Burgundy Minimalist Version */
-
-:root  {
-  --color-primary-burgundy: #592e35;    /* Deep Maroon/Burgundy (from image header text) */
-  --color-dark-text: #1f1f1f;          /* Near Black */
-  --color-background-outer: #9e7f7b;   /* The background color behind the main card in the image */
-  --color-container-background: #f5f0ed; /* The light beige/cream color of the main card */
-  --color-card-background: #f7f7f5;    /* Very slightly darker beige for participant cards */
-  --color-text-subtle: #575757;
-  --color-approve-bg: #cfa864;         /* Subtle Gold/Sand for Approve */
-  --color-reject-bg: #4a4a4a;          /* Dark Grey for Reject */
-}
-
-/* NOTE: To fully replicate the image's background, you would set the 
-  body/html background to --color-background-outer and use the 
-  .participants-container for the light beige inner content.
-*/
+/* --- SCOPED CONTAINER --- */
 .participants-container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 6rem 1rem 2rem 1rem;
-  background: var(--color-container-background);
-  border-radius: 1.5rem; /* Larger radius for a softer look */
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Softer, wider shadow */
-  color: var(--color-dark-text);
+  max-width: 1100px; /* Made slightly wider for text buttons */
+  margin: 3rem auto;
+  padding: 2rem;
   font-family: 'Poppins', sans-serif;
+  color: #4a4a4a;
+  background-color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-.participants-container h2 {
-  font-size: 2.2rem;
-  margin-bottom: 1.5rem;
-  color: var(--color-dark-text); /* Black header text as seen in the image */
-  text-align: center;
-  font-weight: 700;
+/* --- HEADER SECTION --- */
+.participants-container .back-link {
+  color: #88b04b; /* Matcha */
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-block;
+  margin-bottom: 1rem;
+  transition: color 0.2s;
+}
+
+.participants-container .back-link:hover {
+  color: #6a8a3a;
+}
+
+.participants-container .title-block h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #333;
+}
+
+.participants-container .meta-badges {
+  margin-top: 0.8rem;
+  display: flex;
+  gap: 15px;
+  color: #666;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.participants-container .count-badge {
+  background-color: #ffe0e6; /* Pale Pink */
+  color: #d66d85;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* --- TABLE STYLING --- */
+.participants-container .table-wrapper {
+  margin-top: 2rem;
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid #f0f0f0;
+}
+
+.participants-container .aesthetic-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+.participants-container .aesthetic-table thead tr {
+  background-color: #eaf4eb; /* Light Matcha Milk */
+  color: #4f6f52;
+  text-align: left;
+}
+
+.participants-container .aesthetic-table th {
+  padding: 1.2rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-bottom: 2px solid #dce8dd;
+}
+
+.participants-container .aesthetic-table td {
+  padding: 1rem 1rem;
+  border-bottom: 1px solid #f5f5f5;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+/* Row Hover & Active States */
+.participants-container .aesthetic-table tbody tr.main-row {
+  transition: background-color 0.2s;
+}
+.participants-container .aesthetic-table tbody tr.main-row:hover {
+  background-color: #fafafa;
+}
+.participants-container .aesthetic-table tbody tr.active-row {
+  background-color: #fff9fa;
+  border-left: 4px solid #ff8da1;
+}
+
+.participants-container .fw-bold {
+  font-weight: 600;
+  color: #2c2c2c;
+}
+
+/* --- STATUS BADGES --- */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: capitalize;
+}
+.status-badge.pending { background-color: #fff8e1; color: #f57c00; }
+.status-badge.approved { background-color: #e8f5e9; color: #2e7d32; }
+.status-badge.rejected { background-color: #ffebee; color: #c62828; }
+
+
+/* --- TEXT BUTTONS --- */
+.participants-container .action-cell {
+  width: 320px; /* Fixed width to prevent wrapping */
+}
+
+.participants-container .btn-group {
+  display: flex;
+  gap: 8px;
+}
+
+.participants-container .tbl-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+/* View (Neutral) */
+.participants-container .view-btn {
+  background-color: #f0f0f0;
+  color: #555;
+}
+.participants-container .view-btn:hover { background-color: #e0e0e0; }
+
+/* Approve (Matcha) */
+.participants-container .approve-btn {
+  background-color: #9DC183;
+  color: white;
+}
+.participants-container .approve-btn:hover { background-color: #7da364; }
+.participants-container .approve-btn:disabled {
+  background-color: #e0e0e0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Reject (Strawberry) */
+.participants-container .reject-btn {
+  background-color: #ff8da1;
+  color: white;
+}
+.participants-container .reject-btn:hover { background-color: #e06c80; }
+.participants-container .reject-btn:disabled {
+  background-color: #e0e0e0;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* Delete (Ghost) */
+.participants-container .delete-btn {
+  background-color: transparent;
+  color: #999;
+  border: 1px solid #eee;
+}
+.participants-container .delete-btn:hover {
+  background-color: #fff0f0;
+  color: #d32f2f;
+  border-color: #ffcdd2;
+}
+
+/* --- DETAILS ROW --- */
+.participants-container .detail-row td {
+  background-color: #fdfdfd;
+  padding: 0;
+  border-bottom: 2px solid #eee;
+}
+
+.participants-container .detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  padding: 1.5rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.participants-container .detail-grid div strong {
+  color: #88b04b;
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.participants-container a {
-  display: inline-block;
-  margin-bottom: 1.5rem;
-  color: var(--color-primary-burgundy); /* Matches 'Back to Events' color */
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-  padding-bottom: 2px;
-  /* Simple line style under link */
-  border-bottom: 1px solid var(--color-primary-burgundy); 
+.participants-container .detail-grid .full-width {
+  grid-column: 1 / -1;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
 }
 
-.participants-container a:hover {
-  color: var(--color-dark-text);
-  border-bottom: 1px solid var(--color-dark-text);
-}
-
-.event-header p {
-  text-align: left; /* Aligned left below the title in the image */
-  margin: 0.3rem 0;
-  color: var(--color-text-subtle);
-  font-size: 1rem;
-}
-
-.participant-list {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.participant-card {
-  background: var(--color-card-background); /* Slightly different shade for card background */
-  padding: 1.5rem;
-  border-radius: 12px;
-  /* Very subtle shadow, barely visible */
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03); 
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.participant-card:hover {
-  transform: none; /* Keep flat as in the minimalist image */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.participant-card h4 {
-  margin-bottom: 0.5rem;
-  color: var(--color-dark-text);
-  font-weight: 600;
-  font-size: 1.2rem;
-}
-
-.participant-card p {
-  margin: 2px 0;
-  color: var(--color-text-subtle);
-  font-size: 0.95rem;
-}
-
-.participant-details {
-  margin-top: 1rem;
-  /* Thin golden/orange separator line as seen in the image */
-  border-top: 1px solid #d2a45a; 
-  padding-top: 1rem;
-}
-
-.participant-actions {
-  margin-top: 1.2rem;
-  display: flex;
-  gap: 10px; /* Closer gap as seen in the image */
-}
-
-.participant-actions button,
-.view-btn {
-  padding: 8px 18px; /* Slightly smaller padding */
-  border: none;
-  cursor: pointer;
-  border-radius: 6px; /* Slightly smaller radius for buttons */
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  box-shadow: none; /* Flat buttons */
-}
-
-/* View Profile Button: Deep Burgundy */
-.view-btn {
-  background: var(--color-primary-burgundy);
-  color: white;
-}
-
-.view-btn:hover {
-  background: #401e22; /* Darker Burgundy */
-}
-
-/* Approve Button: Subtle Gold/Sand */
-.approve-btn {
-  background: var(--color-approve-bg);
-  color: white; /* White text on approval button */
-}
-
-.approve-btn:hover {
-  background: #b89152; 
-}
-
-/* Reject Button: Dark Grey */
-.reject-btn {
-  background: var(--color-reject-bg);
-  color: white;
-}
-
-.reject-btn:hover {
-  background: #303030;
-}
-
-/* Responsive tweaks */
-@media (max-width: 600px) {
-  .participants-container {
-    padding: 4rem 0.5rem 1rem 0.5rem;
-    border-radius: 0;
-  }
-  
-  .participant-actions {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .participant-actions button,
-  .view-btn {
-    width: 100%;
-    padding: 10px 16px;
-  }
-}
-
-/* Delete Button: Use a slightly different background for admin actions, like a neutral dark red */
-.delete-btn {
-  background: #a02030; /* Darker, slightly muted red for permanent action */
-  color: white;
-}
-
-.delete-btn:hover {
-  background: #801825;
+/* Loading/Error */
+.loading-state, .error-state {
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+    color: #888;
 }
