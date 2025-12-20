@@ -1,173 +1,254 @@
-/* Dashboard.css - Burgundy Theme with Status Badges (Minimalist Version) */
+/* --- SCOPED WRAPPER --- */
+/* All styles are nested under .db-scope to prevent global leaks */
 
-:root {
-    --color-primary-burgundy: #800020;
-    --color-status-approved: #28a745;
-    --color-status-rejected: #dc3545;
-    --color-status-pending: #cfa864;
-    --color-text-dark: #343a40;
-    --color-text-subtle: #6c757d;
-    --color-background-page: #f8f9fa;
+.db-scope {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f4f1; 
+    min-height: 100vh;
+    padding-bottom: 50px;
+    
+    /* CSS Variables scoped locally */
+    --sage-green: #4a7c59;
+    --deep-green: #2d5a27;
+    --soft-pink: #fce4ec;
+    --accent-pink: #ff80ab;
+    --pending-orange: #ffcc80;
+    --text-dark: #333;
+    --text-gray: #777;
 }
 
-/* --- Base Layout --- */
-.dashboard-container {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 15px;
-    font-family: 'Poppins', sans-serif;
-    color: var(--color-text-dark);
+/* 1. Hero Section */
+.db-scope .hero-section {
+    height: 280px;
+    width: 100%;
+    /* Sage Green to Soft Pink Gradient */
+    background: linear-gradient(90deg, #a7c4a9 0%, #f8bbd0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0; 
 }
 
-.dashboard-title {
+.db-scope .hero-content {
+    color: white;
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* 2. Layout Grid */
+.db-scope .main-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.db-scope .dashboard-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr; 
+    gap: 30px;
+    position: relative;
+}
+
+/* 3. Profile Card (Left) - Moves UP */
+.db-scope .profile-column {
+    margin-top: -100px; 
+}
+
+.db-scope .profile-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     text-align: center;
-    color: var(--color-primary-burgundy);
-    margin-bottom: 30px;
-    font-size: 32px;
-    font-weight: 700;
 }
 
-/* --- Cards --- */
-.dashboard-card {
-    background: #fff;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    margin-bottom: 25px;
-}
-
-.dashboard-card h2 {
-    color: var(--color-primary-burgundy);
-    margin-bottom: 20px;
-    font-weight: 600;
-    font-size: 1.5rem;
-    border-bottom: 2px solid #f0e6e6;
-    padding-bottom: 5px;
-}
-
-/* --- User Info Card --- */
-.user-info-card p {
-    line-height: 1.8;
-    border-bottom: 1px dotted #eee;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-}
-
-.user-info-card strong {
-    min-width: 150px;
-    display: inline-block;
-    color: var(--color-text-dark);
-}
-
-.user-info-card h2 {
-    display: block;
+.db-scope .profile-header-visual {
+    display: flex;
+    justify-content: center;
     margin-bottom: 15px;
 }
 
-.profile-details {
-    clear: both;
-    padding-top: 8px;
-}
-
-.skills-area {
-    border-bottom: none !important;
-    padding-top: 8px;
-    white-space: pre-wrap;
-}
-
-.update-profile-btn {
-    display: inline-block;
-    padding: 8px 15px;
-    background-color: var(--color-primary-burgundy);
+.db-scope .avatar-circle {
+    width: 100px;
+    height: 100px;
+    background-color: var(--deep-green);
     color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 500;
-    margin-top: 15px;
-    transition: background-color 0.2s;
-}
-
-.update-profile-btn:hover {
-    background-color: #a00030;
-}
-
-/* --- Participated Events (Vertical Stack) --- */
-.event-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    font-size: 3rem;
     display: flex;
-    flex-direction: column; /* stack events vertically */
-    gap: 10px; /* spacing between events */
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px; 
+    box-shadow: 0 4px 10px rgba(45, 90, 39, 0.3);
 }
 
-.event-item {
+.db-scope .profile-identity h2 { 
+    margin: 0; 
+    color: var(--text-dark); 
+    font-size: 1.4rem; 
+}
+
+.db-scope .user-handle { 
+    color: var(--accent-pink); 
+    font-weight: bold; 
+    margin: 5px 0; 
+}
+
+.db-scope .user-bio { 
+    color: var(--text-gray); 
+    font-size: 0.95rem; 
+    margin-bottom: 20px; 
+}
+
+/* Profile Details List */
+.db-scope .profile-details-list { 
+    text-align: left; 
+    margin-bottom: 25px; 
+}
+
+.db-scope .detail-row { 
+    display: flex; 
+    align-items: center; 
+    gap: 12px; 
+    margin-bottom: 12px; 
+    color: #555; 
+    font-size: 0.9rem; 
+}
+
+.db-scope .detail-row .icon { 
+    width: 20px; 
+    text-align: center; 
+    color: var(--accent-pink); 
+}
+
+.db-scope .emergency-text { 
+    font-size: 0.85rem; 
+    color: #d32f2f; 
+}
+
+.db-scope .edit-profile-btn {
+    display: block; 
+    width: 100%; 
+    padding: 12px 0;
+    background-color: var(--soft-pink); 
+    color: var(--accent-pink);
+    font-weight: bold; 
+    text-decoration: none; 
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.db-scope .edit-profile-btn:hover { 
+    background-color: var(--accent-pink); 
+    color: white; 
+}
+
+/* 4. Content Column (Right) - Moves DOWN */
+.db-scope .content-column {
+    margin-top: 20px; 
+}
+
+.db-scope .tabs-header {
     display: flex;
-    flex-direction: column; /* stack title and status vertically */
-    align-items: flex-start;
-    padding: 12px 15px;
-    border-radius: 8px;
-    border: 1px solid #f0e6e6;
-    transition: background 0.2s;
+    gap: 30px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
 }
 
-.event-item:last-child {
-    border-bottom: none;
+.db-scope .tab-btn {
+    background: none; 
+    border: none; 
+    font-size: 1rem;
+    color: #999; 
+    font-weight: 600; 
+    cursor: pointer;
+    padding-bottom: 10px; 
+    margin-bottom: -12px;
 }
 
-.event-item:hover {
-    background-color: #f9f9f9;
+.db-scope .tab-btn.active { 
+    color: var(--deep-green); 
+    border-bottom: 3px solid var(--deep-green); 
 }
 
-.event-status {
-    align-self: flex-start; /* badge below event title */
-    margin-top: 5px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
+.db-scope .events-list { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+}
+
+.db-scope .event-row-card {
+    background: white; 
+    padding: 20px; 
+    border-radius: 15px;
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+}
+
+.db-scope .event-info h3 { 
+    margin: 0 0 5px 0; 
+    color: var(--deep-green); 
+    font-size: 1.1rem; 
+}
+
+.db-scope .event-info p { 
+    margin: 0; 
+    color: #999; 
+    font-size: 0.85rem; 
+}
+
+/* Status Badges */
+.db-scope .status-badge { 
+    padding: 6px 16px; 
+    border-radius: 20px; 
+    font-size: 0.75rem; 
+    font-weight: bold; 
+}
+
+.db-scope .status-badge.Pending { 
+    background-color: #fff3e0; 
+    color: #f57c00; 
+}
+
+.db-scope .status-badge.Approved { 
+    background-color: #e8f5e9; 
+    color: #2e7d32; 
+}
+
+.db-scope .status-badge.Rejected { 
+    background-color: #ffebee; 
+    color: #c62828; 
+}
+
+.db-scope .empty-state { 
+    text-align: center; 
+    color: #999; 
+    padding: 20px; 
+}
+
+/* --- NEW COMPLETED/HISTORY SECTION STYLES --- */
+.db-scope .section-header {
+    font-size: 0.95rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin: 20px 0 10px 5px;
+    font-weight: 700;
 }
 
-.status-approved { background-color: var(--color-status-approved); }
-.status-rejected { background-color: var(--color-status-rejected); }
-.status-pending { background-color: var(--color-status-pending); color: var(--color-text-dark); }
-
-.no-event {
-    font-style: italic;
-    color: var(--color-text-subtle);
-    padding: 10px 0;
+.db-scope .history-section {
+    margin-top: 30px;
+    opacity: 0.8; 
 }
 
-.loading-text {
-    text-align: center;
-    font-size: 18px;
-    color: var(--color-primary-burgundy);
+.db-scope .event-row-card.completed-card {
+    background-color: #f9f9f9; 
+    border: 1px solid #eee;
 }
 
-/* --- Responsive --- */
-@media (max-width: 600px) {
-    .dashboard-container {
-        margin: 20px 10px;
-        padding: 10px;
-    }
-
-    .dashboard-title {
-        font-size: 24px;
-        margin-bottom: 25px;
-    }
-
-    .dashboard-card {
-        padding: 20px;
-    }
-
-    .event-item-dashboard {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
+.db-scope .status-badge.Completed {
+    background-color: var(--sage-green);
+    color: white;
 }
-
-
-
-

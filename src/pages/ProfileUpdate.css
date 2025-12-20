@@ -1,153 +1,249 @@
-/* ProfileUpdate.css - AIESEC Style, Burgundy Theme (Identical to Register.css) */
+/* --- SCOPED ISOLATION: .profile-update-wrapper --- */
 
-:root {
-  --color-primary-burgundy: #800020;    /* Main Burgundy accent */
-  --color-burgundy-hover: #a00030;      
-  --color-text-dark: #212529;           
-  --color-text-subtle: #6c757d;
-  --color-background-page: #f8f9fa;     
-  --color-background-card: #ffffff;     /* Crisp white form background */
-  --color-border-input: #dee2e6;        
+.profile-update-wrapper {
+    --sage: #8A9A5B;
+    --dark-sage: #5d6d3e;
+    --soft-cream: #fcfdfb;
+    --border-color: #e0e6db;
+
+    min-height: 100vh;
+    padding: 60px 20px;
+    background-color: var(--soft-cream);
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    position: relative;
+    color: #2d3431;
 }
 
-/* Base Body and Container (The Card) */
-body {
-  background: var(--color-background-page);
-  font-family: 'Poppins', sans-serif;
-  color: var(--color-text-dark);
+/* Background Pattern */
+.profile-update-wrapper .update-bg-pattern {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: radial-gradient(var(--sage) 0.5px, transparent 0.5px);
+    background-size: 40px 40px;
+    opacity: 0.1;
+    z-index: 0;
+    pointer-events: none;
 }
 
-.section-profile {
-  /* Clean, centered card look */
-  max-width: 650px; 
-  margin: 4rem auto;
-  padding: 3rem; 
-  background: var(--color-background-card);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
+.profile-update-wrapper .update-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
-/* Heading */
-.section-profile h2 {
-  text-align: center;
-  margin-bottom: 3rem; 
-  font-size: 2.5rem; 
-  color: var(--color-text-dark); 
-  font-weight: 700;
+/* Header */
+.profile-update-wrapper .update-header {
+    margin-bottom: 40px;
 }
 
-/* Message & Error Message (used in ProfileUpdate.jsx) */
-.message-profile {
-  padding: 10px;
-  margin: 1rem 0 2rem;
-  border-radius: 6px;
-  background-color: #fcebeb; /* Light pink/cream background */
-  color: var(--color-primary-burgundy);
-  text-align: center;
-  border: 1px solid #d4a0a0;
-  font-weight: 500;
+.profile-update-wrapper .update-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 10px 0;
+    color: #2d3431;
 }
 
-/* Form layout */
-.form-profile {
-  display: flex;
-  flex-direction: column;
-  gap: 30px; 
+.profile-update-wrapper .back-link {
+    color: var(--sage);
+    font-weight: 700;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
 }
 
-/* --- Section Headers (Burgundy Divider) --- */
-.form-section-header {
-  border-bottom: 2px solid var(--color-primary-burgundy); 
-  padding-bottom: 0.5rem;
-  margin-bottom: 1rem;
+/* Layout Split */
+.profile-update-wrapper .update-layout {
+    display: flex;
+    gap: 60px;
+    align-items: flex-start;
 }
 
-.form-section-header h3 {
-  font-size: 1.3rem;
-  color: var(--color-text-dark); 
-  font-weight: 600;
+/* Left Form Side */
+.profile-update-wrapper .update-form-side {
+    flex: 1.5;
 }
 
-/* --- Grid Layout --- */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem; 
+.profile-update-wrapper .form-section {
+    margin-bottom: 35px;
 }
 
-.full-width {
-  grid-column: 1 / -1; 
+.profile-update-wrapper .section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #2d3431;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    display: inline-block;
 }
 
-
-/* --- Input and Select Styling --- */
-.form input,
-.form select,
-.form textarea { 
-  padding: 14px 16px; 
-  font-size: 1rem;
-  border-radius: 8px; 
-  background-color: var(--color-background-card); 
-  border: 1px solid var(--color-border-input);
-  color: var(--color-text-dark); 
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.3s, box-shadow 0.3s;
+.profile-update-wrapper .input-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
 }
 
-.form textarea {
-    resize: vertical;
+/* Pill Inputs */
+.profile-update-wrapper input, 
+.profile-update-wrapper select, 
+.profile-update-wrapper textarea {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 25px; /* Pill Shape */
+    border: 1px solid var(--border-color);
+    background: white;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    font-family: inherit;
 }
 
-/* Input focus (Burgundy accent) */
-.form input:focus,
-.form select:focus,
-.form textarea:focus {
-  outline: none;
-  border-color: var(--color-primary-burgundy);
-  box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.2);
+.profile-update-wrapper textarea {
+    border-radius: 15px;
+    height: 80px;
+    resize: none;
 }
 
-/* Disabled/Read-only fields (like Email) */
-.form input:disabled {
-    background-color: #f4f4f4;
+.profile-update-wrapper input:focus,
+.profile-update-wrapper select:focus,
+.profile-update-wrapper textarea:focus {
+    border-color: var(--sage);
+}
+
+.profile-update-wrapper .disabled-input {
+    background-color: #f0f0f0;
+    color: #999;
     cursor: not-allowed;
-    color: var(--color-text-subtle);
 }
 
-
-/* --- Button Styling --- */
-.form button {
-  padding: 15px;
-  font-size: 1.1rem;
-  border-radius: 8px;
-  border: none;
-  background-color: var(--color-primary-burgundy);
-  color: #fff;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s, transform 0.2s;
-  margin-top: 2rem; 
+/* Input Labels */
+.profile-update-wrapper .input-pill-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.form button:hover:not(:disabled) {
-  background-color: var(--color-burgundy-hover);
-  transform: translateY(-2px);
+.profile-update-wrapper .input-pill-wrapper label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-left: 15px;
+    margin-bottom: 5px;
+    color: var(--dark-sage);
 }
 
-.form button:disabled {
-  background-color: #b98a8a;
-  cursor: not-allowed;
-  transform: none;
+/* Save Button (Purchase Style) */
+.profile-update-wrapper .save-pill-btn {
+    background-color: var(--sage);
+    color: white;
+    padding: 15px 50px;
+    border-radius: 30px;
+    border: none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.3s, transform 0.2s;
+    font-size: 1rem;
 }
 
-/* --- Responsive Adjustments --- */
-@media (max-width: 768px) {
-  .section {
-    margin: 2rem 0.5rem;
-    padding: 2rem 1.5rem; 
-  }
-  .form-grid {
-    grid-template-columns: 1fr; 
-  }
+.profile-update-wrapper .save-pill-btn:hover {
+    background-color: var(--dark-sage);
+    transform: translateY(-2px);
+}
+
+/* Right Summary Side (Preview) */
+.profile-update-wrapper .update-summary-side {
+    flex: 1;
+    position: sticky;
+    top: 40px;
+}
+
+.profile-update-wrapper .summary-card {
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.profile-update-wrapper .summary-org {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--sage);
+    text-transform: uppercase;
+}
+
+.profile-update-wrapper .summary-title {
+    font-size: 1.5rem;
+    margin: 5px 0 15px;
+    font-weight: 700;
+}
+
+.profile-update-wrapper .summary-desc {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    font-style: italic;
+}
+
+.profile-update-wrapper .summary-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.profile-update-wrapper .detail-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 8px;
+}
+
+.profile-update-wrapper .detail-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-top: 10px;
+    border-top: 2px solid var(--border-color);
+    padding-top: 15px;
+}
+
+.profile-update-wrapper .sage-text { 
+    color: var(--sage); 
+    font-weight: 600;
+}
+
+.profile-update-wrapper .status-msg {
+    color: var(--dark-sage);
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(138, 154, 91, 0.1);
+    border-radius: 10px;
+}
+
+.profile-update-wrapper .status-msg.error {
+    color: #c62828;
+    background: #ffebee;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .profile-update-wrapper .update-layout {
+        flex-direction: column-reverse; /* Put preview on top on mobile? or column for form first */
+        flex-direction: column;
+    }
+    .profile-update-wrapper .update-summary-side {
+        width: 100%;
+        position: static;
+        margin-bottom: 40px;
+    }
+    .profile-update-wrapper .input-row {
+        flex-direction: column;
+        gap: 15px;
+    }
 }

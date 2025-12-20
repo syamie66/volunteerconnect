@@ -12,7 +12,7 @@ import CreateEvent from './pages/CreateEvent';
 import EditEvent from './pages/EditEvent'; 
 import EventParticipants from './pages/EventParticipants';
 import ProfileUpdate from './pages/ProfileUpdate';
-import NGOProfile from './pages/NGOProfile'; // <--- 1. IMPORT THIS
+import NGOProfile from './pages/NGOProfile'; 
 
 // Admin Pages
 import AdminLayout from './pages/AdminLayout';
@@ -25,18 +25,22 @@ import AdminRoute from './pages/AdminRoute';
 export default function App() {
   const location = useLocation();
   
-  // Added '/ngo/' to full width pages so the profile looks good
+  // FIX: Add '/dashboard' AND '/profile/update' to this list.
+  // This disables the 'main-content' class for these pages so they can be full width.
   const isFullWidthPage = 
     location.pathname === '/' || 
     location.pathname === '/events' || 
     location.pathname === '/register' || 
     location.pathname === '/ngo-register' ||
-    location.pathname.startsWith('/ngo/'); // <--- 2. CHECK FOR NGO PROFILE PATH
+    location.pathname === '/dashboard' ||       // <--- REQUIRED
+    location.pathname === '/profile/update' ||  // <--- REQUIRED
+    location.pathname.startsWith('/ngo/');
 
   return (
     <>
       <Navbar /> 
 
+      {/* The ternary operator here decides if we use the restricted layout or full layout */}
       <main className={isFullWidthPage ? '' : 'main-content'}>
         <Routes>
           {/* Public Routes */}
@@ -46,8 +50,6 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/ngo-register" element={<NGORegister />} />
           
-          {/* 3. NEW PUBLIC PROFILE ROUTE */}
-          {/* This allows anyone to visit /ngo/12345 */}
           <Route path="/ngo/:id" element={<NGOProfile />} />
 
           {/* User Dashboard */}
