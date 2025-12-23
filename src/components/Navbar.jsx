@@ -43,7 +43,7 @@ export default function Navbar() {
 
     switch (role) {
       case 'admin':
-        return '/admin'; // Simplified based on your route structure
+        return '/admin'; 
       case 'ngo': 
         return '/dashboard/ngo';
       case 'volunteer':
@@ -57,16 +57,24 @@ export default function Navbar() {
     <nav className="home-navbar-wrapper">
       <div className="rounded-nav">
         <div className="nav-logo-group">
-          <span className="logo-badge">NGO</span>
+          
+          {/* Badge Section: Only shows if user is logged in and type is loaded */}
+          {currentUser && userType && (
+            <span className="logo-badge">
+              {userType.toUpperCase()}
+            </span>
+          )}
+          
           <span className="logo-text">VolunteerConnect</span>
         </div>
+        
         <div className="nav-links">
           <Link to="/">Home</Link>
           <Link to="/events">Events</Link>
           
           {currentUser ? (
             <>
-              {/* 1. DASHBOARD LINK */}
+              {/* Dashboard Link based on role */}
               {userType && (
                 <Link to={getDashboardPath()}>Dashboard</Link>
               )}

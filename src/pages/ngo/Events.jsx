@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
-import { db } from "../firebase";
+import { useAuth } from "../../contexts/AuthContext";
+import { db } from "../../firebase";
 import {
   collection,
   onSnapshot,
@@ -10,7 +10,7 @@ import {
   updateDoc,
   arrayUnion,
 } from "firebase/firestore";
-import EventCard from "../components/EventCard"; 
+import EventCard from "../../components/EventCard"; 
 import './EventsPublic.css';
 
 export default function Events() {

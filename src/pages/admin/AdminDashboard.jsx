@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db } from "../../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Users, Building2, Calendar, Activity } from "lucide-react";
 import './AdminCSS.css';

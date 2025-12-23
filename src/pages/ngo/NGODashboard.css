@@ -14,7 +14,7 @@
   /* UPDATED: Left column increased to 320px to match Right column */
   grid-template-columns: 320px 1fr 320px; 
   height: 100vh; /* Force full screen height */
-  background-color: var(--bg-cream);
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); ;
   font-family: 'Poppins', sans-serif;
   overflow: hidden; /* STOP the whole page from scrolling */
   color: var(--text-dark);

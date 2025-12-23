@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom'; 
-import { doc, getDoc } from 'firebase/firestore';
-import { useAuth } from '../contexts/AuthContext'; 
-import { db } from '../firebase';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { useAuth } from '../../contexts/AuthContext';
+import { db } from '../../firebase';
 import './NGOProfile.css';
 
 const NGOProfile = () => {
-  const { id } = useParams(); 
-  const location = useLocation(); // Hook to receive data from EventCard
+  const { id } = useParams(); // Catches ID from URL (e.g. /ngo/123)
+  const location = useLocation();
+  const navigate = useNavigate();
   const { currentUser } = useAuth();
   
   const [profile, setProfile] = useState(null);
@@ -15,31 +16,54 @@ const NGOProfile = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      // 1. PRIORITY: Check if ID was passed from EventCard
+      // Priority: 1. State (rare now), 2. URL Param (Guests), 3. Current User (Owner)
       const passedId = location.state?.targetNgoId;
-      
-      // 2. Determine which ID to use
       const targetId = passedId || id || currentUser?.uid;
 
-      console.log("Fetching Profile for ID:", targetId);
-
       if (!targetId) {
-        console.warn("No Target ID found. User might not be logged in or no ID passed.");
         setLoading(false);
         return;
       }
 
       try {
-        // IMPORTANT: Ensure your NGOs are in the "users" collection. 
-        // If they are in a collection named "ngos", change "users" to "ngos" below.
-        const docRef = doc(db, "users", targetId); 
+        let foundData = null;
+        const usersRef = collection(db, "users"); 
+
+        // CHECK 1: Direct Document ID
+        const docRef = doc(db, "users", targetId);
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          setProfile(docSnap.data());
-        } else {
-          console.log("No profile document found!");
+          foundData = docSnap.data();
+        } 
+        
+        // CHECK 2: Field 'uid'
+        if (!foundData) {
+          const q = query(usersRef, where("uid", "==", targetId));
+          const snap = await getDocs(q);
+          if (!snap.empty) foundData = snap.docs[0].data();
         }
+
+        // CHECK 3: Field 'userId'
+        if (!foundData) {
+          const q = query(usersRef, where("userId", "==", targetId));
+          const snap = await getDocs(q);
+          if (!snap.empty) foundData = snap.docs[0].data();
+        }
+
+        // CHECK 4: Field 'id'
+        if (!foundData) {
+          const q = query(usersRef, where("id", "==", targetId));
+          const snap = await getDocs(q);
+          if (!snap.empty) foundData = snap.docs[0].data();
+        }
+
+        if (foundData) {
+          setProfile(foundData);
+        } else {
+          console.error("Profile not found for ID:", targetId);
+        }
+
       } catch (error) {
         console.error("Error fetching NGO profile:", error);
       } finally {
@@ -48,32 +72,32 @@ const NGOProfile = () => {
     };
 
     fetchProfile();
-  }, [id, currentUser, location.state]); 
+  }, [id, currentUser, location.state]);
 
-  // --- Loading State ---
-  if (loading) {
-    return (
-      <div className="profile-page-container" style={{justifyContent:'center'}}>
-        <p>Loading Profile...</p>
-      </div>
-    );
-  }
+  // Logic to check if the current user owns this profile
+  // If currentUser is null (guest), isOwner becomes false automatically.
+  const isOwner = currentUser && profile && (
+    currentUser.uid === profile.uid || 
+    currentUser.uid === profile.userId || 
+    currentUser.uid === profile.id
+  );
 
-  // --- Error State ---
-  if (!profile) {
-    return (
-      <div className="profile-page-container" style={{justifyContent:'center'}}>
-        <h2>Profile Not Found</h2>
-        <p>We couldn't find the organization details.</p>
-        <p style={{fontSize: '0.8rem', color: '#666'}}>Debug ID: {location.state?.targetNgoId || currentUser?.uid || "None"}</p>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="profile-page-container" style={{justifyContent:'center'}}>
+      <p>Loading Profile...</p>
+    </div>
+  );
+
+  if (!profile) return (
+    <div className="profile-page-container" style={{justifyContent:'center'}}>
+      <h2>Profile Not Found</h2>
+    </div>
+  );
 
   return (
     <div className="profile-page-container">
       
-      {/* 1. TOP HEADER SECTION */}
+      {/* 1. TOP HEADER */}
       <div className="profile-header">
         <h4 className="tiny-label">NGO PROFILE</h4>
         <h1 className="main-title">{profile.organizationName || profile.orgName || "Organization Name"}</h1>
@@ -82,15 +106,12 @@ const NGOProfile = () => {
         </p>
       </div>
 
-      {/* 2. OVERLAPPING GREEN STATS BAR */}
+      {/* 2. STATS PILL */}
       <div className="stats-pill-container">
         <div className="stats-pill">
           
-          {/* Stat 1: Year Founded */}
           <div className="stat-item">
-            <div className="icon-circle">
-              <span role="img" aria-label="calendar">📅</span>
-            </div>
+            <div className="icon-circle">📅</div>
             <div className="stat-text">
               <span className="stat-label">Est. Year</span>
               <span className="stat-value">{profile.yearFounded || "N/A"}</span>
@@ -99,11 +120,8 @@ const NGOProfile = () => {
 
           <div className="divider-line"></div>
 
-          {/* Stat 2: Verification */}
           <div className="stat-item">
-            <div className="icon-circle">
-              <span role="img" aria-label="shield">🛡️</span>
-            </div>
+            <div className="icon-circle">🛡️</div>
             <div className="stat-text">
               <span className="stat-label">Status</span>
               <span className="stat-value">Verified NGO</span>
@@ -112,16 +130,21 @@ const NGOProfile = () => {
 
           <div className="divider-line"></div>
 
-          {/* Stat 3: Contact */}
           <div className="stat-item">
-            <div className="icon-circle">
-              <span role="img" aria-label="mail">✉️</span>
-            </div>
+            <div className="icon-circle">✉️</div>
             <div className="stat-text">
               <span className="stat-label">Contact</span>
               <span className="stat-value">
-                 <a href={`mailto:${profile.email}`} style={{color: 'white', textDecoration: 'none'}}>
-                   Email Us
+                 <a 
+                   href={`mailto:${profile.email}`} 
+                   style={{
+                     color: 'white', 
+                     textDecoration: 'underline', 
+                     fontSize: '0.9rem',     
+                     wordBreak: 'break-all'  
+                   }}
+                 >
+                   {profile.email || "No Email"}
                  </a>
               </span>
             </div>
@@ -130,11 +153,10 @@ const NGOProfile = () => {
         </div>
       </div>
 
-      {/* 3. BOTTOM WHITE CARD */}
+      {/* 3. DETAILS CARD */}
       <div className="content-card">
         <div className="split-layout">
           
-          {/* LEFT: MISSION */}
           <div className="split-column">
             <div className="column-header">
               <span className="header-icon">🎯</span>
@@ -147,15 +169,12 @@ const NGOProfile = () => {
 
           <div className="vertical-divider"></div>
 
-          {/* RIGHT: BENEFICIARIES */}
           <div className="split-column">
             <div className="column-header">
               <span className="header-icon">🌱</span>
               <h3>Who We Support</h3>
             </div>
-            <p className="column-text">
-              We are committed to making a difference for these key groups:
-            </p>
+            <p className="column-text">We are committed to making a difference for these key groups:</p>
             <div className="tags-container">
               {profile.beneficiaries && profile.beneficiaries.length > 0 ? (
                 profile.beneficiaries.map((item, index) => (
@@ -169,11 +188,21 @@ const NGOProfile = () => {
 
         </div>
 
-        {/* BUTTON */}
+        {/* 4. ACTION AREA */}
         <div className="action-area">
           <button className="contact-btn" onClick={() => window.location.href = `mailto:${profile.email}`}>
             Contact Organization
           </button>
+
+          {/* Only show Edit button if isOwner is true (Not for Guests) */}
+          {isOwner && (
+            <button 
+              className="edit-btn" 
+              onClick={() => navigate('/edit-ngo-profile')}
+            >
+              Edit Profile
+            </button>
+          )}
         </div>
       </div>
     </div>

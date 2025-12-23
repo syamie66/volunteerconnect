@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { db } from '../firebase';
+import { useAuth } from '../../contexts/AuthContext';
+import { db } from '../../firebase';
 import { collection, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import './NGODashboard.css';
@@ -14,14 +14,12 @@ export default function NGODashboard() {
   
   const navigate = useNavigate();
 
-  // --- 1. DATA FETCHING (FIXED) ---
+  // --- 1. DATA FETCHING ---
   useEffect(() => {
-    // FIX: Removed "|| !profile" so it doesn't get stuck waiting for the profile
     if (!currentUser) return;
 
     const q = collection(db, 'events');
     
-    // We add an error handler to onSnapshot so it doesn't freeze if there's an error
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const eventsData = snapshot.docs
         .map(d => ({ id: d.id, ...d.data() }))
@@ -33,14 +31,14 @@ export default function NGODashboard() {
       eventsData.forEach(event => { tempMap[event.id] = event.participants || []; });
       setParticipantsMap(tempMap);
       
-      setLoading(false); // Stop loading once data is here
+      setLoading(false); 
     }, (error) => {
       console.error("Error fetching events:", error);
-      setLoading(false); // Stop loading even if there is an error
+      setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [currentUser]); // FIX: Removed 'profile' from dependencies
+  }, [currentUser]);
 
   const handleDelete = async (eventId) => {
     if (window.confirm("Are you sure you want to delete this event?")) {
@@ -80,7 +78,7 @@ export default function NGODashboard() {
           <button className="nav-item" onClick={() => navigate('/create-event')}>
             <span className="icon">➕</span> Create Event
           </button>
-          {/* Navigate to Profile */}
+          {/* Navigate to Public Profile View */}
           <button className="nav-item" onClick={() => navigate('/ngo-profile')}>
             <span className="icon">👤</span> My Profile
           </button>
@@ -103,7 +101,6 @@ export default function NGODashboard() {
             <span className="status-badge">Active Status</span>
           </div>
           <div className="header-user">
-            {/* Safe check for profile name */}
             <span>Welcome, <strong>{profile?.organizationName || 'Partner'}</strong></span>
             <div className="user-avatar" onClick={() => navigate('/ngo-profile')}>
                 {profile?.photoURL ? <img src={profile.photoURL} alt="profile"/> : '👤'}
@@ -219,7 +216,8 @@ export default function NGODashboard() {
                 </div>
             </div>
 
-            <button className="btn-full-white" onClick={() => navigate('/ngo-profile')}>
+            {/* UPDATED LINK: Points to EditNGOProfile */}
+            <button className="btn-full-white" onClick={() => navigate('/edit-ngo-profile')}>
                 Edit Profile
             </button>
         </div>

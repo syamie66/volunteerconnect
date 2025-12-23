@@ -13,7 +13,7 @@
   --white: #FFFFFF;
 
   /* Main Container Styles */
-  background-color: var(--bg-cream);
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); ;
   min-height: 100vh;
   padding: 60px 20px;
   display: flex;
@@ -235,4 +235,46 @@
   .profile-page-container .content-card {
     padding: 80px 30px 40px 30px;
   }
+}
+
+/* Container for buttons to sit side-by-side */
+.action-area {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Space between buttons */
+  margin-top: 30px;
+}
+
+/* Existing Contact Button */
+.contact-btn {
+  background-color: #8D493A; /* Burgundy */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.contact-btn:hover {
+  background-color: #6F382D;
+  transform: translateY(-2px);
+}
+
+/* NEW: Edit Button Style */
+.edit-btn {
+  background-color: transparent;
+  color: #8D493A; /* Burgundy text */
+  border: 2px solid #8D493A; /* Burgundy border */
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-btn:hover {
+  background-color: #FFF0F5; /* Very light pink on hover */
+  transform: translateY(-2px);
 }

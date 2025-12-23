@@ -115,7 +115,7 @@ body {
 
 /* Buttons */
 .pill-cta {
-  background-color: white;
+  background-color: rgb(242, 201, 201);
   color: var(--matcha-main);
   padding: 8px 24px;
   border-radius: 50px;

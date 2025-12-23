@@ -1,7 +1,7 @@
 // pages/CreateEvent.jsx
 import React from "react";
-import { useAuth } from "../contexts/AuthContext";
-import EventForm from "../components/EventForm";
+import { useAuth } from "../../contexts/AuthContext";
+import EventForm from "../../components/EventForm";
 
 export default function CreateEvent() {
   const { currentUser, profile } = useAuth();

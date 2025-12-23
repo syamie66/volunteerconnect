@@ -8,7 +8,7 @@
 
     min-height: 100vh;
     padding: 60px 20px;
-    background-color: var(--soft-cream);
+   background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
     font-family: 'Inter', 'Segoe UI', sans-serif;
     position: relative;
     color: #2d3431;

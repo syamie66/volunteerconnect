@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-import EventForm from "../components/EventForm";
+import { db } from '../../firebase';
+import EventForm from "../../components/EventForm";
 
 export default function EditEvent() {
   const { id } = useParams();

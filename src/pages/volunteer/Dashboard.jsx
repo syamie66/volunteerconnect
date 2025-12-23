@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
-import { db } from "../firebase";
+import { useAuth } from "../../contexts/AuthContext";
+import { db } from "../../firebase";
 import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";

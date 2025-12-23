@@ -1,0 +1,257 @@
+/* --- SCOPED VARIABLES & CONTAINER --- */
+.edit-profile-container {
+    --sage: #8A9A5B;       
+    --dark-sage: #5d6d3e;
+    --text-main: #2d3431;  
+    --border-color: #e0e6db;
+    
+    background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%);; 
+    
+    /* FORCE SINGLE SCREEN (No Scroll) */
+    height: 100vh; 
+    overflow: hidden; 
+    padding: 20px 40px; 
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: var(--text-main);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+/* --- MAIN CARD --- */
+.edit-profile-card {
+    width: 100%;
+    max-width: 1200px;
+    height: 100%; 
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- HEADER (Compact) --- */
+.edit-profile-header {
+    margin-bottom: 15px; 
+    flex-shrink: 0; 
+    display: flex;
+    justify-content: space-between; /* Photo on right */
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.edit-profile-header h2 {
+    font-size: 1.8rem; 
+    font-weight: 800; 
+    color: var(--text-main);
+    margin: 0;
+}
+
+.edit-profile-header p {
+    color: #888;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* --- PHOTO SECTION (Inside Header now for space) --- */
+.edit-photo-section {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.edit-img-preview {
+    width: 50px; 
+    height: 50px;
+    border-radius: 50%; 
+    overflow: hidden;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e0e0e0;
+}
+
+.edit-img-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.edit-img-preview .placeholder { font-size: 1.2rem; opacity: 0.3; }
+
+.photo-input input {
+    padding: 6px 12px !important;
+    width: 200px;
+}
+
+/* --- FORM FLEX WRAPPER --- */
+.edit-profile-form {
+    flex: 1; /* Occupy all remaining height */
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Tighter gaps */
+    padding-top: 10px;
+}
+
+/* --- GRID (4 Columns for General Info) --- */
+.edit-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.2fr 1.2fr; /* Email/Web slightly wider */
+    gap: 15px; 
+    flex-shrink: 0;
+}
+
+/* --- INPUTS --- */
+.edit-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; 
+}
+
+.edit-input-group label {
+    font-size: 0.75rem; 
+    font-weight: 700;
+    color: #555;
+    text-transform: uppercase;
+}
+
+.edit-input-group input, 
+.edit-input-group textarea {
+    width: 100%;
+    padding: 8px 14px; 
+    border-radius: 12px; 
+    border: 1px solid #1e3323;
+    background: #ffffff;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.edit-input-group input:focus, 
+.edit-input-group textarea:focus {
+    outline: none;
+    border-color: var(--sage);
+    box-shadow: 0 0 0 1px var(--sage);
+}
+
+/* --- THE BIG BOXES LOGIC --- */
+
+/* 1. Mission Statement (Grows a bit) */
+.box-grow-small {
+    flex: 1; /* Grows to take space */
+    min-height: 80px; /* Minimum size */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. Description (Grows MORE) */
+.box-grow-large {
+    flex: 2; /* Grows 2x faster than Mission */
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-input-group textarea {
+    flex: 1; /* Fill the container */
+    resize: none;
+    height: 100%;
+}
+
+/* --- CHECKBOXES --- */
+.checkbox-grid-edit {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+    gap: 8px; 
+    flex-shrink: 0;
+}
+
+.checkbox-item-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem; 
+    color: #555;
+    cursor: pointer;
+    background: white;
+    padding: 6px 10px; 
+    border-radius: 12px; 
+    border: 1px solid #e0e0e0; 
+}
+
+.checkbox-item-edit:hover { border-color: var(--sage); background-color: #f9fcf9; }
+
+.checkbox-item-edit input[type="checkbox"] {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #ccc;
+    border-radius: 50%; 
+    display: grid;
+    place-content: center;
+    margin: 0;
+}
+
+.checkbox-item-edit input[type="checkbox"]:checked {
+    border-color: var(--sage);
+    background-color: var(--sage);
+}
+
+.checkbox-item-edit input[type="checkbox"]::before {
+    content: "✔";
+    color: white;
+    font-size: 8px;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+}
+
+.checkbox-item-edit input[type="checkbox"]:checked::before { transform: scale(1); }
+
+/* --- BUTTONS --- */
+.edit-form-actions {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 15px;
+    flex-shrink: 0;
+    padding-top: 5px;
+}
+
+.btn-cancel {
+    background: white;
+    color: #888;
+    padding: 8px 20px;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.btn-save {
+    background-color: var(--sage);
+    color: white;
+    padding: 8px 30px;
+    border-radius: 30px; 
+    border: none;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+/* --- RESPONSIVE FALLBACK --- */
+/* If height is too small (e.g. laptop 1366x768 or smaller), allow scroll */
+@media (max-height: 750px) {
+    .edit-profile-container { overflow-y: auto; display: block; height: auto; }
+    .edit-profile-form { overflow: visible; }
+    .box-grow-small, .box-grow-large { min-height: 120px; flex: none; }
+}
+
+@media (max-width: 900px) {
+    .edit-form-grid { grid-template-columns: 1fr 1fr; }
+    .edit-photo-section { display: none; /* Hide photo upload on small screens to save space */ }
+}

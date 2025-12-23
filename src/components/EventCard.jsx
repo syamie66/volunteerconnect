@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 export default function EventCard({ event, onJoin, loading, currentUser, profile }) {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
@@ -27,6 +26,8 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
   const { day, month, weekday } = getDateParts(event.date);
 
   // --- Handlers ---
+  
+  // 1. Join Button (Protected)
   const handleClick = () => {
     if (!currentUser) {
       navigate("/login");
@@ -35,24 +36,19 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
     }
   };
 
-  // NEW: Handler for visiting the NGO Profile
+  // 2. Visit Org Button (PUBLIC)
   const handleVisitOrg = (e) => {
     e.stopPropagation(); // Stop the card click event
 
-    // 1. DEBUG: See what data we actually have
-    console.log("Event Data:", event);
-
-    // 2. Find the ID. Check your Firebase Console to see which field holds the NGO's UID.
-    // We check multiple common field names here.
+    // Get the Organizer ID
     const targetId = event.organizerId || event.uid || event.createdBy || event.userId;
 
     if (targetId) {
-      console.log("Redirecting to profile with ID:", targetId);
-      // Pass the ID in 'state' so NGOProfile can read it
-      navigate("/ngo-profile", { state: { targetNgoId: targetId } });
+      // ✅ FIX: Navigate to the PUBLIC route pattern defined in App.jsx
+      navigate(`/ngo/${targetId}`); 
     } else {
-      console.error("ERROR: No Organizer ID found in this event object.");
-      alert("Error: Cannot find the organization's ID. Check console for details.");
+      console.error("ERROR: No Organizer ID found in this event object.", event);
+      alert("Error: Cannot find the organization's ID.");
     }
   };
 
