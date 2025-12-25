@@ -198,7 +198,7 @@ body {
 .home-container-unique .hero-subtext {
   font-size: 1.1rem;
   line-height: 1.6;
-  margin-bottom: 35px;
+  margin-bottom: 60px;
   color: #555;
   max-width: 90%;
 }
@@ -229,12 +229,15 @@ body {
 .home-container-unique .blob-image-placeholder {
   width: 100%;
   height: 450px;
+  background-image: url('./images/image2.jpeg');
+  background-size: cover; 
+  background-position: center;
+  background-repeat: no-repeat;
   background-color: #d8e2dc;
-  border: 4px dashed var(--matcha-light);
-  /* This creates the wave shape from the template */
+  border: 4px dashed  #2db060;
   border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
   position: relative;
-  box-shadow: 20px 20px 0px rgba(255, 181, 167, 0.3); /* Pink shadow */
+  box-shadow: 20px 20px 0px rgba(5, 135, 5, 0.3);
 }
 
 /* --- 4. MISSION GRID (Overlapping Cards) --- */
@@ -243,6 +246,8 @@ body {
   margin-top: -80px; /* Overlap effect */
   position: relative;
   z-index: 10;
+  padding-top: 120px; 
+  padding-bottom: 80px;
 }
 
 .home-container-unique .mission-grid {
@@ -263,14 +268,30 @@ body {
 
 .home-container-unique .card-img-placeholder {
   flex: 1;
-  background-color: #eee;
+  
+  /* --- IMAGE SETTINGS --- */
+  /* Adjust the path based on your file name */
+  background-image: url('./images/image1.jpeg');
+  
+  /* Ensures the image covers the flex area completely */
+  background-size: cover;
+  
+  /* Centers the image so the main subject is visible */
+  background-position: center;
+  
+  /* Prevents repetition */
+  background-repeat: no-repeat;
+  
+  /* Fallback color while loading */
+  background-color: #b84d4d;
+  
   border-bottom: 3px solid var(--matcha-light);
 }
 
 .home-container-unique .mission-overlay {
   background: var(--matcha-dark);
   color: white;
-  padding: 25px;
+  padding: 20px;
   text-align: center;
   height: 150px;
   display: flex;
@@ -293,124 +314,209 @@ body {
   opacity: 0.9;
 }
 
-/* --- 5. WHAT WE DO (SDG & Icons) --- */
-.home-container-unique .what-we-do-section {
-  padding: 120px 10% 80px;
+/* --- THEME VARIABLES (Add this to the top of your CSS file if not already there) --- */
+:root {
+  --matcha-dark: #2d4a3e;      /* Dark Forest Green */
+  --matcha-medium: #588157;    /* Sage Green */
+  --strawberry-main: #ffcfd2;  /* Pastel Pink */
+  --strawberry-text: #b84a5b;  /* Darker Pink for text contrast */
+}
+
+/* --- HOW TO GET INVOLVED SECTION (Matcha & Strawberry Theme) --- */
+.home-container-unique .get-involved-section {
+  padding: 80px 10%;
+  background-color: #fcfdfc; /* Very faint green/white tint */
   text-align: center;
 }
 
-.home-container-unique .section-header h2 {
-  font-size: 2rem;
-  margin-bottom: 50px;
-  color: var(--matcha-dark);
+.home-container-unique .involved-header {
+  max-width: 800px;
+  margin: 0 auto 50px auto;
+}
+
+.home-container-unique .section-tag {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+  color: var(--strawberry-text); /* Pink Tag */
+}
+
+.home-container-unique .involved-header h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--matcha-dark); /* Dark Green Heading */
   font-family: 'Georgia', serif;
 }
 
-.home-container-unique .services-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 30px;
+.home-container-unique .involved-desc {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #666;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-.home-container-unique .service-card {
+/* Grid for the 3 Steps */
+.home-container-unique .steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+  gap: 30px;
+  margin-top: 40px;
+}
+
+/* STEP CARD (Styled like Service Card) */
+.home-container-unique .step-item {
   background: white;
-  padding: 40px 20px;
+  padding: 40px 30px;
   border-radius: 12px;
   box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-  border: 1px solid rgba(88, 129, 87, 0.1);
-  transition: transform 0.3s;
+  border: 1px solid rgba(88, 129, 87, 0.1); /* Light Green Border */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content inside card */
+  text-align: center;
 }
 
-.home-container-unique .service-card:hover {
+.home-container-unique .step-item:hover {
   transform: translateY(-10px);
+  box-shadow: 0 10px 25px rgba(45, 74, 62, 0.1);
 }
 
-/* Active Pink Card */
-.home-container-unique .active-card {
-  background-color: var(--strawberry-main);
-  color: var(--matcha-dark);
-  border: none;
-}
-.home-container-unique .active-card p { color: #344E41; }
-
-.home-container-unique .icon-area {
+/* STEP NUMBER (Styled as the Icon) */
+.home-container-unique .step-number {
+  background-color: var(--strawberry-main); /* Pink Background */
+  color: var(--matcha-dark);                /* Dark Green Number */
+  font-size: 1.8rem;
+  font-weight: 800;
+  width: 70px;
   height: 70px;
-  margin-bottom: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 10px rgba(255, 183, 178, 0.4); /* Soft pink shadow */
+}
+
+/* Step Title */
+.home-container-unique .step-item h4 {
+  color: var(--matcha-dark);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-family: 'Georgia', serif;
+}
+
+/* Step Description */
+.home-container-unique .step-item p {
+  color: #666;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* --- SDG SECTION (Green/Pink Theme) --- */
+.sdg-section {
+  padding: 5rem 2rem;
+  /* Light greenish/off-white background matching the graph paper vibe */
+  background-color: #f1f7f3; 
+  color: #1a4d2e; /* Dark green text */
+}
+
+.sdg-header-left {
+  max-width: 1200px;
+  margin: 0 auto 3rem auto;
+  text-align: left;
+}
+
+.sdg-header-left h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a4d2e; /* Dark Green */
+  margin-bottom: 0.5rem;
+}
+
+.sdg-subtitle {
+  font-family: serif; /* Serif font for the "Help us..." look */
+  font-style: italic;
+  font-size: 1.2rem;
+  color: #5d856f; /* Muted Green */
+}
+
+/* Container for the items */
+.sdg-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Individual Item Layout */
+.sdg-item {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  align-items: flex-start; /* Aligns image and text at the top */
+  gap: 1.5rem;
+}
+
+/* The Dashed Image Box */
+.sdg-dashed-box {
+  flex-shrink: 0;
+  width: 120px;
+  height: 90px;
+  border: 2px dashed #8baea4; /* Dashed green border */
+  border-radius: 8px;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.home-container-unique .sdg-icon { height: 65px; width: auto; }
-.home-container-unique .text-icon { font-size: 3rem; }
-
-.home-container-unique .service-card h4 {
-  margin-bottom: 15px;
-  font-weight: 800;
+.sdg-dashed-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Keeps icon aspect ratio */
+  border-radius: 4px;
 }
 
-.home-container-unique .service-card p {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: #666;
-}
-
-/* --- 6. IMPACT SECTION --- */
-.home-container-unique .impact-section {
-  padding: 80px 10%;
-  /* Light Sage Overlay */
-  background-color: rgba(163, 177, 138, 0.15); 
-  border-top: 1px solid var(--matcha-light);
-}
-
-.home-container-unique .section-header-left { margin-bottom: 40px; }
-.home-container-unique .section-header-left h2 {
-  font-size: 2.2rem;
-  color: var(--matcha-dark);
-  margin-bottom: 5px;
-}
-.home-container-unique .section-header-left .subtitle {
-  font-size: 1.2rem;
-  color: var(--matcha-main);
-  font-family: 'Georgia', serif;
-  font-style: italic;
-}
-
-.home-container-unique .impact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 50px;
-}
-
-.home-container-unique .impact-item {
+/* Text Styling */
+.sdg-text-content {
   display: flex;
-  gap: 25px;
-  align-items: flex-start;
+  flex-direction: column;
 }
 
-.home-container-unique .impact-image-placeholder {
-  width: 140px;
-  height: 100px;
-  background-color: #d8e2dc;
-  border-radius: 10px;
-  flex-shrink: 0;
-  border: 2px dashed var(--matcha-main);
-}
-
-.home-container-unique .impact-number {
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: var(--strawberry-main);
+.pink-number {
+  color: #ff9da7; /* Soft Pink color */
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0;
   line-height: 1;
-  display: block;
-  margin-bottom: 5px;
 }
 
-.home-container-unique .impact-content h4 {
+.sdg-title {
   font-size: 1.2rem;
-  margin: 0 0 10px 0;
+  font-weight: 700;
+  color: #1a4d2e;
+  margin: 0.5rem 0;
   text-decoration: underline;
-  text-decoration-color: var(--strawberry-main);
+  text-decoration-color: #ff9da7; /* Pink underline */
+  text-decoration-thickness: 3px;
+  text-underline-offset: 4px;
+  display: inline-block;
+}
+
+.sdg-text-content p {
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.5;
+  margin-top: 0.5rem;
 }
 
 /* --- 7. TEAM SECTION --- */

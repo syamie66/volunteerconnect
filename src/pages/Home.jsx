@@ -1,17 +1,20 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Footer from '../components/Footer'; // Footer stays here (or move to App.jsx if you want it global too)
+import Footer from '../components/Footer';
 
-
-// Import your SDG images
+// Import your SDG images 
 import sdg11Img from '../images/E_SDG_Icons-11.jpg'; 
 import sdg17Img from '../images/e-web-goal-17.png';
+
+// Imports for Mission Cards
+import imgWhoWeAre from '../images/image1.jpeg'; 
+import imgMission from '../images/image3.jpeg';
+import imgVolunteer from '../images/image4.jpeg';
 
 export default function Home() {
   return (
     <div className="home-container-unique">
-      {/* NAVBAR REMOVED FROM HERE - It will come from App.jsx */}
-
+      
       <main className="main-content">
         
         {/* --- HERO SECTION --- */}
@@ -37,21 +40,32 @@ export default function Home() {
         <section className="mission-section">
           <div className="mission-grid">
             <div className="mission-card">
-              <div className="card-img-placeholder"></div>
+              <div 
+                className="card-img-placeholder" 
+                style={{ backgroundImage: `url(${imgWhoWeAre})` }}
+              ></div>
               <div className="mission-overlay">
                 <h3>WHO WE ARE</h3>
                 <p>We are a community-driven organization connecting volunteers with NGOs in Penang.</p>
               </div>
             </div>
+
             <div className="mission-card">
-              <div className="card-img-placeholder"></div>
+              <div 
+                className="card-img-placeholder" 
+                style={{ backgroundImage: `url(${imgMission})` }}
+              ></div>
               <div className="mission-overlay">
-                <h3>OUR MISSION (SDGs)</h3>
-                <p>Volunteering supports SDG 11 & 17 by building resilient communities.</p>
+                <h3>OUR MISSION</h3>
+                <p>Building resilient communities through sustainable action.</p>
               </div>
             </div>
+
             <div className="mission-card">
-              <div className="card-img-placeholder"></div>
+              <div 
+                className="card-img-placeholder" 
+                style={{ backgroundImage: `url(${imgVolunteer})` }}
+              ></div>
               <div className="mission-overlay">
                 <h3>VOLUNTEER</h3>
                 <p>Explore meaningful opportunities across Penang with trusted NGOs.</p>
@@ -60,58 +74,74 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- WHAT WE DO SECTION --- */}
-        <section className="what-we-do-section">
-          <div className="section-header">
-            <h2>What do we do? and what inspires us to do this?</h2>
+        {/* --- HOW TO GET INVOLVED SECTION --- */}
+        <section className="get-involved-section">
+          <div className="involved-header">
+            <span className="section-tag">HOW TO GET INVOLVED</span>
+            <h2>Take the First Step Toward Empowering Youth and Strengthening Our Community</h2>
+            <p className="involved-desc">
+              Volunteering with Building Bridges is your chance to make a real difference in the community. Whether you have just a few hours or are ready to make a long-term commitment, we have a role for you. <strong>Here’s how you can begin:</strong>
+            </p>
           </div>
-          <div className="services-grid">
-            <div className="service-card active-card">
-              <div className="icon-area"><img src={sdg11Img} alt="SDG 11" className="sdg-icon" /></div>
-              <h4>SDG 11</h4>
-              <p>Sustainable Cities: Making Penang resilient and inclusive.</p>
+
+          <div className="steps-grid">
+            <div className="step-item">
+              <div className="step-number">1</div>
+              <h4>Explore Our Volunteer Opportunities:</h4>
+              <p>Take a look at the variety of volunteer positions we offer. From hands-on roles like event support to behind-the-scenes work, there is something for everyone.</p>
             </div>
-            <div className="service-card">
-              <div className="icon-area"><img src={sdg17Img} alt="SDG 17" className="sdg-icon" /></div>
-              <h4>SDG 17</h4>
-              <p>Partnerships: Strengthening connections between NGOs and people.</p>
+            <div className="step-item">
+              <div className="step-number">2</div>
+              <h4>Fill Out Our Volunteer Application:</h4>
+              <p>Once your application is filled out, we will schedule an interview with you to thoroughly explain the program and our Strength-Based Approach philosophy.</p>
             </div>
-            <div className="service-card">
-              <div className="icon-area text-icon">❤️</div>
-              <h4>Caring</h4>
-              <p>An opportunity to give something back to the community.</p>
-            </div>
-            <div className="service-card">
-              <div className="icon-area text-icon">🤝</div>
-              <h4>Helping</h4>
-              <p>Helps earn respect, and turn tears into smiles.</p>
+            <div className="step-item">
+              <div className="step-number">3</div>
+              <h4>Start Making An Impact</h4>
+              <p>With the proper training and support, you’ll begin contributing to one of our exciting initiatives. Together, we’ll make a difference.</p>
             </div>
           </div>
         </section>
 
-        {/* --- IMPACT SECTION --- */ }
-        <section className="impact-section">
-          <div className="section-header-left">
-            <h2>What did we do last year?</h2>
-            <p className="subtitle">Help us to help others...</p>
+        {/* --- NEW SDG SECTION (Green/Pink Aesthetic) --- */}
+        <section className="sdg-section">
+          <div className="sdg-header-left">
+            <h2>Supporting the Goals</h2>
+            <p className="sdg-subtitle">Sustainable Development Goals (SDGs)...</p>
           </div>
-          <div className="impact-grid">
-            <div className="impact-item">
-              <div className="impact-image-placeholder"></div>
-              <div className="impact-content">
-                <span className="impact-number">2360+</span>
-                <h4>Women Benefited</h4>
-                <p>Empowered by us through vocational training and support groups.</p>
+          
+          <div className="sdg-row">
+            
+            {/* ITEM 1 */}
+            <div className="sdg-item">
+              <div className="sdg-dashed-box">
+                <img src={sdg11Img} alt="SDG 11" />
+              </div>
+              <div className="sdg-text-content">
+                <h3 className="pink-number">SDG 11</h3>
+                <h4 className="sdg-title">Sustainable Cities</h4>
+                <p>
+                  Make cities and human settlements inclusive, safe, resilient, and sustainable. 
+                  We work to ensure Penang remains a vibrant home for all generations.
+                </p>
               </div>
             </div>
-            <div className="impact-item">
-              <div className="impact-image-placeholder"></div>
-              <div className="impact-content">
-                <span className="impact-number">690k</span>
-                <h4>Girls Supported</h4>
-                <p>Provided with essential resources during and after emergencies.</p>
+
+            {/* ITEM 2 */}
+            <div className="sdg-item">
+              <div className="sdg-dashed-box">
+                <img src={sdg17Img} alt="SDG 17" />
+              </div>
+              <div className="sdg-text-content">
+                <h3 className="pink-number">SDG 17</h3>
+                <h4 className="sdg-title">Partnerships</h4>
+                <p>
+                  Strengthen the means of implementation and revitalize the global partnership for sustainable development. 
+                  We connect NGOs, volunteers, and corporates.
+                </p>
               </div>
             </div>
+
           </div>
         </section>
 
@@ -128,6 +158,7 @@ export default function Home() {
             ))}
           </div>
         </section>
+
       </main>
       
       <Footer />
