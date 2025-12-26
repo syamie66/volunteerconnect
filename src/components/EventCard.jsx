@@ -5,17 +5,19 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
 
-  // --- Date Parsing Helper ---
+  // --- 1. Date Parsing for the Big Left Box ---
   const getDateParts = (dateInput) => {
     let dateObj;
     if (dateInput && typeof dateInput.toDate === 'function') {
-      dateObj = dateInput.toDate();
+      dateObj = dateInput.toDate(); // Firestore Timestamp
     } else if (dateInput) {
-      dateObj = new Date(dateInput);
+      dateObj = new Date(dateInput); // String
     } else {
       return { day: "00", month: "???", weekday: "" };
     }
+    
     if (isNaN(dateObj)) return { day: "??", month: "???", weekday: "" };
+
     return {
       day: dateObj.getDate(),
       month: dateObj.toLocaleString("default", { month: "short" }),
@@ -25,9 +27,32 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
 
   const { day, month, weekday } = getDateParts(event.date);
 
+  // --- 2. Format Time Helper (24h -> 12h with a.m./p.m.) ---
+  const formatTime = (timeStr) => {
+    if (!timeStr) return "";
+    const [hour, minute] = timeStr.split(":");
+    let h = parseInt(hour, 10);
+    const m = minute;
+    const ampm = h >= 12 ? "p.m." : "a.m.";
+    h = h % 12;
+    h = h ? h : 12; // the hour '0' should be '12'
+    return `${h}.${m} ${ampm}`;
+  };
+
+  // --- 3. Format Date Helper (YYYY-MM-DD -> DD Mon (Day)) ---
+  const formatDateWithDay = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    if (isNaN(date)) return dateStr;
+    return date.toLocaleDateString('en-GB', { 
+      day: 'numeric', 
+      month: 'short', 
+      weekday: 'short' 
+    }); 
+    // Example output: "12 Oct (Mon)"
+  };
+
   // --- Handlers ---
-  
-  // 1. Join Button (Protected)
   const handleClick = () => {
     if (!currentUser) {
       navigate("/login");
@@ -36,20 +61,10 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
     }
   };
 
-  // 2. Visit Org Button (PUBLIC)
   const handleVisitOrg = (e) => {
-    e.stopPropagation(); // Stop the card click event
-
-    // Get the Organizer ID
-    const targetId = event.organizerId || event.uid || event.createdBy || event.userId;
-
-    if (targetId) {
-      // ✅ FIX: Navigate to the PUBLIC route pattern defined in App.jsx
-      navigate(`/ngo/${targetId}`); 
-    } else {
-      console.error("ERROR: No Organizer ID found in this event object.", event);
-      alert("Error: Cannot find the organization's ID.");
-    }
+    e.stopPropagation();
+    const targetId = event.organizerId || event.uid || event.createdBy;
+    if (targetId) navigate(`/ngo/${targetId}`);
   };
 
   const isLong = event.description?.length > 100;
@@ -70,7 +85,6 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
       <div className="event-details">
         <h3 className="event-name">{event.title}</h3>
         
-        {/* ORGANIZATION ROW + BUTTON */}
         <div className="event-org-row">
           <p className="event-org">
             <span className="pink-accent">By:</span> {event.organization}
@@ -80,18 +94,35 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
           </button>
         </div>
 
-        {/* Icons & Meta Data */}
-        <div className="event-meta">
-          <span className="event-meta-item">⏰ {event.time}</span>
-          <span className="event-meta-item">📍 {event.location}</span>
+        {/* --- UPDATED META SECTION --- */}
+        <div className="event-meta-grid">
+          
+          {/* Location */}
+          <div className="meta-row">
+            <span className="meta-icon">📍</span> 
+            <span className="meta-text">{event.location}</span>
+          </div>
+
+          {/* Time Split */}
+          <div className="meta-row">
+            <span className="meta-icon">⏰</span>
+            <div className="meta-column">
+                <span>Start Time: {formatTime(event.startTime)}</span>
+                <span>End Time: &nbsp; {formatTime(event.endTime)}</span>
+            </div>
+          </div>
+
+          {/* Registration Split */}
+          <div className="meta-row">
+            <span className="meta-icon">📝</span>
+            <div className="meta-column">
+                <span>Registration Open: {formatDateWithDay(event.registrationStart)}</span>
+                <span>Reg Close: {formatDateWithDay(event.registrationEnd)}</span>
+            </div>
+          </div>
+
         </div>
 
-        {/* Registration Dates */}
-        <div className="event-reg-dates">
-           Registration: {event.registrationStart} — {event.registrationEnd}
-        </div>
-
-        {/* Description */}
         <p className="event-description-text">
           {descriptionText}
           {isLong && (
@@ -101,14 +132,16 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
           )}
         </p>
 
-        {/* Footer */}
         <div className="card-footer-styled">
           <span className="participant-count">
-            <i className="pink-icon">♥</i> {event.participants?.length || 0} Volunteers
+            <i className="pink-icon">♥</i> {event.participants?.length || 0} / {event.maxParticipants || '?'} Volunteers
           </span>
-          <button className="join-btn" onClick={handleClick} disabled={loading}>
-            {loading ? "Joining..." : "Apply Now"}
-          </button>
+          
+          {profile?.userType !== "NGO" && (
+            <button className="join-btn" onClick={handleClick} disabled={loading}>
+              {loading ? "Joining..." : "Apply Now"}
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -55,6 +55,15 @@ export default function NGODashboard() {
     event.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Helper to check if event is passed
+  const getEventStatus = (dateString) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Ignore time, compare dates only
+    const eventDate = new Date(dateString);
+    
+    return eventDate < today ? 'Completed' : 'Ongoing';
+  };
+
   // Calculate simple stats for the UI
   const totalParticipants = Object.values(participantsMap).reduce((acc, curr) => acc + curr.length, 0);
   const activeEventsCount = events.length;
@@ -78,7 +87,6 @@ export default function NGODashboard() {
           <button className="nav-item" onClick={() => navigate('/create-event')}>
             <span className="icon">➕</span> Create Event
           </button>
-          {/* Navigate to Public Profile View */}
           <button className="nav-item" onClick={() => navigate('/ngo-profile')}>
             <span className="icon">👤</span> My Profile
           </button>
@@ -132,7 +140,7 @@ export default function NGODashboard() {
              <h3>Quick Action</h3>
              <p>Ready to make an impact today?</p>
              <button className="btn-primary" onClick={() => navigate('/create-event')}>
-                + New Event 🌱
+               + New Event 🌱
              </button>
           </div>
         </div>
@@ -163,21 +171,46 @@ export default function NGODashboard() {
               {filteredEvents.length === 0 ? (
                 <div className="empty-row">No events found.</div>
               ) : (
-                filteredEvents.map(ev => (
-                  <div key={ev.id} className="table-row">
-                    <div className="col date">{ev.date}</div>
-                    <div className="col title"><strong>{ev.title}</strong></div>
-                    <div className="col loc">{ev.location}</div>
-                    <div className="col action">
-                        <span className="badge-pink">Live</span>
+                filteredEvents.map(ev => {
+                  const status = getEventStatus(ev.date);
+                  return (
+                    <div key={ev.id} className="table-row">
+                      <div className="col date">{ev.date}</div>
+                      <div className="col title"><strong>{ev.title}</strong></div>
+                      <div className="col loc">{ev.location}</div>
+                      
+                      {/* --- STATUS BADGE LOGIC --- */}
+                      <div className="col action">
+                         <span className={status === 'Ongoing' ? "badge-pink" : "badge-completed"}>
+                           {status}
+                         </span>
+                      </div>
+                      
+                      <div className="col manage action-buttons">
+                          <button 
+                            className="btn-text edit" 
+                            onClick={() => navigate(`/event/${ev.id}/edit`)}
+                          >
+                            Edit
+                          </button>
+                          
+                          <button 
+                            className="btn-text view" 
+                            onClick={() => navigate(`/event/${ev.id}/participants`)}
+                          >
+                            Participants
+                          </button>
+                          
+                          <button 
+                            className="btn-text delete" 
+                            onClick={() => handleDelete(ev.id)}
+                          >
+                            Delete
+                          </button>
+                      </div>
                     </div>
-                    <div className="col manage">
-                       <button className="icon-btn" title="Edit" onClick={() => navigate(`/event/${ev.id}/edit`)}>✏️</button>
-                       <button className="icon-btn" title="Participants" onClick={() => navigate(`/event/${ev.id}/participants`)}>👥</button>
-                       <button className="icon-btn delete" title="Delete" onClick={() => handleDelete(ev.id)}>🗑️</button>
-                    </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>
@@ -216,7 +249,6 @@ export default function NGODashboard() {
                 </div>
             </div>
 
-            {/* UPDATED LINK: Points to EditNGOProfile */}
             <button className="btn-full-white" onClick={() => navigate('/edit-ngo-profile')}>
                 Edit Profile
             </button>

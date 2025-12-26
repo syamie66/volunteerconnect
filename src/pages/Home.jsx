@@ -74,40 +74,68 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- HOW TO GET INVOLVED SECTION --- */}
+        {/* --- HOW TO GET INVOLVED SECTION (UPDATED LAYOUT) --- */}
         <section className="get-involved-section">
+          
+          {/* Header Split: Left Text, Right Button */}
           <div className="involved-header">
-            <span className="section-tag">HOW TO GET INVOLVED</span>
-            <h2>Take the First Step Toward Empowering Youth and Strengthening Our Community</h2>
-            <p className="involved-desc">
-              Volunteering with Building Bridges is your chance to make a real difference in the community. Whether you have just a few hours or are ready to make a long-term commitment, we have a role for you. <strong>Here’s how you can begin:</strong>
-            </p>
+            <div className="header-left">
+              <span className="section-tag">HOW TO GET INVOLVED</span>
+              <h2>Take the First Step Toward Empowering Youth and Strengthening Our Community</h2>
+              <p className="involved-desc">
+                Volunteering with Building Bridges is your chance to make a real difference in the community. Whether you have just a few hours or are ready to make a long-term commitment, we have a role for you.
+              </p>
+            </div>
+            <div className="header-right">
+              <Link to="/register" className="join-btn">Join Now</Link>
+            </div>
           </div>
 
+          {/* Cards Grid */}
           <div className="steps-grid">
-            <div className="step-item">
-              <div className="step-number">1</div>
-              <h4>Explore Our Volunteer Opportunities:</h4>
+            
+            {/* Step 1: Featured (Dark Green) */}
+            <div className="step-item featured-step">
+              <div className="step-icon">
+                {/* Search/Explore Icon */}
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </div>
+              <h4>1. Explore Opportunities</h4>
               <p>Take a look at the variety of volunteer positions we offer. From hands-on roles like event support to behind-the-scenes work, there is something for everyone.</p>
+              <Link to="/events" className="card-btn">Browse Events</Link>
             </div>
+
+            {/* Step 2: Standard (Light Green) */}
             <div className="step-item">
-              <div className="step-number">2</div>
-              <h4>Fill Out Our Volunteer Application:</h4>
+              <div className="step-icon">
+                {/* Form/Application Icon */}
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              </div>
+              <h4>2. Fill Out Application</h4>
               <p>Once your application is filled out, we will schedule an interview with you to thoroughly explain the program and our Strength-Based Approach philosophy.</p>
+              <Link to="/register" className="card-btn">Apply Now</Link>
             </div>
+
+            {/* Step 3: Standard (Light Green) */}
             <div className="step-item">
-              <div className="step-number">3</div>
-              <h4>Start Making An Impact</h4>
+              <div className="step-icon">
+                {/* Heart/Impact Icon */}
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              </div>
+              <h4>3. Start Making An Impact</h4>
               <p>With the proper training and support, you’ll begin contributing to one of our exciting initiatives. Together, we’ll make a difference.</p>
+              <Link to="/events" className="card-btn"style={{opacity: 0.7, cursor: 'default'}}>Events</Link>
+
             </div>
+
           </div>
         </section>
 
-        {/* --- NEW SDG SECTION (Green/Pink Aesthetic) --- */}
+        {/* --- SDG SECTION --- */}
         <section className="sdg-section">
           <div className="sdg-header-left">
             <h2>Supporting the Goals</h2>
-            <p className="sdg-subtitle">Sustainable Development Goals (SDGs)...</p>
+            <p className="sdg-subtitle">Sustainable Development Goals (SDGs)</p>
           </div>
           
           <div className="sdg-row">
@@ -149,7 +177,7 @@ export default function Home() {
         <section className="team-section">
           <h2>Meet Our Team</h2>
           <div className="team-grid">
-            {['Jane Doe', 'John Smith', 'Mary Lee', 'Ali Rahman'].map((name, i) => (
+            {['Illysha Amira', 'Nur Syuhailie', 'Nur Durrah', 'Roisatul Syamiela'].map((name, i) => (
               <div key={i} className="team-member">
                 <div className="team-photo-placeholder"></div>
                 <h4>{name}</h4>

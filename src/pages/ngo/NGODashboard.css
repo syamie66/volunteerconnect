@@ -11,10 +11,10 @@
   
   /* Layout Logic */
   display: grid;
-  /* UPDATED: Left column increased to 320px to match Right column */
+  /* Left column 320px, Main content auto, Right column 320px */
   grid-template-columns: 320px 1fr 320px; 
   height: 100vh; /* Force full screen height */
-  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); ;
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%);
   font-family: 'Poppins', sans-serif;
   overflow: hidden; /* STOP the whole page from scrolling */
   color: var(--text-dark);
@@ -24,19 +24,15 @@
 .ngo-sidebar {
   background-color: var(--sage-dark);
   color: var(--white);
-  
-  /* UPDATED: Match padding style of the right card */
   padding: 30px 25px; 
-  
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   
-  /* UPDATED: Floating Style to match Right Panel */
   margin: 20px;                 /* Create gap from screen edge */
   height: calc(100% - 40px);    /* Subtract top/bottom margin from height */
   border-radius: 30px;          /* Round ALL corners */
-  box-shadow: 5px 10px 30px rgba(53, 94, 59, 0.2); /* Match right card shadow */
+  box-shadow: 5px 10px 30px rgba(53, 94, 59, 0.2); 
   
   box-sizing: border-box;
 }
@@ -227,7 +223,7 @@
 }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(53, 94, 59, 0.3); }
 
-/* Events Table Section */
+/* --- EVENTS TABLE SECTION --- */
 .events-table-section {
   background: var(--white);
   border-radius: 20px;
@@ -258,27 +254,72 @@
 }
 .search-input-compact:focus { border-color: var(--sage-light); width: 220px; }
 
-/* Table Rows */
-.custom-table { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-.table-head-row {
+/* --- TABLE GRID LAYOUT (FIXED ALIGNMENT) --- */
+.custom-table { 
+  width: 100%; 
+  display: flex; 
+  flex-direction: column; 
+  gap: 0; 
+}
+
+/* MASTER GRID DEFINITION:
+   This ensures the Header and the Body follow the exact same tracks.
+   1. Date: 110px Fixed
+   2. Title: 2 Parts Flexible
+   3. Location: 1.5 Parts Flexible
+   4. Status: 100px Fixed
+   5. Actions: 280px Fixed (Wide enough to align Header over Buttons)
+*/
+.table-head-row, .table-row {
   display: grid;
-  grid-template-columns: 1fr 2fr 1.5fr 1fr 1fr;
-  padding: 0 15px 15px 15px;
+  grid-template-columns: 110px 2fr 1.5fr 100px 280px; 
+  padding: 15px 15px;
+  align-items: center; /* Vertically center content */
+  gap: 15px;
+}
+
+.table-head-row {
   font-weight: 600;
   color: #999;
   font-size: 0.85rem;
   border-bottom: 2px solid #f5f5f5;
+  /* Ensure header text aligns left, same as buttons */
+  text-align: left; 
 }
+
 .table-row {
-  display: grid;
-  grid-template-columns: 1fr 2fr 1.5fr 1fr 1fr;
-  padding: 18px 15px;
-  align-items: center;
   border-bottom: 1px solid #f9f9f9;
   font-size: 0.9rem;
   transition: background 0.2s;
 }
 .table-row:hover { background-color: #fafafa; border-radius: 10px; }
+
+/* Specific Column Styles */
+.col {
+  width: auto; /* Grid handles width */
+}
+
+/* Allow text to wrap (Fixes "...") */
+.col.title {
+  font-weight: 600;
+  color: var(--text-dark);
+  white-space: normal;
+  overflow: visible;
+  word-wrap: break-word;
+}
+
+/* Allow text to wrap */
+.col.loc {
+  color: #666;
+  white-space: normal;
+  overflow: visible;
+  word-wrap: break-word;
+}
+
+.col.date {
+  color: #888;
+  font-size: 0.85rem;
+}
 
 .badge-pink {
   background-color: #FFF0F5;
@@ -287,20 +328,57 @@
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 700;
+  text-align: center;
+  display: inline-block;
 }
-.icon-btn { 
-    background: none; border: none; cursor: pointer; 
-    font-size: 1.1rem; opacity: 0.6; padding: 5px; 
-    transition: all 0.2s; 
+
+/* Action Buttons Container - Aligns with Header */
+.col.manage.action-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start; /* Aligns buttons to Left of column */
+  align-items: center;
+  flex-wrap: wrap; /* Allows buttons to stack if screen is very small */
 }
-.icon-btn:hover { opacity: 1; transform: scale(1.1); }
-.icon-btn.delete:hover { color: #d32f2f; opacity: 1; }
+
+/* --- BUTTON STYLES --- */
+.btn-text {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap; 
+}
+
+/* Edit Button (Neutral) */
+.btn-text.edit {
+  background-color: #f0f4f8;
+  color: #334e68;
+}
+.btn-text.edit:hover { background-color: #d9e2ec; }
+
+/* Participants Button (Blue) */
+.btn-text.view {
+  background-color: #e3f8ff; 
+  color: #006d77;
+}
+.btn-text.view:hover { background-color: #bfeaff; }
+
+/* Delete Button (Red) */
+.btn-text.delete {
+  background-color: #ffe3e3; 
+  color: #c53030;
+}
+.btn-text.delete:hover { background-color: #ffdce0; color: #9b2c2c; }
 
 
 /* --- 3. RIGHT PANEL --- */
 .ngo-right-panel {
-  padding: 20px; /* Reduced padding to match other sides */
-  height: 100%;  /* Ensures it stays within viewport */
+  padding: 20px; 
+  height: 100%;  
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -312,12 +390,10 @@
   border-radius: 30px;
   padding: 30px 25px;
   
-  /* Flex Layout for the Green Card */
   display: flex;
   flex-direction: column;
   align-items: center;
   
-  /* FORCE height to fill parent, but allow inner scroll */
   height: 100%; 
   overflow: hidden; 
   
@@ -333,13 +409,13 @@
   font-size: 0.8rem;
   opacity: 0.8;
   margin-bottom: 20px;
-  flex-shrink: 0; /* Prevents switch from shrinking */
+  flex-shrink: 0; 
 }
 
 .circular-progress {
   width: 140px; 
   height: 140px;
-  min-height: 140px; /* Prevents squishing */
+  min-height: 140px;
   border-radius: 50%;
   border: 6px solid rgba(255,255,255,0.1);
   border-top-color: var(--pink-accent);
@@ -347,27 +423,25 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 30px; 
-  flex-shrink: 0; /* Prevents circle from squishing */
+  flex-shrink: 0; 
 }
 .circle-inner h3 { font-size: 2.5rem; margin: 0; font-weight: 500; }
 
 /* --- SCROLLABLE LIST FIX --- */
-/* If the screen is short, THIS list will scroll so the button stays visible */
 .activity-list {
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
   
-  flex-grow: 1; /* Takes up all available space */
-  overflow-y: auto; /* Adds scrollbar ONLY to this list if needed */
-  min-height: 0; /* Critical for flex scrolling */
+  flex-grow: 1; 
+  overflow-y: auto; 
+  min-height: 0; 
   
   margin-bottom: 20px;
-  padding-right: 5px; /* Space for scrollbar */
+  padding-right: 5px; 
 }
 
-/* Custom Scrollbar for the green panel */
 .activity-list::-webkit-scrollbar { width: 4px; }
 .activity-list::-webkit-scrollbar-thumb { background-color: rgba(255,255,255,0.3); border-radius: 4px; }
 
@@ -378,7 +452,7 @@
   background: rgba(255,255,255,0.05);
   padding: 10px;
   border-radius: 12px;
-  flex-shrink: 0; /* Prevents items from squishing */
+  flex-shrink: 0; 
 }
 
 .icon-box {
@@ -395,7 +469,6 @@
 .activity-item .text .ts { font-size: 0.7rem; opacity: 0.6; display: block; margin-bottom: 2px;}
 .activity-item .text p { margin: 0; font-size: 0.85rem; font-weight: 500; }
 
-/* BUTTON STAYS AT BOTTOM */
 .btn-full-white {
   width: 100%;
   background: var(--white);
@@ -407,7 +480,31 @@
   cursor: pointer;
   transition: transform 0.2s;
   
-  flex-shrink: 0; /* Button will NEVER shrink or hide */
+  flex-shrink: 0; 
   margin-top: auto; 
 }
 .btn-full-white:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+/* Existing Pink Badge (for Ongoing) */
+.badge-pink {
+  background-color: #FFF0F5;
+  color: var(--pink-accent);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  display: inline-block;
+}
+
+/* NEW: Grey Badge (for Completed) */
+.badge-completed {
+  background-color: #e2e8f0; /* Light Grey */
+  color: #718096;            /* Dark Grey Text */
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  display: inline-block;
+}

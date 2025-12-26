@@ -139,7 +139,7 @@ export default function EditEvent() {
             </div>
 
             <button type="submit" className="purchase-btn">Save Changes</button>
-            <button type="button" className="cancel-text-btn" onClick={() => navigate('/dashboard')}>Cancel</button>
+            <button type="button" className="purchase-btn" onClick={() => navigate('/dashboard')}>Cancel</button>
           </div>
 
           {/* RIGHT SIDE: Live Preview (Replaces Order Summary) */}

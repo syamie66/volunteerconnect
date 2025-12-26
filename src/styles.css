@@ -14,15 +14,6 @@
   font-family: 'Inter', sans-serif;
   color: var(--text-dark);
   
-  /* CSS Grid Background Pattern */
-  background-color: var(--cream-white);
-  background-image: 
-    linear-gradient(var(--grid-line) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-  background-size: 40px 40px;
-  
-  overflow-x: hidden;
-  min-height: 100vh;
 }
 
 /* --- 2. NAVBAR STYLES (Scoped) --- */
@@ -322,108 +313,181 @@ body {
   --strawberry-text: #b84a5b;  /* Darker Pink for text contrast */
 }
 
-/* --- HOW TO GET INVOLVED SECTION (Matcha & Strawberry Theme) --- */
+/* --- VARIABLES --- */
+:root {
+  --matcha-dark: #153e35;      /* Deep Dark Green */
+  --matcha-light: #dbead5;     /* Light Pastel Green Card */
+  --strawberry-text: #e08d95;  /* Pink Accent */
+  --bg-gradient: linear-gradient(135deg, #e4efe4 0%, #f7f0f2 100%);
+  --white: #ffffff;
+}
+
+/* --- MAIN SECTION --- */
 .home-container-unique .get-involved-section {
-  padding: 80px 10%;
-  background-color: #fcfdfc; /* Very faint green/white tint */
-  text-align: center;
+  padding: 80px 5%; /* Adjusted for wider layout */
+  text-align: left; /* Changed from center to left */
 }
 
+/* --- HEADER SECTION (Flexbox Split) --- */
 .home-container-unique .involved-header {
-  max-width: 800px;
-  margin: 0 auto 50px auto;
+  max-width: 1200px; /* Increased width */
+  margin: 0 auto 40px auto;
+  display: flex; /* Enables left/right split */
+  justify-content: space-between;
+  align-items: flex-end; /* Aligns button with bottom of text */
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
-.home-container-unique .section-tag {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  margin-bottom: 15px;
-  letter-spacing: 2px;
-  color: var(--strawberry-text); /* Pink Tag */
+.home-container-unique .involved-header .header-left {
+  max-width: 700px;
 }
 
 .home-container-unique .involved-header h2 {
-  font-size: 2.2rem;
+  font-size: 3rem; /* Larger as per image */
   font-weight: 800;
   margin-bottom: 20px;
-  color: var(--matcha-dark); /* Dark Green Heading */
+  color: var(--matcha-dark);
   font-family: 'Georgia', serif;
+  line-height: 1.1;
+  letter-spacing: -1px;
 }
 
+/* Description Text */
 .home-container-unique .involved-desc {
   font-size: 1rem;
   line-height: 1.6;
-  color: #666;
-  max-width: 700px;
+  color: #555;
+  margin: 0; /* Removed auto margins */
+}
+
+/* Main Header Button */
+.join-btn {
+  background-color: var(--matcha-dark);
+  color: var(--white);
+  padding: 12px 35px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: opacity 0.3s;
+}
+.join-btn:hover { opacity: 0.9; }
+
+
+/* --- GRID LAYOUT (Centers the cards) --- */
+.home-container-unique .steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 Columns */
+  gap: 30px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
-/* Grid for the 3 Steps */
-.home-container-unique .steps-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
-  gap: 30px;
-  margin-top: 40px;
-}
-
-/* STEP CARD (Styled like Service Card) */
+/* --- BASE CARD STYLING (The Sage Green Card) --- */
 .home-container-unique .step-item {
-  background: white;
-  padding: 40px 30px;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-  border: 1px solid rgba(88, 129, 87, 0.1); /* Light Green Border */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: #aabf9d; /* Match the Sage Green from image */
+  color: #1a3c34;            /* Dark Green Text */
+  padding: 50px 35px;        /* Tall padding */
+  border-radius: 20px;       /* Smooth rounded corners */
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center content inside card */
-  text-align: center;
+  align-items: flex-start;   /* Left align content inside */
+  text-align: left;          /* Left align text inside */
+  min-height: 420px;         /* Force tall rectangular shape */
+  position: relative;
+  transition: transform 0.3s ease;
+  border: none;              /* Remove borders */
 }
 
 .home-container-unique .step-item:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 10px 25px rgba(45, 74, 62, 0.1);
+  transform: translateY(-8px);
 }
 
-/* STEP NUMBER (Styled as the Icon) */
-.home-container-unique .step-number {
-  background-color: var(--strawberry-main); /* Pink Background */
-  color: var(--matcha-dark);                /* Dark Green Number */
-  font-size: 1.8rem;
-  font-weight: 800;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 10px rgba(255, 183, 178, 0.4); /* Soft pink shadow */
+/* --- FEATURED CARD OVERRIDE (The Dark Green Card) --- */
+.home-container-unique .step-item.featured-step {
+  background-color: #2f4f4f; /* Match the Dark Forest Green from image */
+  color: #ffffff;            /* White Text */
 }
 
-/* Step Title */
+/* --- ICONS --- */
+.step-icon {
+  margin-bottom: 30px;
+}
+.step-icon svg {
+  width: 45px;
+  height: 45px;
+}
+/* Icon Colors */
+.home-container-unique .step-item svg { stroke: #1a3c34; } /* Dark icon on light card */
+.home-container-unique .step-item.featured-step svg { stroke: #ffffff; } /* White icon on dark card */
+
+
+/* --- TYPOGRAPHY --- */
 .home-container-unique .step-item h4 {
-  color: var(--matcha-dark);
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 15px;
-  font-family: 'Georgia', serif;
+  margin-bottom: 20px;
+  font-family: 'Helvetica Neue', sans-serif;
+  line-height: 1.3;
 }
 
-/* Step Description */
 .home-container-unique .step-item p {
-  color: #666;
+  font-size: 1rem;
   line-height: 1.6;
-  font-size: 0.95rem;
+  opacity: 0.9;
+  margin-bottom: 40px; /* Space before button */
+  flex-grow: 1;        /* Pushes button to bottom */
+}
+
+
+/* --- BUTTONS (Pill Shape) --- */
+.card-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  border-radius: 50px;       /* Pill shape */
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  margin-top: auto;          /* Ensures button stays at bottom */
+}
+
+/* Button on Sage Card (Dark Button) */
+.home-container-unique .step-item .card-btn {
+  background-color: #efc4e5; 
+  color: #ffffff;
+}
+.home-container-unique .step-item .card-btn:hover {
+  background-color: #1a3c34;
+}
+
+/* Button on Dark Card (Light Transparent Button) */
+.home-container-unique .step-item.featured-step .card-btn {
+  background-color: rgba(255, 255, 255, 0.25); /* Semi-transparent white */
+  color: #ffffff;
+}
+.home-container-unique .step-item.featured-step .card-btn:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+  .home-container-unique .steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .home-container-unique .steps-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* --- SDG SECTION (Green/Pink Theme) --- */
 .sdg-section {
   padding: 5rem 2rem;
   /* Light greenish/off-white background matching the graph paper vibe */
-  background-color: #f1f7f3; 
   color: #1a4d2e; /* Dark green text */
 }
 
@@ -547,94 +611,112 @@ body {
   box-shadow: 0 0 0 5px var(--strawberry-soft);
 }
 
-/* --- 8. FOOTER STYLES (Scoped) --- */
-/* Matches class names from Footer.jsx: footer-area, footer-grid, footer-col, footer-form */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;700&display=swap');
 
-.home-container-unique .footer-area {
-  padding: 80px 10% 20px;
-  background: var(--matcha-dark); /* Dark Green Footer */
-  color: white;
-  margin-top: 40px;
-  border-top: 5px solid var(--strawberry-main);
+.custom-footer {
+  background-color: #1a3a32;
+  color: #ffdae0;
+  padding: 30px 30px 20px 30px; 
+  font-family: 'Quicksand', sans-serif;
+  border-top: 3px solid #fbcfe8;
 }
 
-.home-container-unique .footer-grid {
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Hero Typography - Scaled down */
+.footer-hero {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px; /* Reduced from 60px */
+  gap: 15px;
+}
+
+.hero-email a {
+  color: #ffdae0;
+  text-decoration: none;
+  /* Reduced size: 1.5rem to 2rem range */
+  font-size: clamp(1.2rem, 3vw, 1.8rem); 
+  font-weight: 700;
+  transition: color 0.3s ease;
+}
+
+.hero-phone {
+  color: #ffffff;
+  font-size: clamp(1.2rem, 3vw, 1.8rem);
+  font-weight: 700;
+}
+
+/* Grid Layout - More compact */
+.footer-details-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 50px;
-  margin-bottom: 50px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px; /* Reduced gap */
+  margin-bottom: 30px;
+  padding-bottom: 25px;
+  border-bottom: 1px solid rgba(255, 218, 224, 0.15);
 }
 
-.home-container-unique .footer-col h4 {
-  font-family: 'Georgia', serif;
-  font-style: italic;
-  color: var(--strawberry-main);
-  margin-bottom: 20px;
-  font-size: 1.3rem;
-}
-
-.home-container-unique .footer-col p {
-  line-height: 1.6;
+.label {
+  display: block;
+  font-size: 10px; /* Smaller labels */
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 6px;
+  color: #fbcfe8;
   opacity: 0.8;
 }
 
-.home-container-unique .footer-col a {
-  text-decoration: none;
-  color: rgba(255,255,255,0.8);
-  font-size: 0.95rem;
-  display: block;
-  margin-bottom: 12px;
-  transition: 0.3s;
+.highlight {
+  color: #ffffff;
+  font-size: 14px; /* Slightly smaller text */
+  font-weight: 600;
+  margin-bottom: 2px;
 }
 
-.home-container-unique .footer-col a:hover {
-  color: var(--strawberry-main);
-  padding-left: 5px;
+.muted {
+  font-size: 12px;
+  opacity: 0.6;
 }
 
-.home-container-unique .footer-form {
+/* Navigation Links */
+.nav-links {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 12px;
+  align-items: center;
 }
 
-.home-container-unique .footer-form input {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid var(--matcha-light);
-  border-radius: 50px;
-  padding: 10px 20px;
-  flex: 1;
-  color: white;
-  outline: none;
+.nav-item {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
 }
 
-.home-container-unique .footer-form input::placeholder {
-  color: rgba(255,255,255,0.5);
+/* Bottom Bar */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px; /* Smaller copyright text */
 }
 
-.home-container-unique .footer-form button {
-  background: var(--strawberry-main);
-  color: var(--matcha-dark);
-  border: none;
-  border-radius: 50px;
-  padding: 0 25px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
+.social-icons {
+  display: flex;
+  gap: 15px;
+  font-size: 16px; /* Smaller icons */
 }
 
-.home-container-unique .footer-form button:hover {
-  background: white;
+/* Mobile Fixes */
+@media (max-width: 768px) {
+  .custom-footer { padding: 30px 20px; }
+  .footer-hero { flex-direction: column; align-items: flex-start; }
+  .footer-bottom { flex-direction: column-reverse; gap: 15px; }
 }
-
-.home-container-unique .footer-bottom {
-  text-align: center;
-  font-size: 0.8rem;
-  color: rgba(255,255,255,0.5);
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding-top: 25px;
-}
-
 /* --- 9. RESPONSIVE --- */
 @media (max-width: 900px) {
   .home-container-unique .hero-section { flex-direction: column; text-align: center; }

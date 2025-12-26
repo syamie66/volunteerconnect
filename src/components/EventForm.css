@@ -27,6 +27,10 @@
     margin: 0 auto;
     position: relative;
     z-index: 1;
+    gap: 16px;
+    display: flex;
+    flex-wrap: wrap;
+
 }
 
 .checkout-header h1 {
@@ -76,6 +80,8 @@
     font-size: 0.9rem;
     outline: none;
     transition: border-color 0.2s;
+    flex: 1; /* Makes them share available space equally */
+    width: auto; /* Resets fixed widths */
 }
 
 .checkout-form-side textarea {
