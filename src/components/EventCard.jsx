@@ -3,146 +3,119 @@ import { useNavigate } from "react-router-dom";
 
 export default function EventCard({ event, onJoin, loading, currentUser, profile }) {
   const navigate = useNavigate();
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(false); // Controls Read More state
 
-  // --- 1. Date Parsing for the Big Left Box ---
+  // --- Date Parsing ---
   const getDateParts = (dateInput) => {
-    let dateObj;
-    if (dateInput && typeof dateInput.toDate === 'function') {
-      dateObj = dateInput.toDate(); // Firestore Timestamp
-    } else if (dateInput) {
-      dateObj = new Date(dateInput); // String
-    } else {
-      return { day: "00", month: "???", weekday: "" };
-    }
-    
-    if (isNaN(dateObj)) return { day: "??", month: "???", weekday: "" };
-
+    if (!dateInput) return { day: "00", month: "XXX" };
+    const dateObj = (dateInput && typeof dateInput.toDate === 'function') 
+      ? dateInput.toDate() 
+      : new Date(dateInput);
+    if (isNaN(dateObj)) return { day: "00", month: "XXX" };
     return {
       day: dateObj.getDate(),
-      month: dateObj.toLocaleString("default", { month: "short" }),
-      weekday: dateObj.toLocaleString("default", { weekday: "long" }),
+      month: dateObj.toLocaleString("default", { month: "short" }).toUpperCase()
     };
   };
+  const { day, month } = getDateParts(event.date);
 
-  const { day, month, weekday } = getDateParts(event.date);
-
-  // --- 2. Format Time Helper (24h -> 12h with a.m./p.m.) ---
+  // --- Time Formatting ---
   const formatTime = (timeStr) => {
-    if (!timeStr) return "";
-    const [hour, minute] = timeStr.split(":");
-    let h = parseInt(hour, 10);
-    const m = minute;
-    const ampm = h >= 12 ? "p.m." : "a.m.";
-    h = h % 12;
-    h = h ? h : 12; // the hour '0' should be '12'
-    return `${h}.${m} ${ampm}`;
+    if (!timeStr) return "-";
+    const [h, m] = timeStr.split(":");
+    const hour = parseInt(h, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    return `${hour % 12 || 12}:${m} ${ampm}`;
   };
 
-  // --- 3. Format Date Helper (YYYY-MM-DD -> DD Mon (Day)) ---
-  const formatDateWithDay = (dateStr) => {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    if (isNaN(date)) return dateStr;
-    return date.toLocaleDateString('en-GB', { 
-      day: 'numeric', 
-      month: 'short', 
-      weekday: 'short' 
-    }); 
-    // Example output: "12 Oct (Mon)"
-  };
-
-  // --- Handlers ---
-  const handleClick = () => {
-    if (!currentUser) {
-      navigate("/login");
-    } else if (profile?.userType === "volunteer") {
-      onJoin(event.id);
-    }
-  };
-
-  const handleVisitOrg = (e) => {
-    e.stopPropagation();
-    const targetId = event.organizerId || event.uid || event.createdBy;
-    if (targetId) navigate(`/ngo/${targetId}`);
-  };
-
-  const isLong = event.description?.length > 100;
-  const descriptionText = expanded || !isLong
-      ? event.description
-      : event.description.slice(0, 100) + "...";
+  const isAlreadyJoined = event.participants?.includes(currentUser?.uid);
+  const currentCount = event.participants?.length || 0;
+  const maxCount = event.maxParticipants || "-";
+  
+  // Logic: Only show "Read More" if text is longer than 100 characters
+  const isLongDesc = event.description && event.description.length > 100;
 
   return (
-    <div className="event-card-horizontal">
-      {/* LEFT SIDE: DATE BOX */}
-      <div className="event-date-box">
-        <span className="event-date-day">{day}</span>
-        <span className="event-date-weekday">{weekday}</span>
-        <span className="event-date-month">{month}</span>
+    <div className="ep-card">
+      
+      {/* --- TOP SECTION: DETAILS BOX (Pink) --- */}
+      <div className="ep-info-box">
+        <div className="ep-date-badge">
+          <span className="ep-date-day">{day}</span>
+          <span className="ep-date-month">{month}</span>
+        </div>
+
+        <div 
+            className="ep-org-name" 
+            onClick={() => event.organizerId && navigate(`/ngo/${event.organizerId}`)}
+            style={{cursor: event.organizerId ? 'pointer' : 'default'}}
+        >
+          {event.organization || "Volunteer Org"}
+        </div>
+
+        <div className="ep-details-grid">
+            <div className="ep-detail-item">
+                <span className="ep-label">Location</span>
+                {/* UPDATE: Added City check here */}
+                <span className="ep-value">
+                  {event.location || "TBD"}{event.city ? `, ${event.city}` : ''}
+                </span>
+            </div>
+            <div className="ep-detail-item">
+                <span className="ep-label">Time</span>
+                <span className="ep-value">
+                    {formatTime(event.startTime)} - {formatTime(event.endTime)}
+                </span>
+            </div>
+            <div className="ep-detail-item">
+                <span className="ep-label">Registration</span>
+                <span className="ep-value" style={{fontSize: '0.75rem'}}>
+                    {event.registrationStart ? new Date(event.registrationStart).toLocaleDateString(undefined, {month:'short', day:'numeric'}) : 'Now'} 
+                    {' - '} 
+                    {event.registrationEnd ? new Date(event.registrationEnd).toLocaleDateString(undefined, {month:'short', day:'numeric'}) : 'TBD'}
+                </span>
+            </div>
+            <div className="ep-detail-item">
+                <span className="ep-label">Capacity</span>
+                <span className="ep-value">{currentCount} / {maxCount}</span>
+            </div>
+        </div>
       </div>
 
-      {/* RIGHT SIDE: DETAILS */}
-      <div className="event-details">
-        <h3 className="event-name">{event.title}</h3>
+      {/* --- BOTTOM SECTION: TITLE, DESC & BUTTONS --- */}
+      <div className="ep-card-body">
+        <h3 className="ep-card-title">{event.title || "Event Title"}</h3>
         
-        <div className="event-org-row">
-          <p className="event-org">
-            <span className="pink-accent">By:</span> {event.organization}
-          </p>
-          <button className="ngo-visit-btn" onClick={handleVisitOrg}>
-            Get to know us!
-          </button>
-        </div>
-
-        {/* --- UPDATED META SECTION --- */}
-        <div className="event-meta-grid">
-          
-          {/* Location */}
-          <div className="meta-row">
-            <span className="meta-icon">📍</span> 
-            <span className="meta-text">{event.location}</span>
-          </div>
-
-          {/* Time Split */}
-          <div className="meta-row">
-            <span className="meta-icon">⏰</span>
-            <div className="meta-column">
-                <span>Start Time: {formatTime(event.startTime)}</span>
-                <span>End Time: &nbsp; {formatTime(event.endTime)}</span>
-            </div>
-          </div>
-
-          {/* Registration Split */}
-          <div className="meta-row">
-            <span className="meta-icon">📝</span>
-            <div className="meta-column">
-                <span>Registration Open: {formatDateWithDay(event.registrationStart)}</span>
-                <span>Reg Close: {formatDateWithDay(event.registrationEnd)}</span>
-            </div>
-          </div>
-
-        </div>
-
-        <p className="event-description-text">
-          {descriptionText}
-          {isLong && (
-            <span className="read-more" onClick={() => setExpanded(!expanded)}>
-              {expanded ? " Read less" : " Read more"}
-            </span>
-          )}
+        {/* Description: Toggles 'expanded' class based on state */}
+        <p className={`ep-card-desc ${expanded ? 'expanded' : ''}`}>
+          {event.description || "No description available."}
         </p>
 
-        <div className="card-footer-styled">
-          <span className="participant-count">
-            <i className="pink-icon">♥</i> {event.participants?.length || 0} / {event.maxParticipants || '?'} Volunteers
-          </span>
+        <div className="ep-btn-group">
           
-          {profile?.userType !== "NGO" && (
-            <button className="join-btn" onClick={handleClick} disabled={loading}>
-              {loading ? "Joining..." : "Apply Now"}
+          {/* BUTTON 1: READ MORE */}
+          {isLongDesc && (
+            <button 
+                className="ep-read-more-btn"
+                onClick={() => setExpanded(!expanded)}
+                type="button"
+            >
+                {expanded ? "Show Less" : "Read More"}
+            </button>
+          )}
+
+          {/* BUTTON 2: JOIN (Volunteers Only) */}
+          {profile?.userType !== "NGO" && onJoin && (
+            <button 
+              className={`ep-join-btn ${isAlreadyJoined ? 'joined' : ''}`} 
+              onClick={() => !isAlreadyJoined && onJoin(event.id)} 
+              disabled={loading || isAlreadyJoined}
+            >
+              {loading ? "..." : isAlreadyJoined ? "Applied ✓" : "Join Event"}
             </button>
           )}
         </div>
+
       </div>
     </div>
   );

@@ -1,335 +1,318 @@
-/* --- 1. THE FIXED WALLPAPER --- */
-/* This ensures the gradient is behind the Navbar and covers the whole screen */
-.events-wallpaper-fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -1; /* Sends it to the back */
-  
-  /* The Matcha & Strawberry Gradient */
-  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%);
-  
-  margin: 0;
-  padding: 0;
+/* --- SCOPED VARIABLES (Green/Pink Theme) --- */
+.ep-wrapper {
+  --ep-bg: #FFF9F5;          /* Cream Background */
+  --ep-green: #D4E09B;       /* Sage/Matcha Green */
+  --ep-pink: #F6D6D6;        /* Dusty Pink */
+  --ep-dark: #2A1A1A;        /* Dark Brown/Black text */
+  --ep-font-serif: "Georgia", "Times New Roman", serif;
+  --ep-font-sans: "Helvetica Neue", sans-serif;
 }
 
-/* --- 2. MAIN CONTENT CONTAINER --- */
-.events-public-container {
-  position: relative; 
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 90px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.ep-wrapper {
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
+  color: var(--ep-dark);
+  font-family: var(--ep-font-sans);
   min-height: 100vh;
+  padding-bottom: 80px;
+  width: 100%;
 }
 
-/* --- HERO & SEARCH SECTION --- */
-.events-hero {
+/* --- HERO SECTION --- */
+.ep-hero {
   text-align: center;
-  /* Add top margin to ensure it clears the Navbar visually */
-  margin-top: 20px; 
-  margin-bottom: 70px;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  
-  /* Glass Effect */
-  background-image: url('../../images/image5.jpg'); 
-  padding: 30px;
-  border-radius: 20px;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255,255,255,0.6);
+  padding: 80px 20px 50px;
 }
 
-.events-title {
-  color: #ffffff;
+.ep-main-title {
+  font-family: var(--ep-font-serif);
+  font-size: 3.5rem;
+  font-style: italic;
+  font-weight: 400;
   margin-bottom: 10px;
-  font-size: 2.8rem;
-  font-weight: 800;
+}
+
+.ep-subtitle {
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
+  margin-bottom: 40px;
 }
 
-.events-subtitle {
-  color: #ffffff;
-  font-size: 1.1rem;
-  margin-bottom: 30px;
-}
-
-.search-wrapper {
+/* --- SEARCH BAR (Pill Style) --- */
+.ep-search-container {
   display: flex;
   justify-content: center;
   gap: 10px;
-  max-width: 600px;
-  margin: 0 auto;
+  margin-bottom: 60px;
 }
 
-.event-search-bar {
-  flex-grow: 1;
-  padding: 12px 20px;
-  border-radius: 30px;
-  border: 2px solid #8A9A5B;
-  font-size: 1rem;
+.ep-search-input {
+  background-color: var(--ep-green); /* Green Pill */
+  border: 1px solid var(--ep-dark);
+  padding: 12px 25px;
+  border-radius: 50px;
+  font-family: var(--ep-font-sans);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  width: 320px;
   outline: none;
-  background-color: rgba(255, 255, 255, 0.9);
+  transition: 0.3s;
 }
 
-.event-search-bar:focus {
-  box-shadow: 0 0 0 3px rgba(138, 154, 91, 0.3);
+.ep-search-input:focus {
+  background-color: #fff;
 }
 
-.search-btn {
-  padding: 12px 30px;
-  background-color: #8A9A5B;
-  color: white;
-  border: none;
-  border-radius: 30px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.search-btn:hover {
-  background-color: #556b2f;
+.ep-search-input::placeholder {
+  color: var(--ep-dark);
+  opacity: 0.7;
 }
 
 /* --- GRID LAYOUT --- */
-.events-grid {
+.ep-events-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 25px;
-  width: 100%;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 50px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-@media (max-width: 1024px) {
-  .events-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 700px) {
-  .events-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.no-results {
-  grid-column: 1 / -1;
-  text-align: center;
-  font-size: 1.2rem;
-  color: #556b2f;
-  margin-top: 20px;
-  font-weight: 500;
-}
-
-/* --- EVENT CARD STYLES --- */
-.event-card-horizontal {
+/* --- CARD STYLES --- */
+.ep-card {
   display: flex;
-  flex-direction: row; 
-  background: rgba(255, 255, 255, 0.95); 
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  height: 100%; 
+  flex-direction: column;
+  background: transparent;
+  align-items: center;
 }
 
-.event-card-horizontal:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(138, 154, 91, 0.25);
-  background: #fff;
-}
-
-.event-date-box {
-  background-color: #8A9A5B;
-  color: white;
-  width: 90px;
+/* TOP SECTION: The "Info Box" (Pink Container) */
+.ep-info-box {
+  width: 100%;
+  background-color: var(--ep-pink);
+  border: 1px solid var(--ep-dark);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+  position: relative;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  padding: 10px;
-  text-align: center;
-  flex-shrink: 0;
+  box-shadow: 4px 4px 0px rgba(42, 26, 26, 0.1);
 }
 
-.event-date-day {
-  font-size: 2.2rem;
-  font-weight: 700;
+/* Date Badge in Top Right */
+.ep-date-badge {
+  position: absolute;
+  top: -15px;
+  right: -10px;
+  background-color: #fff;
+  border: 1px solid var(--ep-dark);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+}
+
+.ep-date-day {
+  font-weight: bold;
+  font-size: 1.1rem;
   line-height: 1;
 }
 
-.event-date-weekday {
+.ep-date-month {
   font-size: 0.7rem;
   text-transform: uppercase;
-  opacity: 0.9;
-  margin-top: 5px;
-  font-weight: 600;
 }
 
-.event-date-month {
-  font-size: 1rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  margin-top: 5px;
-  border-top: 1px solid rgba(255,255,255,0.4);
-  padding-top: 5px;
-  width: 100%;
+/* Organization Name inside Box */
+.ep-org-name {
+  font-family: var(--ep-font-serif);
+  font-style: italic;
+  font-size: 1.2rem;
+  text-align: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  padding-bottom: 10px;
 }
 
-.event-details {
-  padding: 15px;
-  flex-grow: 1;
+/* Grid for Details inside the Pink Box */
+.ep-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.ep-detail-item {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  position: relative;
 }
 
-.event-details::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 15px;
-  bottom: 15px;
-  width: 3px;
-  background-color: #D8A7B1;
-  border-radius: 0 3px 3px 0;
+.ep-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-bottom: 2px;
+  letter-spacing: 0.5px;
 }
 
-.event-name {
+.ep-value {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* --- CARD BODY (Text & Buttons) --- */
+.ep-card-body {
+  text-align: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ep-card-title {
+  font-family: var(--ep-font-sans);
+  font-weight: 800;
+  text-transform: uppercase;
   font-size: 1.1rem;
-  font-weight: 700;
-  color: #333;
-  margin: 0 0 5px 0;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
   line-height: 1.3;
 }
 
-.event-org {
-  font-size: 0.8rem;
-  color: #777;
-  font-style: italic;
-  margin-bottom: 8px;
-}
-
-.pink-accent { color: #D8A7B1; font-weight: 600; }
-
-.event-meta {
-  font-size: 0.85rem;
-  color: #666;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column; 
-  gap: 5px;
-}
-
-.event-description-text {
-  font-size: 0.85rem;
+/* Description Text - Default clamped to 3 lines */
+.ep-card-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
   color: #555;
-  margin-bottom: 10px;
-  line-height: 1.4;
+  margin-bottom: 20px;
+  
+  display: -webkit-box;
+  -webkit-line-clamp: 3; 
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: all 0.3s ease; /* Smooth transition if supported */
 }
 
-.card-footer-styled {
+/* When Expanded, remove clamp */
+.ep-card-desc.expanded {
+  -webkit-line-clamp: unset; 
+  overflow: visible;
+}
+
+/* --- BUTTON GROUP --- */
+.ep-btn-group {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
   align-items: center;
-  padding-top: 10px;
-  border-top: 1px dashed #eee;
+  width: 100%;
+  margin-top: 10px;
 }
 
-.participant-count { font-size: 0.75rem; color: #666; }
-.pink-icon { color: #D8A7B1; margin-right: 4px; }
-
-.join-btn {
-  padding: 6px 15px;
-  font-size: 0.8rem;
-  background-color: white;
-  color: #8A9A5B;
-  border: 2px solid #8A9A5B;
-  border-radius: 15px;
-  font-weight: 700;
+/* Button 1: READ MORE (Outline) */
+.ep-read-more-btn {
+  background-color: transparent;
+  border: 1px solid var(--ep-dark);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
   cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  letter-spacing: 1px;
+}
+
+.ep-read-more-btn:hover {
+  background-color: #fff;
+  transform: translateY(-2px);
+}
+
+/* Button 2: JOIN (Filled) */
+.ep-join-btn {
+  background-color: var(--ep-pink); /* Pink bg */
+  border: 1px solid var(--ep-dark);
+  color: var(--ep-dark);
+  padding: 8px 25px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  letter-spacing: 1px;
+}
+
+.ep-join-btn:hover {
+  background-color: var(--ep-green); /* Green on hover */
+  transform: translateY(-2px);
+  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+}
+
+.ep-join-btn.joined {
+  background-color: #eee;
+  color: #888;
+  cursor: default;
+  border-color: #ccc;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- FOOTER DECO --- */
+.no-events {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.ep-footer {
+  margin-top: 80px;
+  border-top: 1px solid var(--ep-dark);
+  padding-top: 40px;
+  text-align: center;
+}
+
+.ep-big-logo {
+  font-family: var(--ep-font-serif);
+  font-size: 5rem;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ep-events-grid { grid-template-columns: 1fr; }
+  .ep-main-title { font-size: 2.5rem; }
+  .ep-big-logo { font-size: 3rem; }
+}
+
+/* Truncates text to 3 lines by default */
+.ep-card-desc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 20px;
+  
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* Show only 3 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
   transition: all 0.3s ease;
 }
 
-.join-btn:hover {
-  background-color: #8A9A5B;
-  color: white;
-}
-.join-btn:disabled {
-  background-color: #eee;
-  border-color: #ccc;
-  color: #999;
-}
-
-/* Hiding unused elements */
-.read-more {
-  display: inline-block; /* Changed from 'none' to show the button */
-  color: #8A9A5B;        /* Sage Green */
-  font-weight: 700;
-  cursor: pointer;
-  margin-left: 5px;
-  font-size: 0.8rem;
-}
-
-.read-more:hover {
-  text-decoration: underline;
-  color: #556b2f;
-}
-/* Container to align the NGO name and the button */
-.event-org-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 8px;
-  flex-wrap: wrap; /* Ensures it doesn't break on small screens */
-}
-
-/* Ensure paragraph doesn't add extra margin */
-.event-org-row .event-org {
-  margin: 0;
-}
-
-/* The "Get to know us" button styling */
-.ngo-visit-btn {
-  background: transparent;
-  border: 1px solid #dbafab; /* Soft pink border to match theme */
-  color: #c06c6c; /* Darker pink text */
-  font-size: 0.75rem;
-  padding: 4px 12px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.ngo-visit-btn:hover {
-  background: #fdf2f2; /* Very light pink background on hover */
-  border-color: #c06c6c;
-  transform: translateY(-1px);
-}
-/* Add this to your main CSS file */
-.event-meta-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 12px 0;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.meta-row {
-  display: flex;
-  align-items: flex-start; /* Aligns icon with top line */
-  gap: 8px;
-}
-
-.meta-column {
-  display: flex;
-  flex-direction: column;
+/* Removes truncation when the 'expanded' class is added */
+.ep-card-desc.expanded {
+  -webkit-line-clamp: unset; 
+  overflow: visible;
 }

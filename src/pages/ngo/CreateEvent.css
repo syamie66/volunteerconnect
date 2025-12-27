@@ -1,0 +1,203 @@
+/* --- Page Layout --- */
+.create-body {
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
+  height: 100vh; /* Full viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden; /* No scroll on main body */
+}
+
+.create-container {
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
+  width: 90%;
+  max-width: 1000px;
+  height: 85vh; /* Compact container */
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  padding: 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Header --- */
+.create-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #F0F4F0;
+  padding-bottom: 15px;
+}
+
+.create-header h2 {
+  margin: 0;
+  color: #2F4F4F; /* Dark Slate Green */
+  font-size: 1.5rem;
+}
+
+/* --- Buttons --- */
+.create-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.create-btn-cancel {
+  background: transparent;
+  border: 1px solid #D8A7B1; /* Muted Pink Border */
+  color: #D8A7B1;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.create-btn-cancel:hover {
+  background: #FFF0F5;
+}
+
+.create-btn-publish {
+  background: #557C55; /* Sage Green */
+  border: none;
+  color: white;
+  padding: 8px 25px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.create-btn-publish:hover {
+  background: #3A5A40;
+}
+
+/* --- Main Grid Content --- */
+.create-grid {
+  display: flex;
+  gap: 30px;
+  height: 100%;
+  overflow-y: auto; /* Scroll only inside grid if screen is very short */
+}
+
+/* --- Form Side --- */
+.create-form {
+  flex: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 Columns */
+  gap: 15px;
+  align-content: start;
+}
+
+.create-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Span utilities */
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+
+.create-group label {
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.create-group input, 
+.create-group select, 
+.create-group textarea {
+  padding: 10px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  background: #FAFAFA;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.create-group input:focus,
+.create-group select:focus, 
+.create-group textarea:focus {
+  border-color: #557C55;
+  background: white;
+}
+
+.create-group textarea {
+  resize: none;
+  height: 80px;
+}
+
+/* --- Preview Side --- */
+.create-preview {
+  flex: 1;
+  background: #F8FBF8; /* Light Mint */
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px dashed #A6D1A6;
+}
+
+.create-preview-heading {
+  color: #557C55;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.create-preview-card {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.cp-date-box {
+  background: #FFE4E8; /* Soft Pink */
+  color: #C75B7A; /* Darker Pink */
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-align: center;
+  min-width: 50px;
+}
+
+.cp-day { font-size: 1.4rem; font-weight: 800; display: block; line-height: 1; }
+.cp-month { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+
+.cp-details { flex: 1; }
+
+.cp-org { font-size: 0.7rem; color: #999; font-weight: 700; text-transform: uppercase; }
+.cp-title { margin: 4px 0; font-size: 1rem; color: #333; }
+.cp-meta p { margin: 2px 0; font-size: 0.8rem; color: #666; }
+
+.cp-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #E0E0E0;
+  padding-top: 10px;
+}
+
+/* --- Mobile Responsiveness --- */
+@media (max-width: 768px) {
+  .create-body { height: auto; overflow: auto; padding: 20px 0; }
+  .create-container { height: auto; width: 95%; }
+  .create-grid { flex-direction: column-reverse; } /* Put preview on top on mobile */
+  .create-form { grid-template-columns: 1fr; }
+  .span-2, .span-3 { grid-column: span 1; }
+}

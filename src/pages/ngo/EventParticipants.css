@@ -5,7 +5,7 @@
   padding: 2rem;
   font-family: 'Poppins', sans-serif;
   color: #4a4a4a;
-  background-color: #fff;
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }

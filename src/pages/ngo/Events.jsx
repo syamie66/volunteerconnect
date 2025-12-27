@@ -11,7 +11,7 @@ import {
   arrayUnion,
 } from "firebase/firestore";
 import EventCard from "../../components/EventCard"; 
-import './EventsPublic.css';
+import './EventsPublic.css'; // Green/Pink Theme
 
 export default function Events() {
   const { currentUser, profile } = useAuth();
@@ -19,76 +19,104 @@ export default function Events() {
   const [loadingJoin, setLoadingJoin] = useState({});
   const [searchTerm, setSearchTerm] = useState(""); 
 
+  // --- 1. Fetch Events from Firestore ---
   useEffect(() => {
-    const q = query(collection(db, "events"), orderBy("createdAt", "desc"));
+    // Order by date desc so we get them all, but we will filter in JS
+    const q = query(collection(db, "events"), orderBy("date", "asc")); 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const eventsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const eventsData = snapshot.docs.map(doc => ({ 
+          id: doc.id, 
+          ...doc.data() 
+      }));
       setEvents(eventsData);
     });
 
     return () => unsubscribe();
   }, []);
 
+  // --- 2. Handle Join Logic ---
   const handleJoin = async (eventId) => {
-    if (!currentUser || profile?.userType !== "volunteer") return;
+    if (!currentUser) {
+        alert("Please login to join events.");
+        return;
+    }
+    if (profile?.userType !== "volunteer") {
+        alert("Only volunteers can join events.");
+        return;
+    }
+
     setLoadingJoin((prev) => ({ ...prev, [eventId]: true }));
+    
     try {
       const eventRef = doc(db, "events", eventId);
       await updateDoc(eventRef, {
         participants: arrayUnion(currentUser.uid),
       });
-      alert("You have joined the event!");
+      alert("You have successfully joined the event!");
     } catch (err) {
       console.error(err);
-      alert("Failed to join the event.");
+      alert("Failed to join the event. Please try again.");
     } finally {
       setLoadingJoin((prev) => ({ ...prev, [eventId]: false }));
     }
   };
 
+  // --- 3. Filter Logic (Search + Date Check) ---
   const filteredEvents = events.filter((event) => {
+    
+    // --- A. Date Filter: Remove Past Events ---
+    let eventDateObj = null;
+    if (event.date) {
+        // Handle Firestore Timestamp or String Date
+        eventDateObj = typeof event.date.toDate === 'function' 
+            ? event.date.toDate() 
+            : new Date(event.date);
+    }
+
+    // Get "Today" at midnight (00:00:00) so we don't hide events happening today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // If date is invalid or in the past, return false (hide it)
+    if (!eventDateObj || isNaN(eventDateObj) || eventDateObj < today) {
+        return false;
+    }
+
+    // --- B. Search Term Filter ---
     const term = searchTerm.toLowerCase();
-    return (
-      event.title?.toLowerCase().includes(term) ||
-      event.location?.toLowerCase().includes(term) ||
-      event.organization?.toLowerCase().includes(term)
-    );
+    const title = event.title?.toLowerCase() || "";
+    const loc = event.location?.toLowerCase() || "";
+    const org = event.organization?.toLowerCase() || "";
+
+    return title.includes(term) || loc.includes(term) || org.includes(term);
   });
 
-// ... (imports remain the same) ...
-// ... (Events function logic remains the same) ...
-
   return (
-    <>
-      {/* --- THE FIX: This div sits behind the navbar and fills the screen --- */}
-      <div className="events-wallpaper-fixed"></div>
-
-      <div className="events-public-container">
+    <div className="ep-wrapper">
+      
+      {/* HERO / HEADER */}
+      <header className="ep-hero">
+        <h1 className="ep-main-title">Find Your Cause</h1>
+        <p className="ep-subtitle">Join hands with organizations & make a difference</p>
         
-        {/* HERO / SEARCH SECTION */}
-        <div className="events-hero">
-          <h1 className="events-title">Find Your Cause</h1>
-          <p className="events-subtitle">Join hands with organizations and make a difference today.</p>
-          
-          <div className="search-wrapper">
-            <input 
-              type="text" 
-              placeholder="Search by event, location, or organization..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="event-search-bar"
-            />
-            <button className="search-btn">Browse</button>
-          </div>
+        {/* Search Bar */}
+        <div className="ep-search-container">
+          <input 
+            type="text" 
+            className="ep-search-input"
+            placeholder="SEARCH EVENTS OR LOCATION..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
+      </header>
 
-        {/* EVENTS GRID */}
-        <div className="events-grid">
-          {filteredEvents.length === 0 && (
-            <p className="no-results">No events found matching "{searchTerm}"</p>
-          )}
-          
-          {filteredEvents.map((event) => (
+      {/* EVENTS GRID */}
+      <section className="ep-events-grid">
+        {filteredEvents.length === 0 ? (
+          <div className="no-events"><p>No upcoming events found.</p></div>
+        ) : (
+          filteredEvents.map((event) => (
             <EventCard
               key={event.id}
               event={event}
@@ -97,9 +125,17 @@ export default function Events() {
               loading={loadingJoin[event.id]}
               onJoin={handleJoin}
             />
-          ))}
+          ))
+        )}
+      </section>
+
+      {/* FOOTER DECO */}
+      <footer className="ep-footer">
+        <div className="ep-big-logo">
+           volunteer connect
         </div>
-      </div>
-    </>
+      </footer>
+
+    </div>
   );
 }
