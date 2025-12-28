@@ -1,140 +1,149 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Added for navigation
 import { db } from "../../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Users, Building2, Calendar, Activity } from "lucide-react";
 import './AdminCSS.css';
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState({ 
     volunteers: 0, 
     ngos: 0, 
     events: 0,
     totalUsers: 0 
   });
+  
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchDashboardData = async () => {
       try {
+        setLoading(true);
+        
+        // 1. Fetch Raw Data
         const usersSnap = await getDocs(collection(db, "users"));
         const eventsSnap = await getDocs(collection(db, "events"));
 
-        // Filter based on 'userType' saved in your Register.jsx
         const volunteers = usersSnap.docs.filter((d) => d.data().userType === "volunteer").length;
         const ngos = usersSnap.docs.filter((d) => d.data().userType === "NGO").length;
-        const events = eventsSnap.size;
+        const eventsCount = eventsSnap.size;
 
         setStats({ 
           volunteers, 
           ngos, 
-          events,
+          events: eventsCount,
           totalUsers: volunteers + ngos
         });
+
+        // 2. Fetch & Merge Recent Activity with Real Status Logic
+        const userActivities = usersSnap.docs.map(doc => {
+          const data = doc.data();
+          // Logic: Use the database status if it exists, otherwise use defaults
+          const realStatus = data.status || (data.userType === "NGO" ? "Pending" : "Verified");
+          
+          return {
+            id: doc.id,
+            type: data.userType === "NGO" ? "New NGO" : "New Volunteer",
+            date: data.createdAt?.toDate() || new Date(),
+            status: realStatus,
+            category: data.userType 
+          };
+        });
+
+        const eventActivities = eventsSnap.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            type: "Event Created",
+            date: data.createdAt?.toDate() || new Date(),
+            status: "Active",
+            category: "event"
+          };
+        });
+
+        // Combine and Sort by Date (Descending)
+        const combinedActivities = [...userActivities, ...eventActivities]
+          .sort((a, b) => b.date - a.date)
+          .slice(0, 5);
+
+        setActivities(combinedActivities);
       } catch (error) {
-        console.error("Error fetching stats:", error);
+        console.error("Error fetching dashboard data:", error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchStats();
+
+    fetchDashboardData();
   }, []);
 
-  // Calculate percentages for the dynamic Donut Chart
   const volPct = stats.totalUsers > 0 ? (stats.volunteers / stats.totalUsers) * 100 : 0;
-  // The conic gradient needs a start and end point. 
-  // Pink ends at volPct. Green starts at volPct and goes to 100%.
   const chartStyle = {
-    background: `conic-gradient(
-      var(--primary-pink) 0% ${volPct}%, 
-      var(--primary-green) ${volPct}% 100%
-    )`
+    background: `conic-gradient(var(--primary-pink) 0% ${volPct}%, var(--primary-green) ${volPct}% 100%)`
   };
 
+  if (loading) return <div className="admin-loader">Loading Dashboard...</div>;
+
   return (
-    // WRAPPER FOR SCOPED CSS
     <div className="admin-dashboard-scope">
-      <div className="content-container">
+      <div className="content-container admin-layout-compact">
         
-        <h1 className="page-title">Platform Overview</h1>
+        <header className="compact-header">
+          <h1 className="page-title">Platform Overview</h1>
+          <div className="live-tag">● System Live</div>
+        </header>
 
-        {/* DASHBOARD GRID: Left (Stats) & Right (Activity) */}
-        <div className="dashboard-grid">
-          
-          {/* --- LEFT COLUMN --- */}
-          <div className="left-col">
-            
-            {/* 1. CHART CARD */}
-            <div className="card" style={{ textAlign: 'center' }}>
-              <h3 style={{ marginBottom: '20px', color: '#1f2937' }}>User Distribution</h3>
-              
-              <div className="chart-flex">
-                <div className="donut-chart" style={chartStyle}>
-                  <div className="center-text">
-                    <span className="big-number">{stats.totalUsers}</span>
-                  </div>
-                </div>
-                
-                <div className="chart-legend">
-                  <div className="legend-item">
-                    <span className="dot pink"></span>
-                    {stats.volunteers} Volunteers
-                  </div>
-                  <div className="legend-item">
-                    <span className="dot green"></span>
-                    {stats.ngos} NGOs
-                  </div>
-                </div>
-              </div>
+        {/* STATS SUMMARY */}
+        <div className="compact-stats-row">
+          <div className="stat-card-mini pink-theme">
+            <Users size={20} color="#be185d" />
+            <div className="info">
+              <p>Volunteers</p>
+              <h3>{stats.volunteers}</h3>
             </div>
+          </div>
+          <div className="stat-card-mini green-theme">
+            <Building2 size={20} color="#047857" />
+            <div className="info">
+              <p>Registered NGOs</p>
+              <h3>{stats.ngos}</h3>
+            </div>
+          </div>
+          <div className="stat-card-mini sage-theme">
+            <Calendar size={20} color="#656d0a" />
+            <div className="info">
+              <p>Active Events</p>
+              <h3>{stats.events}</h3>
+            </div>
+          </div>
+        </div>
 
-            {/* 2. STATS STACK */}
-            <div className="stats-stack">
-              
-              {/* Pink Card: Volunteers */}
-              <div className="stat-card pink-theme">
-                <div className="stat-icon-box">
-                  <Users size={24} color="#be185d" />
+        <div className="compact-main-grid">
+          {/* USER DISTRIBUTION CHART */}
+          <div className="card chart-section">
+            <h3>User Distribution</h3>
+            <div className="donut-box">
+              <div className="donut-chart" style={chartStyle}>
+                <div className="center-text">
+                  <span className="big-number">{stats.totalUsers}</span>
                 </div>
-                <div className="stat-info">
-                  <p>Total Volunteers</p>
-                  <h2>{stats.volunteers}</h2>
-                </div>
-                <div className="stat-badge text-pink-700">Live</div>
               </div>
-
-              {/* Green Card: NGOs */}
-              <div className="stat-card green-theme">
-                <div className="stat-icon-box">
-                  <Building2 size={24} color="#047857" />
-                </div>
-                <div className="stat-info">
-                  <p>Registered NGOs</p>
-                  <h2>{stats.ngos}</h2>
-                </div>
-                <div className="stat-badge text-green-800">Verified</div>
+              <div className="compact-legend">
+                <div className="legend-item"><span className="dot pink"></span> {stats.volunteers} Volunteers</div>
+                <div className="legend-item"><span className="dot green"></span> {stats.ngos} NGOs</div>
               </div>
-
-              {/* Sage Card: Events */}
-              <div className="stat-card sage-theme">
-                <div className="stat-icon-box">
-                  <Calendar size={24} color="#656d0a" />
-                </div>
-                <div className="stat-info">
-                  <p>Active Events</p>
-                  <h2>{stats.events}</h2>
-                </div>
-                <div className="stat-badge">New</div>
-              </div>
-
             </div>
           </div>
 
-          {/* --- RIGHT COLUMN --- */}
-          <div className="right-col">
-            <div className="card table-card">
-              <div className="card-header">
-                <h3>Recent System Activity</h3>
-                <button className="btn-toggle" style={{ fontSize: '0.75rem' }}>View All</button>
-              </div>
-              
-              <table className="admin-table">
+          {/* DYNAMIC ACTIVITY TABLE */}
+          <div className="card activity-section">
+            <div className="card-header">
+              <h3>Recent System Activity</h3>
+            </div>
+            <div className="table-responsive-area">
+              <table className="admin-table-compact">
                 <thead>
                   <tr>
                     <th>Activity Type</th>
@@ -143,52 +152,38 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* Static data for demo purposes since we don't have an activity log collection yet */}
-                  <tr>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div className="profile-pic pink-theme" style={{ width: '30px', height: '30px', fontSize: '0.7rem' }}>V</div>
-                        <span className="type-label">New Volunteer</span>
-                      </div>
-                    </td>
-                    <td>12/12/24</td>
-                    <td><span className="status-tag success">Verified</span></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div className="profile-pic sage-theme" style={{ width: '30px', height: '30px', fontSize: '0.7rem' }}><Activity size={14}/></div>
-                        <span className="type-label">Event Created</span>
-                      </div>
-                    </td>
-                    <td>12/11/24</td>
-                    <td><span className="status-tag success">Active</span></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div className="profile-pic green-theme" style={{ width: '30px', height: '30px', fontSize: '0.7rem' }}>N</div>
-                        <span className="type-label">New NGO</span>
-                      </div>
-                    </td>
-                    <td>12/10/24</td>
-                    <td><span className="status-tag error">Pending</span></td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                         <div className="profile-pic pink-theme" style={{ width: '30px', height: '30px', fontSize: '0.7rem' }}>V</div>
-                         <span className="type-label">New Volunteer</span>
-                      </div>
-                    </td>
-                    <td>12/09/24</td>
-                    <td><span className="status-tag success">Verified</span></td>
-                  </tr>
+                  {activities.map((activity) => (
+                    <tr 
+                      key={activity.id} 
+                      onClick={() => activity.status === "Pending" && navigate('/manage-users')}
+                      style={{ cursor: activity.status === "Pending" ? 'pointer' : 'default' }}
+                      title={activity.status === "Pending" ? "Click to verify NGO" : ""}
+                    >
+                      <td>
+                        <div className="type-icon-cell">
+                          <div className={`mini-pic ${
+                            activity.category === "volunteer" ? "pink-theme" : 
+                            activity.category === "NGO" ? "green-theme" : "sage-theme"
+                          }`}>
+                            {activity.category === "event" ? <Activity size={12}/> : activity.type.charAt(4)}
+                          </div>
+                          <span>{activity.type}</span>
+                        </div>
+                      </td>
+                      <td>{activity.date.toLocaleDateString()}</td>
+                      <td>
+                        <span className={`status-tag ${
+                          activity.status === "Verified" || activity.status === "Active" ? "success" : "warning"
+                        }`}>
+                          {activity.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
           </div>
-
         </div>
       </div>
     </div>

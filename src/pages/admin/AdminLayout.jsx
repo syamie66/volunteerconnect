@@ -41,14 +41,6 @@ export default function AdminLayout() {
           >
             <Calendar size={18} /> Manage Events
           </NavLink>
-
-          {/* Reports Link */}
-          <NavLink 
-            to="/admin/reports" 
-            className={({ isActive }) => isActive ? "nav-item active" : "nav-item"}
-          >
-            <Flag size={18} /> Reports
-          </NavLink>
         </nav>
 
         <div className="logout-area">
@@ -61,8 +53,6 @@ export default function AdminLayout() {
         {/* Persistent Header (Search bar, Profile) */}
         <header className="admin-header">
           <div className="header-actions">
-            <button className="icon-btn"><Bell size={20} /></button>
-            <div className="profile-pic">AD</div>
           </div>
         </header>
 

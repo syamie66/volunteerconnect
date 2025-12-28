@@ -3,13 +3,13 @@ import { db } from "../../firebase";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { 
   Users, Eye, X, Shield, Heart, 
-  Calendar, Target, MapPin, Phone, User 
+  Calendar, Target, MapPin, Phone, User, CheckCircle 
 } from "lucide-react";
-import './AdminCSS.css'; // Ensure this file contains the CSS provided previously
+import './AdminCSS.css';
 
 export default function ManageUsers() {
   const [users, setUsers] = useState([]);
-  const [activeTab, setActiveTab] = useState('volunteer'); // 'volunteer' or 'NGO'
+  const [activeTab, setActiveTab] = useState('volunteer'); 
   const [selectedUser, setSelectedUser] = useState(null); 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -27,7 +27,7 @@ export default function ManageUsers() {
     fetchUsers();
   }, []);
 
-  // 2. Toggle Status (Enable/Disable)
+  // 2. Toggle Account Status (Enable/Disable)
   const toggleStatus = async (id, disabled) => {
     try {
       await updateDoc(doc(db, "users", id), { disabled: !disabled });
@@ -38,7 +38,24 @@ export default function ManageUsers() {
     }
   };
 
-  // 3. Filter Logic (Tab + Search)
+  // 3. Handle NGO Verification
+  const handleVerifyNGO = async (userId) => {
+    if (window.confirm("Verify this organization? This will allow them to post events.")) {
+      try {
+        const userRef = doc(db, "users", userId);
+        await updateDoc(userRef, { status: "Verified" });
+        
+        // Update local state so UI reflects change immediately
+        setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, status: "Verified" } : u));
+        alert("NGO has been verified! 🌱");
+      } catch (error) {
+        console.error("Error verifying NGO:", error);
+        alert("Failed to verify NGO.");
+      }
+    }
+  };
+
+  // 4. Filter Logic (Tab + Search)
   const filteredUsers = users.filter(user => {
     const matchesTab = activeTab === 'NGO' 
       ? user.userType === 'NGO' 
@@ -53,14 +70,11 @@ export default function ManageUsers() {
   });
 
   return (
-    // WRAPPER CLASS FOR SCOPED CSS
     <div className="admin-dashboard-scope">
       <div className="content-container">
         
-        {/* --- PAGE TITLE --- */}
         <h1 className="page-title">Manage Users</h1>
 
-        {/* --- TABS --- */}
         <div className="tab-group">
           <button
             onClick={() => setActiveTab('volunteer')}
@@ -76,12 +90,9 @@ export default function ManageUsers() {
           </button>
         </div>
 
-        {/* --- TABLE CARD --- */}
         <div className="card table-card">
           <div className="card-header">
             <h3>{activeTab === 'NGO' ? 'Registered Organizations' : 'Volunteer List'}</h3>
-            
-            {/* Simple Search Input */}
             <div className="search-bar" style={{ width: '250px', border: '1px solid #eee' }}>
               <input 
                 type="text" 
@@ -107,58 +118,74 @@ export default function ManageUsers() {
 
               <tbody>
                 {filteredUsers.length > 0 ? (
-                  filteredUsers.map((user) => (
-                    <tr key={user.id}>
-                      {/* Name Column */}
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <div className={`profile-pic ${activeTab === 'NGO' ? 'green-theme' : 'pink-theme'}`} style={{ width: '32px', height: '32px', fontSize: '0.8rem' }}>
-                            {(user.name || user.orgName || "?").charAt(0).toUpperCase()}
+                  filteredUsers.map((user) => {
+                    // Logic for Status Tag
+                    const currentStatus = user.status || (user.userType === 'NGO' ? 'Pending' : 'Verified');
+                    
+                    return (
+                      <tr key={user.id}>
+                        <td>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div className={`profile-pic ${activeTab === 'NGO' ? 'green-theme' : 'pink-theme'}`} style={{ width: '32px', height: '32px', fontSize: '0.8rem' }}>
+                              {(user.name || user.orgName || "?").charAt(0).toUpperCase()}
+                            </div>
+                            <span style={{ fontWeight: '600' }}>{user.name || user.orgName || "Unknown"}</span>
                           </div>
-                          <span style={{ fontWeight: '600' }}>{user.name || user.orgName || "Unknown"}</span>
-                        </div>
-                      </td>
-                      
-                      {/* Email Column */}
-                      <td>{user.email}</td>
+                        </td>
+                        
+                        <td>{user.email}</td>
 
-                      {/* Dynamic Column */}
-                      {activeTab === 'volunteer' && <td>{user.phone || "-"}</td>}
-                      {activeTab === 'NGO' && <td>{user.yearFounded || "-"}</td>}
+                        {activeTab === 'volunteer' && <td>{user.phone || "-"}</td>}
+                        {activeTab === 'NGO' && <td>{user.yearFounded || "-"}</td>}
 
-                      {/* Status Column */}
-                      <td>
-                        {user.disabled ? (
-                          <span className="status-tag error">Disabled</span>
-                        ) : (
-                          <span className="status-tag success">Active</span>
-                        )}
-                      </td>
+                        <td>
+                          {user.disabled ? (
+                            <span className="status-tag error">Disabled</span>
+                          ) : (
+                            <span className={`status-tag ${currentStatus === 'Verified' ? 'success' : 'warning'}`}>
+                              {currentStatus}
+                            </span>
+                          )}
+                        </td>
 
-                      {/* Actions Column */}
-                      <td>
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                          <button
-                            onClick={() => setSelectedUser(user)}
-                            className="btn-icon btn-view"
-                            title="View Details"
-                          >
-                            <Eye size={18} />
-                          </button>
-                          
-                          <button
-                            onClick={() => toggleStatus(user.id, user.disabled)}
-                            className={`btn-toggle ${user.disabled ? 'is-active' : 'is-disabled'}`}
-                          >
-                            {user.disabled ? "Enable" : "Disable"}
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                        <td>
+                          <div style={{ display: 'flex', gap: '10px' }}>
+                            {/* View Details Button */}
+                            <button
+                              onClick={() => setSelectedUser(user)}
+                              className="btn-icon btn-view"
+                              title="View Details"
+                            >
+                              <Eye size={18} />
+                            </button>
+                            
+                            {/* NEW: Verification Button for Pending NGOs */}
+                            {activeTab === 'NGO' && currentStatus === 'Pending' && !user.disabled && (
+                                <button
+                                  onClick={() => handleVerifyNGO(user.id)}
+                                  className="btn-icon"
+                                  style={{ backgroundColor: '#d1fae5', color: '#047857' }}
+                                  title="Verify NGO"
+                                >
+                                  <CheckCircle size={18} />
+                                </button>
+                            )}
+
+                            {/* Enable/Disable Button */}
+                            <button
+                              onClick={() => toggleStatus(user.id, user.disabled)}
+                              className={`btn-toggle ${user.disabled ? 'is-active' : 'is-disabled'}`}
+                            >
+                              {user.disabled ? "Enable" : "Disable"}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
                 ) : (
                   <tr>
-                    <td colSpan="5" style={{ textAlign: 'center', padding: '30px', color: '#999' }}>
+                    <td colSpan="6" style={{ textAlign: 'center', padding: '30px', color: '#999' }}>
                       No {activeTab} users found matching "{searchTerm}".
                     </td>
                   </tr>
@@ -171,10 +198,7 @@ export default function ManageUsers() {
         {/* --- DETAILS MODAL --- */}
         {selectedUser && (
           <div className="modal-overlay" onClick={() => setSelectedUser(null)}>
-            {/* Stop propagation so clicking inside modal doesn't close it */}
             <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-              
-              {/* Modal Header */}
               <div className="modal-header">
                 <h2>
                   {selectedUser.userType === 'NGO' ? <Shield size={24}/> : <User size={24}/>}
@@ -185,11 +209,8 @@ export default function ManageUsers() {
                 </button>
               </div>
 
-              {/* Modal Body */}
               <div className="modal-body">
                 <div className="detail-grid">
-                  
-                  {/* --- COMMON FIELDS --- */}
                   <div className="detail-item">
                      <label>Email Address</label>
                      <p>{selectedUser.email}</p>
@@ -199,7 +220,6 @@ export default function ManageUsers() {
                      <p style={{ textTransform: 'capitalize' }}>{selectedUser.userType}</p>
                   </div>
 
-                  {/* --- VOLUNTEER SPECIFIC --- */}
                   {selectedUser.userType === 'volunteer' && (
                     <>
                       <div className="detail-item">
@@ -210,24 +230,6 @@ export default function ManageUsers() {
                         <label>Age & Gender</label>
                         <p>{selectedUser.age || "?"} yrs • {selectedUser.gender || "?"}</p>
                       </div>
-                      <div className="detail-item">
-                        <label>IC Number</label>
-                        <p>{selectedUser.icNumber || "N/A"}</p>
-                      </div>
-                      <div className="detail-item">
-                        <label>Emergency Contact</label>
-                        <p style={{ color: '#be185d', fontWeight: 'bold' }}>
-                          <Phone size={14} style={{ display: 'inline', marginRight: '5px' }}/>
-                          {selectedUser.emergencyContact || "N/A"}
-                        </p>
-                      </div>
-                      <div className="detail-item span-full">
-                        <label>Mailing Address</label>
-                        <p style={{ display: 'flex', gap: '8px' }}>
-                          <MapPin size={18} className="text-gray-400" />
-                          {selectedUser.address || "N/A"}
-                        </p>
-                      </div>
                       <div className="detail-item span-full">
                         <label>Skills & Notes</label>
                         <div className="desc-box">
@@ -237,61 +239,37 @@ export default function ManageUsers() {
                     </>
                   )}
 
-                  {/* --- NGO SPECIFIC --- */}
                   {selectedUser.userType === 'NGO' && (
                     <>
                       <div className="detail-item">
                         <label>Year Founded</label>
-                        <p style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                          <Calendar size={16} color="#be185d"/> {selectedUser.yearFounded}
-                        </p>
+                        <p><Calendar size={16} color="#be185d" style={{display:'inline', marginRight:'5px'}}/> {selectedUser.yearFounded}</p>
                       </div>
-                      
-                      <div className="detail-item span-full">
-                        <label>Target Beneficiaries</label>
-                        <div className="tag-container">
-                          {selectedUser.beneficiaries && selectedUser.beneficiaries.length > 0 ? (
-                            selectedUser.beneficiaries.map((b, idx) => (
-                              <span key={idx} className="beneficiary-tag">
-                                <Target size={12}/> {b}
-                              </span>
-                            ))
-                          ) : (
-                            <span style={{ color: '#999', fontSize: '0.9rem' }}>No specific group listed</span>
-                          )}
-                        </div>
-                      </div>
-
                       <div className="detail-item span-full">
                         <label>Mission Statement</label>
                         <div className="mission-box" style={{ fontStyle: 'italic', borderLeft: '4px solid #be185d' }}>
                           "{selectedUser.missionStatement}"
                         </div>
                       </div>
-
                       <div className="detail-item span-full">
-                        <label>Organization Description</label>
+                        <label>Description</label>
                         <div className="desc-box">
                           {selectedUser.description || "No description provided."}
                         </div>
                       </div>
                     </>
                   )}
-
                 </div>
               </div>
 
-              {/* Modal Footer */}
               <div className="modal-footer">
                 <button className="btn-secondary" onClick={() => setSelectedUser(null)}>
                   Close Details
                 </button>
               </div>
-
             </div>
           </div>
         )}
-
       </div>
     </div>
   );

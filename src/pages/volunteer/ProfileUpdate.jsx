@@ -9,221 +9,169 @@ export default function ProfileUpdate() {
   const { currentUser } = useAuth();
   const navigate = useNavigate();
 
-  // Form States
   const [name, setName] = useState('');
+  const [gender, setGender] = useState('');
+  const [age, setAge] = useState('');
   const [phone, setPhone] = useState('');
   const [icNumber, setIcNumber] = useState('');
-  const [address, setAddress] = useState('');
   const [emergencyContact, setEmergencyContact] = useState('');
-  const [gender, setGender] = useState('');
+  const [address, setAddress] = useState('');
   const [skills, setSkills] = useState('');
-  const [age, setAge] = useState('');
   
   const [loading, setLoading] = useState(true);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!currentUser) {
-      setLoading(false);
-      return;
-    }
-
+    if (!currentUser) { setLoading(false); return; }
     const fetchUserData = async () => {
       try {
         const userRef = doc(db, 'users', currentUser.uid);
         const docSnap = await getDoc(userRef);
-
         if (docSnap.exists()) {
           const data = docSnap.data();
           setName(data.name || '');
+          setGender(data.gender || '');
+          setAge(data.age || '');
           setPhone(data.phone || '');
           setIcNumber(data.icNumber || '');
-          setAddress(data.address || '');
           setEmergencyContact(data.emergencyContact || '');
-          setGender(data.gender || '');
+          setAddress(data.address || '');
           setSkills(data.skills || '');
-          setAge(data.age || '');
-        } else {
-          setError("User profile not found.");
         }
-      } catch (err) {
-        console.error("Error fetching user data:", err);
-        setError("Failed to load profile data.");
-      } finally {
-        setLoading(false);
-      }
+      } catch (err) { console.error(err); } 
+      finally { setLoading(false); }
     };
-
     fetchUserData();
   }, [currentUser]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setMessage('');
-
     try {
       const userRef = doc(db, 'users', currentUser.uid);
       await updateDoc(userRef, {
-        name, phone, icNumber, address, emergencyContact, gender, skills, age
+        name, gender, age: parseInt(age), phone,
+        icNumber, emergencyContact, address, skills
       });
-
-      setMessage('Profile updated successfully!');
-      
-      // REDIRECT TO DASHBOARD AFTER SAVE
-      setTimeout(() => navigate('/dashboard'), 1500); 
-
-    } catch (err) {
-      console.error(err);
-      setError('Failed to update profile. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+      setTimeout(() => navigate('/dashboard'), 1000); 
+    } catch (err) { console.error(err); } 
+    finally { setLoading(false); }
   };
 
-  if (loading && !name) return <div className="profile-update-wrapper"><p className="status-msg">Loading...</p></div>;
-  if (!currentUser) return <div className="profile-update-wrapper"><p className="status-msg">Please log in.</p></div>;
+  if (loading && !name) return <div className="pu-wrapper">LOADING...</div>;
 
   return (
-    <div className="profile-update-wrapper">
-      {/* Background Pattern */}
-      <div className="update-bg-pattern"></div>
-
-      <div className="update-container">
+    <div className="pu-wrapper">
+      <div className="pu-container">
         
-        <div className="update-header">
-           {/* BACK BUTTON REDIRECTING TO DASHBOARD */}
-           <Link to="/dashboard" className="back-link">← Back to Dashboard</Link>
-           <h1>Update Profile</h1>
-        </div>
+        {/* --- LEFT: SUMMARY CARD --- */ }
+        <aside className="pu-summary-card">
+            
+            <div className="pu-avatar-container">
+                <div className="pu-avatar-circle">
+                    {name ? name.charAt(0).toUpperCase() : "U"}
+                </div>
+                {/* Text instead of pencil emoji */}
+                <div className="pu-edit-badge">EDIT</div>
+            </div>
 
-        {error && <div className="status-msg error">{error}</div>}
-        {message && <div className="status-msg success">{message}</div>}
+            <h3 className="pu-user-name">{name.toUpperCase() || "USER"}</h3>
+            <p className="pu-user-role">VOLUNTEER</p>
+            
+            <div className="pu-divider"></div>
 
-        <div className="update-layout">
-          
-          {/* LEFT SIDE: FORM */}
-          <div className="update-form-side">
-            <form onSubmit={handleSubmit}>
-              
-              {/* Identity Section */}
-              <div className="form-section">
-                <h3 className="section-title">01. Identity Details</h3>
+            <div className="pu-info-list">
+                <div className="pu-info-row">
+                    <span className="pu-info-label">EMAIL</span>
+                    <span className="pu-info-value" title={currentUser?.email}>{currentUser?.email?.toUpperCase()}</span>
+                </div>
+                <div className="pu-info-row">
+                    <span className="pu-info-label">PHONE</span>
+                    <span className="pu-info-value">{phone || "--"}</span>
+                </div>
+                <div className="pu-info-row">
+                    <span className="pu-info-label">LOCATION</span>
+                    <span className="pu-info-value">{address ? "MALAYSIA" : "--"}</span>
+                </div>
+                 <div className="pu-info-row">
+                    <span className="pu-info-label">IC NO.</span>
+                    <span className="pu-info-value">{icNumber || "--"}</span>
+                </div>
+            </div>
+
+            <div className="pu-status-row">
+                <span className="pu-status-label">PROFILE STATUS</span>
+                <span className="pu-status-dot"></span>
+            </div>
+
+            {/* Text instead of arrow emoji */}
+            <Link to="/dashboard" className="pu-back-dashboard">
+                <span>BACK TO DASHBOARD</span>
+            </Link>
+
+        </aside>
+
+        {/* --- RIGHT: FORM CARD --- */}
+        <main className="pu-form-card">
+            <div className="pu-section-header">
+                <h2>EDIT PERSONAL DETAILS</h2>
+            </div>
+
+            <form onSubmit={handleSubmit} className="pu-form-grid">
                 
-                <div className="input-row">
-                  <div className="input-pill-wrapper">
-                    <label>Full Name</label>
-                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
-                  </div>
+                <div className="pu-span-2">
+                    <label className="pu-label">FULL NAME</label>
+                    <input className="pu-input" type="text" value={name} onChange={(e) => setName(e.target.value)} required />
                 </div>
 
-                <div className="input-row">
-                  <div className="input-pill-wrapper">
-                    <label>IC Number</label>
-                    <input type="text" value={icNumber} onChange={(e) => setIcNumber(e.target.value)} required />
-                  </div>
-                  <div className="input-pill-wrapper">
-                    <label>Age</label>
-                    <input type="number" value={age} onChange={(e) => setAge(e.target.value)} required />
-                  </div>
+                <div className="pu-span-2">
+                    <label className="pu-label">EMAIL ADDRESS (READ-ONLY)</label>
+                    <input className="pu-input pu-input-disabled" type="email" value={currentUser?.email} disabled />
                 </div>
 
-                <div className="input-row">
-                  <div className="input-pill-wrapper">
-                    <label>Gender</label>
-                    <select value={gender} onChange={(e) => setGender(e.target.value)} required>
-                      <option value="" disabled>Select Gender</option>
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
+                <div>
+                    <label className="pu-label">GENDER</label>
+                    <select className="pu-input" value={gender} onChange={(e) => setGender(e.target.value)} required>
+                        <option value="Male">MALE</option>
+                        <option value="Female">FEMALE</option>
                     </select>
-                  </div>
-                  <div className="input-pill-wrapper">
-                    <label>Email (Read-only)</label>
-                    <input type="email" value={currentUser.email} disabled className="disabled-input" />
-                  </div>
                 </div>
-              </div>
+                <div>
+                    <label className="pu-label">AGE</label>
+                    <input className="pu-input" type="number" value={age} onChange={(e) => setAge(e.target.value)} required />
+                </div>
 
-              {/* Contact Section */}
-              <div className="form-section">
-                <h3 className="section-title">02. Contact & Address</h3>
+                <div>
+                    <label className="pu-label">PHONE</label>
+                    <input className="pu-input" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                </div>
+                <div>
+                    <label className="pu-label">IC NUMBER</label>
+                    <input className="pu-input" type="text" value={icNumber} onChange={(e) => setIcNumber(e.target.value)} required />
+                </div>
+
+                <div className="pu-span-2">
+                    <label className="pu-label">MAILING ADDRESS</label>
+                    <input className="pu-input" type="text" value={address} onChange={(e) => setAddress(e.target.value)} required />
+                </div>
                 
-                <div className="input-row">
-                  <div className="input-pill-wrapper">
-                     <label>Phone Number</label>
-                     <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-                  </div>
-                  <div className="input-pill-wrapper">
-                     <label>Emergency Contact</label>
-                     <input type="tel" value={emergencyContact} onChange={(e) => setEmergencyContact(e.target.value)} required />
-                  </div>
+                <div className="pu-span-2">
+                    <label className="pu-label">EMERGENCY SOS</label>
+                    <input className="pu-input" type="tel" value={emergencyContact} onChange={(e) => setEmergencyContact(e.target.value)} required />
                 </div>
 
-                <div className="input-row">
-                  <div className="input-pill-wrapper">
-                     <label>Mailing Address</label>
-                     <textarea 
-                        value={address} 
-                        onChange={(e) => setAddress(e.target.value)} 
-                        required 
-                        placeholder="Street, City, State..."
-                     />
-                  </div>
+                 <div className="pu-span-2">
+                    <label className="pu-label">SKILLS</label>
+                    <input className="pu-input" type="text" value={skills} onChange={(e) => setSkills(e.target.value)} />
                 </div>
 
-                <div className="input-row">
-                   <div className="input-pill-wrapper">
-                      <label>Skills / Bio</label>
-                      <textarea 
-                        value={skills} 
-                        onChange={(e) => setSkills(e.target.value)} 
-                        placeholder="e.g. Photography, First Aid..."
-                      />
-                   </div>
+                <div className="pu-actions">
+                    <Link to="/dashboard" className="pu-btn-cancel">DISCARD CHANGES</Link>
+                    <button type="submit" className="pu-btn-save">SAVE CHANGES</button>
                 </div>
-              </div>
-
-              <button type="submit" className="save-pill-btn" disabled={loading}>
-                {loading ? 'Saving...' : 'Save Changes'}
-              </button>
 
             </form>
-          </div>
+        </main>
 
-          {/* RIGHT SIDE: LIVE PREVIEW */}
-          <aside className="update-summary-side">
-             <div className="summary-card">
-                <span className="summary-org">Profile Preview</span>
-                <h2 className="summary-title">{name || "Your Name"}</h2>
-                <p className="summary-desc">
-                  {skills || "Your skills and bio will appear here."}
-                </p>
-                
-                <div className="summary-details">
-                   <div className="detail-item">
-                      <span>Email</span>
-                      <span className="sage-text">{currentUser.email}</span>
-                   </div>
-                   <div className="detail-item">
-                      <span>Phone</span>
-                      <span className="sage-text">{phone || "N/A"}</span>
-                   </div>
-                   <div className="detail-item">
-                      <span>Location</span>
-                      <span className="sage-text">{address ? "Updated" : "N/A"}</span>
-                   </div>
-                </div>
-
-                <div className="detail-total">
-                   <span>Profile Status</span>
-                   <span className="sage-text">Active</span>
-                </div>
-             </div>
-          </aside>
-
-        </div>
       </div>
     </div>
   );

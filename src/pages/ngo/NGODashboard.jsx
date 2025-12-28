@@ -55,18 +55,21 @@ export default function NGODashboard() {
     event.location.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Helper to check if event is passed
   const getEventStatus = (dateString) => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Ignore time, compare dates only
+    today.setHours(0, 0, 0, 0); 
     const eventDate = new Date(dateString);
     
     return eventDate < today ? 'Completed' : 'Ongoing';
   };
 
-  // Calculate simple stats for the UI
+  // --- CALCULATE REAL STATS ---
   const totalParticipants = Object.values(participantsMap).reduce((acc, curr) => acc + curr.length, 0);
   const activeEventsCount = events.length;
+
+  // Define targets for the progress bars (adjust these numbers as needed)
+  const eventGoal = 10;
+  const volunteerGoal = 50;
 
   if (loading) return <div className="ngo-loader">Loading Dashboard...</div>;
 
@@ -102,7 +105,6 @@ export default function NGODashboard() {
       {/* --- MAIN CONTENT AREA --- */}
       <main className="ngo-main-content">
         
-        {/* Top Header */}
         <header className="main-header">
           <div className="header-text">
             <h1>NGO Dashboard</h1>
@@ -118,24 +120,32 @@ export default function NGODashboard() {
 
         {/* Middle Stats Section */}
         <div className="stats-grid">
-          {/* Left: Quick Stats */}
           <div className="stat-card big-stat">
             <h3>Engagement Overview</h3>
             <div className="stat-bars-visual">
                 <div className="stat-item">
                     <span className="label">Total Events</span>
-                    <div className="bar-container"><div className="bar fill-pink" style={{width: '60%'}}></div></div>
+                    <div className="bar-container">
+                      <div 
+                        className="bar fill-pink" 
+                        style={{ width: `${Math.min((activeEventsCount / eventGoal) * 100, 100)}%` }}
+                      ></div>
+                    </div>
                     <span className="num">{activeEventsCount}</span>
                 </div>
                 <div className="stat-item">
                     <span className="label">Total Volunteers</span>
-                    <div className="bar-container"><div className="bar fill-green" style={{width: '80%'}}></div></div>
+                    <div className="bar-container">
+                      <div 
+                        className="bar fill-green" 
+                        style={{ width: `${Math.min((totalParticipants / volunteerGoal) * 100, 100)}%` }}
+                      ></div>
+                    </div>
                     <span className="num">{totalParticipants}</span>
                 </div>
             </div>
           </div>
 
-          {/* Right: Quick Action */}
           <div className="stat-card action-card">
              <h3>Quick Action</h3>
              <p>Ready to make an impact today?</p>
@@ -145,7 +155,7 @@ export default function NGODashboard() {
           </div>
         </div>
 
-        {/* Bottom Section: The "Table" List */}
+        {/* Bottom Section: The Table List */}
         <div className="events-table-section">
           <div className="table-header">
             <h3>Your Events</h3>
@@ -179,7 +189,6 @@ export default function NGODashboard() {
                       <div className="col title"><strong>{ev.title}</strong></div>
                       <div className="col loc">{ev.location}</div>
                       
-                      {/* --- STATUS BADGE LOGIC --- */}
                       <div className="col action">
                          <span className={status === 'Ongoing' ? "badge-pink" : "badge-completed"}>
                            {status}
@@ -187,26 +196,9 @@ export default function NGODashboard() {
                       </div>
                       
                       <div className="col manage action-buttons">
-                          <button 
-                            className="btn-text edit" 
-                            onClick={() => navigate(`/event/${ev.id}/edit`)}
-                          >
-                            Edit
-                          </button>
-                          
-                          <button 
-                            className="btn-text view" 
-                            onClick={() => navigate(`/event/${ev.id}/participants`)}
-                          >
-                            Participants
-                          </button>
-                          
-                          <button 
-                            className="btn-text delete" 
-                            onClick={() => handleDelete(ev.id)}
-                          >
-                            Delete
-                          </button>
+                          <button className="btn-text edit" onClick={() => navigate(`/event/${ev.id}/edit`)}>Edit</button>
+                          <button className="btn-text view" onClick={() => navigate(`/event/${ev.id}/participants`)}>Participants</button>
+                          <button className="btn-text delete" onClick={() => handleDelete(ev.id)}>Delete</button>
                       </div>
                     </div>
                   );
@@ -254,7 +246,6 @@ export default function NGODashboard() {
             </button>
         </div>
       </aside>
-
     </div>
   );
 }

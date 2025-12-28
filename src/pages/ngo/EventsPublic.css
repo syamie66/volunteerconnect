@@ -316,3 +316,199 @@
   -webkit-line-clamp: unset; 
   overflow: visible;
 }
+
+/* --- SECTION DIVIDERS --- */
+.ep-divider {
+  border: 0;
+  height: 1px;
+  /* Soft Sage Green fading to transparent at the edges */
+  background-image: linear-gradient(
+    to right, 
+    rgba(0, 0, 0, 0), 
+    #a3b18a, 
+    rgba(0, 0, 0, 0)
+  );
+  margin: 40px auto;
+  width: 80%; /* Doesn't touch the very edges for a cleaner look */
+  opacity: 0.6;
+}
+
+/* Optional: Add a small decorative element in the middle of the line */
+.ep-divider::after {
+  content: "🍃";
+  display: inline-block;
+  position: relative;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fcfbf7; /* Matches your Cream background */
+  padding: 0 10px;
+  font-size: 0.9rem;
+}
+
+/* --- MINIMALIST SECTION LINES --- */
+.ep-section-line {
+  border: 0;
+  /* Use a very light Sage or Grey for a subtle look */
+  border-top: 1px solid #e0e4d9; 
+  margin: 0 auto;
+  width: 90%; /* Slightly shorter than the container for elegance */
+  padding: 0;
+  /* Adjust the space above/below the line */
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+/* Optional: Different styling for the footer line */
+.ep-footer + .ep-section-line {
+    width: 100%;
+    border-top: 2px solid #223413; /* Dark Matcha for the bottom line */
+}
+
+/* Ensure the wrapper background matches the agency reference */
+.ep-wrapper {
+  background-color: #fcfbf7; /* Cream background */
+  min-height: 100vh;
+}
+
+/* --- 1. CORE LAYOUT & COLORS --- */
+.ep-wrapper {
+    background-color: #fcfbf7; /* Cream Background */
+    min-height: 100vh;
+    padding-bottom: 80px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* 1px Minimalist Section Lines */
+.ep-section-line {
+    border: 0;
+    border-top: 1px solid #d1d1d1;
+    margin: 0;
+    width: 100%;
+    opacity: 0.4;
+}
+
+/* --- 2. TOP DECO NAV --- */
+.ep-top-nav-deco {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 5%;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #6b705c; /* Muted Sage */
+    font-weight: 600;
+}
+
+/* --- 3. EDITORIAL HERO (TWO-COLUMN) --- */
+.ep-hero-editorial {
+    display: flex;
+    align-items: stretch; /* Forces image to match text height */
+    padding: 0; 
+    margin: 0;
+    width: 100%;
+}
+
+.ep-hero-content {
+    flex: 1.2;
+    padding: 100px 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ep-editorial-title {
+    font-size: clamp(3rem, 5vw, 4.8rem); /* Fluid typography */
+    font-weight: 700;
+    line-height: 1.05;
+    color: #1a1a1a;
+    margin: 0 0 30px 0;
+    letter-spacing: -2px;
+}
+
+.ep-subtitle-editorial {
+    font-size: 1.1rem;
+    color: #4a4a4a;
+    max-width: 480px;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* THE BACKGROUND IMAGE STYLES */
+.ep-hero-image-visual {
+    flex: 1;
+    /* UPDATE THIS PATH TO YOUR IMAGE */
+    background-image: url('../../images/image10.png'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    /* Matcha Strawberry Aesthetic Tint */ 
+
+    
+    border-left: 1px solid #d1d1d1; /* Minimal vertical divider */
+}
+
+/* --- 4. FILTER & SEARCH STRIP --- */
+.ep-filter-strip {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background-color: #fee8f4;
+}
+
+.ep-filter-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.ep-search-container-editorial {
+    width: 40%;
+}
+
+.ep-search-input-editorial {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    outline: none;
+    text-align: right;
+    color: #1a1a1a;
+}
+
+/* --- 5. GRID & FOOTER --- */
+.ep-events-grid {
+    padding: 200px 5%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 40px;
+}
+
+.ep-big-logo {
+    padding: 60px 5%;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    text-transform: lowercase;
+    color: #1a1a1a;
+}
+
+/* --- RESPONSIVE ADJUSTMENTS --- */
+@media (max-width: 1024px) {
+    .ep-hero-editorial {
+        flex-direction: column;
+    }
+    .ep-hero-image-visual {
+        height: 400px; /* Give it a height when stacked on mobile */
+        border-left: none;
+        border-top: 1px solid #d1d1d1;
+    }
+    .ep-hero-content {
+        padding: 60px 5%;
+    }
+}

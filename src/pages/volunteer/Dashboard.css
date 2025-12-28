@@ -1,13 +1,16 @@
-/* SCOPED CSS */
+/* =========================================
+   DASHBOARD FULL STYLES - PEACH BOX THEME
+   ========================================= */
+
 .dashboard-scope {
     font-family: 'Poppins', sans-serif;
-    background-color: #F8F9FA;
+    background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
     display: flex;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
     box-sizing: border-box;
-    text-transform: uppercase; /* Enforces Uppercase */
+    text-transform: uppercase;
 }
 
 .dashboard-scope * {
@@ -18,21 +21,24 @@
 
 /* --- Sidebar --- */
 .dashboard-scope .sidebar {
-    width: 260px;
-    background-color: #557C55;
+    width: 280px;
+    background-color: #223413;
     color: white;
+    padding: 30px 25px; 
     display: flex;
     flex-direction: column;
-    padding: 30px 20px;
-    flex-shrink: 0;
+    justify-content: flex-start; 
+    gap: 50px; 
+    margin: 20px;                 
+    height: calc(100% - 40px);    
+    border-radius: 30px;          
+    box-shadow: 5px 10px 30px rgba(53, 94, 59, 0.2); 
 }
 
 .dashboard-scope .logo-section h2 {
     color: white;
-    margin-bottom: 50px;
     font-size: 1.8rem;
     font-weight: 700;
-    letter-spacing: 1px;
 }
 .dashboard-scope .logo-section span { color: #D8A7B1; }
 
@@ -45,26 +51,15 @@
 .dashboard-scope .nav-item {
     display: flex;
     align-items: center;
-    padding: 12px 15px;
+    padding: 15px 20px;
     color: #E0E0E0;
     text-decoration: none;
-    border-radius: 10px;
-    transition: all 0.3s;
+    border-radius: 12px;
+    transition: 0.3s;
     font-weight: 600;
     font-size: 0.9rem;
-    cursor: pointer;
-    letter-spacing: 0.5px;
 }
 
-.dashboard-scope .nav-item .icon {
-    margin-right: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-}
-
-.dashboard-scope .nav-item:hover, 
 .dashboard-scope .nav-item.active {
     background-color: rgba(255, 255, 255, 0.15);
     color: white;
@@ -72,6 +67,9 @@
 
 .dashboard-scope .logout-item {
     margin-top: auto;
+    background: transparent;
+    border: none;
+    cursor: pointer;
     color: #ffcfcf;
 }
 
@@ -81,8 +79,7 @@
     padding: 40px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    background: #F8F9FA;
+    overflow-y: auto;
 }
 
 .dashboard-scope .top-bar {
@@ -90,201 +87,136 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
-    flex-shrink: 0;
 }
 
-.dashboard-scope .welcome-text h1 { font-size: 1.6rem; color: #2D3436; font-weight: 700; }
-.dashboard-scope .welcome-text p { color: #888; margin-top: 5px; font-size: 0.8rem; letter-spacing: 1px; }
+.dashboard-scope .welcome-text h1 { 
+    font-size: 1.8rem; 
+    color: #2D3436; 
+    font-weight: 800; 
+}
 
 .dashboard-scope .cta-btn {
     background-color: #D8A7B1;
     color: white;
-    border: none;
+    text-decoration: none;
     padding: 12px 25px;
-    border-radius: 8px;
+    border-radius: 12px;
     font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(216, 167, 177, 0.4);
-    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(216, 167, 177, 0.3);
 }
 
-/* --- Grid --- */
-.dashboard-scope .dashboard-grid {
-    display: grid;
-    grid-template-columns: 340px 1fr; /* Profile width increased for safety */
-    gap: 30px;
-    flex: 1;
-    min-height: 0;
-}
-
-.dashboard-scope .grid-column {
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    min-height: 0;
-}
-
-/* --- Cards --- */
+/* --- CONTENT CARDS (PEACH THEME) --- */
 .dashboard-scope .content-card {
-    background: white;
+    background-color: #c8d8b2; /* Peach/Cream background */
     padding: 25px;
-    border-radius: 16px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-    border: 1px solid #f0f0f0;
-    display: flex;
-    flex-direction: column;
-}
-
-/* --- Profile Card Fixed --- */
-.dashboard-scope .profile-card.full-height {
-    height: 100%;
-}
-
-.dashboard-scope .profile-header-visual {
-    text-align: center;
+    border-radius: 25px; /* Higher radius like the reference image */
+    border: 3px solid #FADADD; /* Pinkish border */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
     margin-bottom: 30px;
 }
 
-.dashboard-scope .avatar-large {
-    width: 90px;
-    height: 90px;
-    background: #D8A7B1;
-    color: white;
-    font-size: 2.5rem;
-    border-radius: 50%;
+.dashboard-scope .card-header h3 {
+    font-size: 1.1rem;
+    color: #4A5568;
+    margin-bottom: 20px;
+    font-weight: 800;
+    border-bottom: 2px solid #FADADD;
+    padding-bottom: 10px;
+}
+
+/* --- ACTIVITY CHART --- */
+.dashboard-scope .chart-visual {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 15px;
+    align-items: flex-end;
+    justify-content: space-between;
+    height: 180px;
+    padding: 20px 10px 10px;
 }
 
-.dashboard-scope .profile-header-visual h2 {
-    font-size: 1.3rem;
-    color: #333;
-    margin-bottom: 5px;
-}
-
-.dashboard-scope .user-handle { color: #999; font-size: 0.85rem; display: block; text-transform: lowercase; }
-
-.dashboard-scope .profile-details-list {
-    width: 100%;
-    text-align: left;
-    margin-bottom: auto;
-}
-
-/* FIXED ROW SPACING */
-.dashboard-scope .detail-row {
-    display: flex;
-    align-items: flex-start; /* Aligns to top if text wraps */
-    gap: 15px;
-    padding: 12px 0;
-    border-bottom: 1px solid #f5f5f5;
-    color: #555;
-    font-size: 0.9rem;
-}
-
-.dashboard-scope .icon-small {
-    color: #557C55;
-    margin-top: 2px; /* Visual alignment */
-    width: 20px;
-    display: flex;
-    justify-content: center;
-}
-
-.dashboard-scope .detail-text {
+.dashboard-scope .chart-bar-container {
+    flex: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    height: 100%;
 }
 
-.dashboard-scope .detail-text label {
-    font-size: 0.7rem;
-    color: #999;
+.dashboard-scope .chart-bar {
+    width: 60%;
+    background-color: #4A5568; 
+    border-radius: 4px 4px 0 0;
+    transition: height 0.5s ease-out;
+    min-height: 2px;
+}
+
+.dashboard-scope .chart-label {
+    margin-top: 10px;
+    font-size: 0.65rem;
     font-weight: 700;
-    margin-bottom: 2px;
+    color: #888;
 }
 
-.dashboard-scope .detail-text span {
-    font-weight: 600;
-    color: #333;
+/* --- EVENT GRID --- */
+.dashboard-scope .expanded-events-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
 }
-
-.dashboard-scope .alert-row .icon-small { color: #e65b5b; }
-.dashboard-scope .alert-row .detail-text span { color: #e65b5b; }
-
-.dashboard-scope .secondary-btn {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #557C55;
-    color: #557C55;
-    border-radius: 8px;
-    text-align: center;
-    text-decoration: none;
-    font-weight: 700;
-    margin-top: 20px;
-    display: inline-block;
-}
-
-/* --- Events --- */
-.dashboard-scope .event-section {
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-}
-
-.dashboard-scope .card-header {
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
-}
-
-.dashboard-scope .card-header h3 {
-    font-size: 1rem;
-    color: #2D3436;
-    letter-spacing: 0.5px;
-}
-
-.dashboard-scope .scrollable-list {
-    overflow-y: auto;
-    flex: 1;
-    padding-right: 10px;
-}
-
-.dashboard-scope .scrollable-list::-webkit-scrollbar { width: 6px; }
-.dashboard-scope .scrollable-list::-webkit-scrollbar-thumb { background-color: #D8A7B1; border-radius: 10px; }
 
 .dashboard-scope .event-row {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
     padding: 15px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.6); /* Semi-transparent white row */
+    border-radius: 16px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
 .dashboard-scope .date-box {
-    background: #F0F4F0;
-    color: #557C55;
+    background: #223413; /* Matching Sidebar Green */
+    color: white;
     padding: 8px 12px;
-    border-radius: 8px;
+    border-radius: 10px;
     text-align: center;
     min-width: 65px;
 }
-.dashboard-scope .d-day { font-weight: 700; font-size: 1.1rem; display: block; line-height: 1; }
-.dashboard-scope .d-month { font-size: 0.65rem; }
 
-.dashboard-scope .event-info { flex: 1; min-width: 0; }
-.dashboard-scope .event-info h4 { margin: 0 0 4px; color: #333; font-size: 0.95rem; }
-.dashboard-scope .event-info p { margin: 0; font-size: 0.75rem; color: #888; }
+.dashboard-scope .d-day { font-weight: 800; font-size: 1.2rem; display: block; }
+.dashboard-scope .d-month { font-size: 0.65rem; font-weight: 600; }
+
+.dashboard-scope .event-info h4 {
+    font-size: 0.95rem;
+    color: #333;
+    margin-bottom: 3px;
+}
+
+.dashboard-scope .event-info p {
+    font-size: 0.75rem;
+    color: #718096;
+}
 
 .dashboard-scope .status-tag {
-    font-size: 0.75rem;
     padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: 700;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 800;
 }
-.dashboard-scope .status-tag.pending { background: #FFF0F5; color: #D8A7B1; }
-.dashboard-scope .status-tag.done { background: #E3FCE3; color: #557C55; }
 
-.dashboard-scope .empty-state { text-align: center; margin-top: 20px; color: #999; font-size: 0.8rem; }
+.dashboard-scope .status-tag.approved { 
+    background: #E3FCE3; 
+    color: #2F855A; 
+}
+
+.dashboard-scope .status-tag.done { 
+    background: #EDF2F7; 
+    color: #4A5568; 
+}
+
+.dashboard-scope .empty-state {
+    text-align: center;
+    color: #A0AEC0;
+    font-size: 0.8rem;
+    padding: 20px;
+}

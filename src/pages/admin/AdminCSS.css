@@ -26,20 +26,36 @@
   flex-direction: row;
   width: 100%;
   min-height: 100vh;
-  background-color: var(--bg-color);
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%);
   font-family: 'Inter', sans-serif;
   overflow: hidden;
 }
 
 /* --- 2. SIDEBAR --- */
 .admin-dashboard-scope .admin-sidebar {
-  width: 250px;
-  background-color: var(--sidebar-bg);
-  color: var(--sidebar-text);
+  width: 280px;
+  background-color: #223413;
+  color: white;
+  padding: 30px 25px; 
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  flex-shrink: 0;
+  justify-content: flex-start; 
+  gap: 50px; 
+  
+  /* --- CHANGED LINES --- */
+  margin: 20px; 
+  /* Use 100vh to cover full screen, minus the margins (20px top + 20px bottom) */
+  height: calc(100vh - 40px); 
+  /* --------------------- */
+  
+  border-radius: 30px;          
+  box-shadow: 5px 10px 30px rgba(53, 94, 59, 0.2); 
+  
+  /* Prevent sidebar from shrinking if content grows */
+  flex-shrink: 0; 
+  /* Keep sidebar fixed while content scrolls */
+  position: sticky;
+  top: 20px;
 }
 
 .admin-dashboard-scope .logo-area h2 {
@@ -296,3 +312,150 @@
   font-weight: 600; cursor: pointer; transition: background 0.2s;
 }
 @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- COMPACT DASHBOARD OVERRIDES --- */
+
+/* Lock the container to the screen height to prevent page scrolling */
+.admin-dashboard-scope .content-container.admin-layout-compact {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    gap: 15px;
+}
+
+.admin-layout-compact .compact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-layout-compact .page-title {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+}
+
+.admin-layout-compact .live-tag {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary-green-dark);
+}
+
+/* Horizontal Stats Row */
+.admin-layout-compact .compact-stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.admin-layout-compact .stat-card-mini {
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+.admin-layout-compact .stat-card-mini h3 { margin: 0; font-size: 1.2rem; }
+.admin-layout-compact .stat-card-mini p { margin: 0; font-size: 0.7rem; text-transform: uppercase; font-weight: 700; opacity: 0.6; }
+
+/* Main Grid Layout */
+.admin-layout-compact .compact-main-grid {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    flex: 1; /* Fills remaining vertical space */
+    min-height: 0; /* Important for inner scroll */
+}
+
+/* Donut Chart Adjustments */
+.admin-layout-compact .chart-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0 !important;
+}
+
+.admin-layout-compact .donut-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.admin-layout-compact .compact-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+/* Activity Table Section */
+.admin-layout-compact .activity-section {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin-bottom: 0 !important;
+}
+
+.admin-layout-compact .table-responsive-area {
+    overflow-y: auto;
+    flex: 1;
+    margin-top: 10px;
+}
+
+.admin-layout-compact .admin-table-compact {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.admin-layout-compact .admin-table-compact th {
+    text-align: left;
+    padding: 10px;
+    color: #9ca3af;
+    border-bottom: 1px solid #f3f4f6;
+    position: sticky;
+    top: 0;
+    background: white;
+}
+
+.admin-layout-compact .admin-table-compact td {
+    padding: 12px 10px;
+    border-bottom: 1px solid #f9fafb;
+}
+
+.admin-layout-compact .type-icon-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-layout-compact .mini-pic {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.65rem;
+}
+
+.admin-layout-compact .btn-view-all {
+    background: var(--primary-pink);
+    color: var(--primary-pink-dark);
+    border: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+}
