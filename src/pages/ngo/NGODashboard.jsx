@@ -94,12 +94,6 @@ export default function NGODashboard() {
             <span className="icon">👤</span> My Profile
           </button>
         </nav>
-
-        <div className="sidebar-footer-card">
-          <div className="support-illustration">🌸</div>
-          <p>Need help?</p>
-          <button className="btn-light">Contact Support</button>
-        </div>
       </aside>
 
       {/* --- MAIN CONTENT AREA --- */}
@@ -111,7 +105,7 @@ export default function NGODashboard() {
             <span className="status-badge">Active Status</span>
           </div>
           <div className="header-user">
-            <span>Welcome, <strong>{profile?.organizationName || 'Partner'}</strong></span>
+            <span>Welcome, <strong>{profile?.orgName || 'Partner'}</strong></span>
             <div className="user-avatar" onClick={() => navigate('/ngo-profile')}>
                 {profile?.photoURL ? <img src={profile.photoURL} alt="profile"/> : '👤'}
             </div>
@@ -215,13 +209,6 @@ export default function NGODashboard() {
             <div className="toggle-switch">
                 <span>NGO Mode</span>
                 <div className="switch-knob"></div>
-            </div>
-
-            <div className="circular-progress">
-                <div className="circle-inner">
-                    <h3>84%</h3>
-                    <span>Impact Goal</span>
-                </div>
             </div>
 
             <div className="activity-list">

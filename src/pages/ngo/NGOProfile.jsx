@@ -6,7 +6,7 @@ import { db } from '../../firebase';
 import './NGOProfile.css';
 
 const NGOProfile = () => {
-  const { id } = useParams(); // Catches ID from URL (e.g. /ngo/123)
+  const { id } = useParams(); 
   const location = useLocation();
   const navigate = useNavigate();
   const { currentUser } = useAuth();

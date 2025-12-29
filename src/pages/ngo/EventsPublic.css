@@ -61,7 +61,7 @@
 }
 
 .ep-search-input:focus {
-  background-color: #fff;
+  background-color: #cea8a8;
 }
 
 .ep-search-input::placeholder {
@@ -511,4 +511,58 @@
     .ep-hero-content {
         padding: 60px 5%;
     }
+}
+
+/* Container for the buttons */
+.ep-btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+  flex-wrap: wrap;
+}
+
+/* Base style for all buttons in the group */
+.ep-btn-group button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+/* VIEW PROFILE: Using a soft Sage Green or Outline style */
+.ep-view-profile-btn {
+  background-color: #800020;
+  color: white; /* Sage green text */
+  border: 1.5px solid white !important;
+}
+
+.ep-view-profile-btn:hover {
+  background-color: #574c4f;
+  color: white;
+}
+
+/* JOIN BUTTON: Using your Burgundy/Pinkish theme */
+.ep-join-btn {
+  background-color: #800020; /* Burgundy */
+  color: white;
+  flex-grow: 1; /* Makes the primary action stand out */
+}
+
+.ep-join-btn:hover {
+  background-color: #a52a2a;
+}
+
+.ep-join-btn.joined {
+  background-color: #e2e2e2;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* READ MORE / INFO BUTTON: Minimalist gray */
+.ep-read-more-btn {
+  background-color: #f0f0f0;
+  color: #555;
 }

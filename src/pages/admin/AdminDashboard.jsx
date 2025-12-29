@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom"; // Added for navigation
+import { useNavigate } from "react-router-dom"; 
 import { db } from "../../firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Users, Building2, Calendar, Activity } from "lucide-react";
@@ -40,7 +40,7 @@ export default function AdminDashboard() {
         // 2. Fetch & Merge Recent Activity with Real Status Logic
         const userActivities = usersSnap.docs.map(doc => {
           const data = doc.data();
-          // Logic: Use the database status if it exists, otherwise use defaults
+          // Logic: If user is NGO and has no status, default to "Pending"
           const realStatus = data.status || (data.userType === "NGO" ? "Pending" : "Verified");
           
           return {
@@ -155,9 +155,11 @@ export default function AdminDashboard() {
                   {activities.map((activity) => (
                     <tr 
                       key={activity.id} 
-                      onClick={() => activity.status === "Pending" && navigate('/manage-users')}
+                      // 🔴 FIX: Navigate to the correct Admin Users route
+                      onClick={() => activity.status === "Pending" && navigate('/admin/users')}
                       style={{ cursor: activity.status === "Pending" ? 'pointer' : 'default' }}
                       title={activity.status === "Pending" ? "Click to verify NGO" : ""}
+                      className={activity.status === "Pending" ? "clickable-row" : ""}
                     >
                       <td>
                         <div className="type-icon-cell">

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useAuth } from "../../contexts/AuthContext";
-import './CreateEvent.css'; // Importing the isolated CSS
+import './CreateEvent.css';
 
 const PENANG_CITIES = [
   "Air Itam", "Balik Pulau", "Batu Ferringhi", "Batu Kawan", "Batu Maung",
@@ -20,7 +20,7 @@ export default function CreateEvent() {
 
   const [formData, setFormData] = useState({
     title: '', 
-    organization: profile?.organizationName || '', 
+    organization: '', 
     date: '', 
     startTime: '', 
     endTime: '',
@@ -33,9 +33,61 @@ export default function CreateEvent() {
     imageUrl: ''
   });
 
+  useEffect(() => {
+    const name = profile?.orgName || profile?.organizationName;
+    if (name) {
+      setFormData(prev => ({
+        ...prev,
+        organization: name
+      }));
+    }
+  }, [profile]);
+
+  // --- 🔒 SECURITY CHECKS ---
+
+  // 1. Check if user is NGO
   if (profile && profile.userType !== "NGO") {
-    return <div className="create-body"><p>Only NGOs can create events.</p></div>;
+    return (
+      <div className="create-body" style={{ justifyContent: 'center', height: '100vh' }}>
+        <div className="create-container" style={{ textAlign: 'center', padding: '40px' }}>
+          <h2>Access Denied</h2>
+          <p>Only registered NGOs can create events.</p>
+          <button className="create-btn-cancel" onClick={() => navigate('/dashboard')}>
+            Go Back
+          </button>
+        </div>
+      </div>
+    );
   }
+
+  // 2. ✅ NEW: Check if NGO is VERIFIED
+  // If status is "Pending" or missing (undefined), block access.
+  if (profile && profile.status !== "Verified") {
+    return (
+      <div className="create-body" style={{ justifyContent: 'center', height: '80vh', alignItems: 'center', display: 'flex' }}>
+        <div className="create-container" style={{ textAlign: 'center', padding: '50px', maxWidth: '500px' }}>
+          <div style={{ fontSize: '3rem', marginBottom: '20px' }}>⏳</div>
+          <h2 style={{ color: '#800020' }}>Verification Pending</h2>
+          <p style={{ margin: '20px 0', lineHeight: '1.6', color: '#555' }}>
+            Your organization is currently under review. <br/>
+            You must be <strong>Verified</strong> by an Admin before you can publish events.
+          </p>
+          <div style={{ background: '#f8f9fa', padding: '15px', borderRadius: '8px', marginBottom: '25px', fontSize: '0.9rem' }}>
+            <strong>Current Status:</strong> <span style={{ color: '#d97706', fontWeight: 'bold' }}>{profile.status || "Pending Review"}</span>
+          </div>
+          <button 
+            className="create-btn-publish" 
+            onClick={() => navigate('/dashboard/ngo')}
+            style={{ width: '100%' }}
+          >
+            Return to Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- FORM LOGIC (Only runs if Verified) ---
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -43,9 +95,12 @@ export default function CreateEvent() {
     e.preventDefault();
     setLoading(true);
 
+    const currentOrgName = formData.organization || profile?.orgName || profile?.organizationName || "Organization";
+
     try {
       const newEvent = {
         ...formData,
+        organization: currentOrgName,
         organizerId: currentUser.uid, 
         createdBy: currentUser.uid,
         createdAt: new Date(),
@@ -55,7 +110,7 @@ export default function CreateEvent() {
 
       await addDoc(collection(db, 'events'), newEvent);
       alert("Event created successfully!");
-      navigate('/dashboard');
+      navigate('/dashboard/ngo');
     } catch (error) {
       console.error("Error creating event:", error);
       alert("Failed to create event.");
@@ -82,7 +137,7 @@ export default function CreateEvent() {
         <div className="create-header">
           <h2>✨ Create New Event</h2>
           <div className="create-actions">
-            <button type="button" className="create-btn-cancel" onClick={() => navigate('/dashboard')}>Cancel</button>
+            <button type="button" className="create-btn-cancel" onClick={() => navigate('/dashboard/ngo')}>Cancel</button>
             <button type="button" className="create-btn-publish" onClick={handleSubmit} disabled={loading}>
               {loading ? "Creating..." : "Publish Event"}
             </button>
@@ -93,17 +148,28 @@ export default function CreateEvent() {
           {/* LEFT: Form Side */}
           <form className="create-form">
             
-            {/* Row 1 */}
             <div className="create-group span-2">
               <label>Event Title</label>
               <input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="e.g. Beach Cleanup" />
             </div>
+            
             <div className="create-group">
               <label>Organization</label>
-              <input type="text" name="organization" value={formData.organization} onChange={handleChange} />
+              <input 
+                type="text" 
+                name="organization" 
+                value={formData.organization} 
+                readOnly 
+                placeholder={profile?.orgName ? "Loading..." : "Organization Name"}
+                style={{ 
+                  backgroundColor: '#e9ecef', 
+                  cursor: 'default', 
+                  color: '#495057',
+                  fontWeight: '600'
+                }}
+              />
             </div>
 
-            {/* Row 2 */}
             <div className="create-group">
               <label>City</label>
               <select name="city" value={formData.city} onChange={handleChange}>
@@ -116,7 +182,7 @@ export default function CreateEvent() {
               <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="e.g. Esplanade" />
             </div>
 
-            {/* Row 3 - Dates */}
+            {/* Dates */}
             <div className="create-group">
               <label>Event Date</label>
               <input type="date" name="date" value={formData.date} onChange={handleChange} />
@@ -130,7 +196,7 @@ export default function CreateEvent() {
               <input type="time" name="endTime" value={formData.endTime} onChange={handleChange} />
             </div>
 
-            {/* Row 4 - Registration */}
+            {/* Registration */}
             <div className="create-group">
               <label>Reg. Opens</label>
               <input type="date" name="registrationStart" value={formData.registrationStart} onChange={handleChange} />
@@ -144,7 +210,6 @@ export default function CreateEvent() {
               <input type="number" name="maxParticipants" value={formData.maxParticipants} onChange={handleChange} placeholder="0" />
             </div>
 
-            {/* Row 5 - Description */}
             <div className="create-group span-3">
               <label>Description</label>
               <textarea name="description" value={formData.description} onChange={handleChange} rows="2" />
@@ -163,8 +228,8 @@ export default function CreateEvent() {
                 <span className="cp-org">{formData.organization || 'Organization'}</span>
                 <h4 className="cp-title">{formData.title || 'Event Title Here'}</h4>
                 <div className="cp-meta">
-                   <p>📍 {formData.location || 'Venue'}{formData.city ? `, ${formData.city}` : ''}</p>
-                   <p>⏰ {formData.startTime || '--:--'} - {formData.endTime || '--:--'}</p>
+                    <p>📍 {formData.location || 'Venue'}{formData.city ? `, ${formData.city}` : ''}</p>
+                    <p>⏰ {formData.startTime || '--:--'} - {formData.endTime || '--:--'}</p>
                 </div>
               </div>
             </div>

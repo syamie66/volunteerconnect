@@ -42,10 +42,6 @@ export default function AdminLayout() {
             <Calendar size={18} /> Manage Events
           </NavLink>
         </nav>
-
-        <div className="logout-area">
-          <button className="nav-item logout"><LogOut size={18} /> Log out</button>
-        </div>
       </aside>
 
       {/* --- MAIN CONTENT SHELL --- */}

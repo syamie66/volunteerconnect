@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase";
-import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import { collection, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore"; // ✅ Added deleteDoc
 import { 
   Users, Eye, X, Shield, Heart, 
-  Calendar, Target, MapPin, Phone, User, CheckCircle 
+  Calendar, Trash2, CheckCircle, User // ✅ Added Trash2
 } from "lucide-react";
 import './AdminCSS.css';
 
@@ -45,7 +45,6 @@ export default function ManageUsers() {
         const userRef = doc(db, "users", userId);
         await updateDoc(userRef, { status: "Verified" });
         
-        // Update local state so UI reflects change immediately
         setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, status: "Verified" } : u));
         alert("NGO has been verified! 🌱");
       } catch (error) {
@@ -55,7 +54,22 @@ export default function ManageUsers() {
     }
   };
 
-  // 4. Filter Logic (Tab + Search)
+  // 4. ✅ NEW: Handle Delete User
+  const handleDeleteUser = async (userId) => {
+    if (window.confirm("Are you sure you want to PERMANENTLY delete this user? This action cannot be undone.")) {
+      try {
+        await deleteDoc(doc(db, "users", userId));
+        // Remove from local state to update UI instantly
+        setUsers((prev) => prev.filter((u) => u.id !== userId));
+        alert("User account deleted successfully.");
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        alert("Failed to delete user. Check console for details.");
+      }
+    }
+  };
+
+  // 5. Filter Logic (Tab + Search)
   const filteredUsers = users.filter(user => {
     const matchesTab = activeTab === 'NGO' 
       ? user.userType === 'NGO' 
@@ -119,7 +133,6 @@ export default function ManageUsers() {
               <tbody>
                 {filteredUsers.length > 0 ? (
                   filteredUsers.map((user) => {
-                    // Logic for Status Tag
                     const currentStatus = user.status || (user.userType === 'NGO' ? 'Pending' : 'Verified');
                     
                     return (
@@ -149,8 +162,8 @@ export default function ManageUsers() {
                         </td>
 
                         <td>
-                          <div style={{ display: 'flex', gap: '10px' }}>
-                            {/* View Details Button */}
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            {/* View Details */}
                             <button
                               onClick={() => setSelectedUser(user)}
                               className="btn-icon btn-view"
@@ -159,7 +172,7 @@ export default function ManageUsers() {
                               <Eye size={18} />
                             </button>
                             
-                            {/* NEW: Verification Button for Pending NGOs */}
+                            {/* Verify NGO Button */}
                             {activeTab === 'NGO' && currentStatus === 'Pending' && !user.disabled && (
                                 <button
                                   onClick={() => handleVerifyNGO(user.id)}
@@ -171,12 +184,23 @@ export default function ManageUsers() {
                                 </button>
                             )}
 
-                            {/* Enable/Disable Button */}
+                            {/* Enable/Disable Toggle */}
                             <button
                               onClick={() => toggleStatus(user.id, user.disabled)}
                               className={`btn-toggle ${user.disabled ? 'is-active' : 'is-disabled'}`}
+                              style={{ padding: '4px 8px', fontSize: '0.8rem', height: '32px' }}
                             >
                               {user.disabled ? "Enable" : "Disable"}
+                            </button>
+
+                            {/* ✅ NEW: Delete Button */}
+                            <button
+                              onClick={() => handleDeleteUser(user.id)}
+                              className="btn-icon"
+                              style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}
+                              title="Delete User"
+                            >
+                              <Trash2 size={18} />
                             </button>
                           </div>
                         </td>
@@ -212,12 +236,12 @@ export default function ManageUsers() {
               <div className="modal-body">
                 <div className="detail-grid">
                   <div className="detail-item">
-                     <label>Email Address</label>
-                     <p>{selectedUser.email}</p>
+                      <label>Email Address</label>
+                      <p>{selectedUser.email}</p>
                   </div>
                   <div className="detail-item">
-                     <label>Account Type</label>
-                     <p style={{ textTransform: 'capitalize' }}>{selectedUser.userType}</p>
+                      <label>Account Type</label>
+                      <p style={{ textTransform: 'capitalize' }}>{selectedUser.userType}</p>
                   </div>
 
                   {selectedUser.userType === 'volunteer' && (
