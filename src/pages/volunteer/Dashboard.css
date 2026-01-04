@@ -220,3 +220,51 @@
     font-size: 0.8rem;
     padding: 20px;
 }
+
+/* Container for the status tag and cancel button */
+.action-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: auto; /* Pushes group to the right */
+}
+
+/* Container for status and button */
+.action-group {
+    display: flex;
+    flex-direction: column; /* Stack them on small screens if needed, or keep row */
+    align-items: flex-end; /* Align to the right */
+    gap: 8px;
+    margin-left: auto; 
+}
+
+/* The Text Button Style */
+.cancel-btn {
+    background-color: transparent;
+    border: 1px solid #ff4d4d; /* Red outline */
+    color: #ff4d4d;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    white-space: nowrap; /* Prevents text from breaking */
+    width: auto; /* Auto width based on text */
+    height: auto;
+}
+
+.cancel-btn:hover {
+    background-color: #ff4d4d;
+    color: #ffffff;
+    box-shadow: 0 2px 5px rgba(255, 77, 77, 0.2);
+}
+
+/* Optional: Adjust layout for smaller screens */
+@media (min-width: 768px) {
+    .action-group {
+        flex-direction: row; /* Side by side on larger screens */
+        align-items: center;
+    }
+}

@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { db } from "../../firebase";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { 
+    collection, 
+    getDocs, 
+    doc, 
+    getDoc, 
+    updateDoc, 
+    arrayRemove, 
+    deleteField 
+} from "firebase/firestore";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
 
@@ -18,10 +26,12 @@ export default function Dashboard() {
 
         const fetchData = async () => {
             try {
+                // Fetch User Data
                 const userRef = doc(db, "users", currentUser.uid);
                 const docSnap = await getDoc(userRef);
                 if (docSnap.exists()) setUserInfo(docSnap.data());
 
+                // Fetch Events where user is a participant
                 const eventsSnap = await getDocs(collection(db, "events"));
                 const events = eventsSnap.docs
                     .map(doc => ({ id: doc.id, ...doc.data() }))
@@ -37,9 +47,48 @@ export default function Dashboard() {
         fetchData();
     }, [currentUser]);
 
+    // --- HANDLE CANCEL APPLICATION ---
+    const handleCancelApplication = async (eventId) => {
+        const confirmCancel = window.confirm("Are you sure you want to cancel your application for this event?");
+        if (!confirmCancel) return;
+
+        try {
+            // 1. Remove user ID from the Event's 'participants' array
+            const eventRef = doc(db, "events", eventId);
+            await updateDoc(eventRef, {
+                participants: arrayRemove(currentUser.uid)
+            });
+
+            // 2. Remove the specific event key from the User's 'eventRegistrations' map
+            const userRef = doc(db, "users", currentUser.uid);
+            await updateDoc(userRef, {
+                [`eventRegistrations.${eventId}`]: deleteField()
+            });
+
+            // 3. Update Local State (UI) immediately
+            setAppliedEvents(prevEvents => prevEvents.filter(e => e.id !== eventId));
+            
+            // Update userInfo state to remove the status tag immediately
+            const updatedUserInfo = { ...userInfo };
+            if (updatedUserInfo.eventRegistrations) {
+                delete updatedUserInfo.eventRegistrations[eventId];
+            }
+            setUserInfo(updatedUserInfo);
+
+            alert("Application cancelled successfully.");
+
+        } catch (error) {
+            console.error("Error cancelling application:", error);
+            alert("Failed to cancel application. Please try again.");
+        }
+    };
+
+    // --- HELPER: CHECK IF EVENT IS COMPLETED ---
     const isEventCompleted = (event) => {
         const status = userInfo?.eventRegistrations?.[event.id]?.status;
+        // Logic: Event is complete if status is Approved AND date has passed
         if (status !== 'Approved') return false;
+        
         const today = new Date().setHours(0,0,0,0);
         const eventDate = new Date(event.date).setHours(0,0,0,0);
         return eventDate < today;
@@ -48,14 +97,14 @@ export default function Dashboard() {
     const completedEvents = appliedEvents.filter(event => isEventCompleted(event));
     const upcomingEvents = appliedEvents.filter(event => !isEventCompleted(event));
 
-    // Calculate Bar Heights (Monthly Activity)
+    // --- HELPER: CHART DATA ---
     const getMonthlyData = () => {
         const counts = new Array(12).fill(0);
         completedEvents.forEach(event => {
             const monthIndex = new Date(event.date).getMonth();
             counts[monthIndex]++;
         });
-        const max = Math.max(...counts, 1); // Avoid division by zero
+        const max = Math.max(...counts, 1);
         return counts.map(count => ({
             count,
             height: (count / max) * 100
@@ -110,8 +159,10 @@ export default function Dashboard() {
                     </div>
                 </section>
 
-                {/* --- EXPANDED EVENTS GRID (BIGGER) --- */}
+                {/* --- EXPANDED EVENTS GRID --- */}
                 <div className="expanded-events-grid">
+                    
+                    {/* UPCOMING EVENTS */}
                     <section className="content-card event-section">
                         <div className="card-header">
                             <h3>UPCOMING EVENTS ({upcomingEvents.length})</h3>
@@ -126,19 +177,32 @@ export default function Dashboard() {
                                             <span className="d-day">{new Date(event.date).getDate()}</span>
                                             <span className="d-month">{months[new Date(event.date).getMonth()]}</span>
                                         </div>
+                                        
                                         <div className="event-info">
                                             <h4>{event.title.toUpperCase()}</h4>
                                             <p>{event.location?.toUpperCase() || "REMOTE"}</p>
                                         </div>
-                                        <span className={`status-tag ${userInfo?.eventRegistrations?.[event.id]?.status.toLowerCase()}`}>
-                                            {userInfo?.eventRegistrations?.[event.id]?.status.toUpperCase()}
-                                        </span>
+
+                                        {/* Status and Cancel Button Group */}
+                                        <div className="action-group">
+                                            <span className={`status-tag ${userInfo?.eventRegistrations?.[event.id]?.status.toLowerCase()}`}>
+                                                {userInfo?.eventRegistrations?.[event.id]?.status.toUpperCase()}
+                                            </span>
+                                            
+                                            <button 
+                                                className="cancel-btn"
+                                                onClick={() => handleCancelApplication(event.id)}
+                                            >
+                                                CANCEL APPLICATION
+                                            </button>
+                                        </div>
                                     </div>
                                 ))
                             )}
                         </div>
                     </section>
 
+                    {/* COMPLETED EVENTS */}
                     <section className="content-card event-section">
                         <div className="card-header">
                             <h3>COMPLETED HISTORY ({completedEvents.length})</h3>
