@@ -372,43 +372,57 @@
 
   /* --- GRID FIXES --- */
   .ep-events-grid {
-    padding: 30px 15px; /* Reduce outer padding */
+    padding: 30px 20px; /* Increased side padding for safety */
     grid-template-columns: 1fr; /* Force 1 column */
-    gap: 30px; /* Smaller gap for mobile */
+    gap: 60px; /* Vertical gap between cards */
   }
 
   /* --- COMPACT CARD FOR MOBILE --- */
-  .ep-info-box {
-    min-height: auto; /* Remove strict height requirement */
-    padding: 15px; /* Tighter padding */
-    margin-bottom: 15px;
+  .ep-card {
+    overflow: visible; /* Ensure badge isn't clipped by the card container */
   }
 
+  .ep-info-box {
+    min-height: auto; 
+    padding: 20px 15px; 
+    margin-bottom: 15px;
+    /* Add top margin so the badge (which sits -15px up) doesn't overlap the previous element */
+    margin-top: 20px; 
+    position: relative; /* Anchor for the absolute badge */
+  }
+
+  /* ✅ FIX: Date Badge Positioning */
+  .ep-date-badge {
+    width: 50px;
+    height: 50px;
+    
+    /* Position: Hang off the top, but stay FLUSH with the right edge */
+    top: -20px; 
+    right: 0px; /* Changed from negative to 0 to prevent cutting off */
+    
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.15); /* Slightly stronger shadow for visibility */
+    background-color: #fff;
+    z-index: 10;
+  }
+  
+  .ep-date-day { font-size: 1rem; }
+  .ep-date-month { font-size: 0.6rem; }
+
+  /* Text Adjustments */
   .ep-org-name {
-    font-size: 1rem; /* Smaller Org Name */
+    font-size: 1.1rem; 
     margin-bottom: 15px;
     padding-bottom: 5px;
   }
 
   .ep-details-grid {
-    gap: 10px; /* Tighter grid */
+    gap: 12px; 
   }
 
-  /* Smaller Date Badge */
-  .ep-date-badge {
-    width: 45px;
-    height: 45px;
-    top: -10px;
-    right: -5px;
-  }
-  .ep-date-day { font-size: 0.9rem; }
-  .ep-date-month { font-size: 0.5rem; }
-
-  /* Smaller Text */
-  .ep-label { font-size: 0.6rem; }
-  .ep-value { font-size: 0.75rem; }
-  .ep-card-title { font-size: 1rem; margin-bottom: 5px; }
-  .ep-card-desc { font-size: 0.8rem; margin-bottom: 15px; }
+  .ep-label { font-size: 0.65rem; }
+  .ep-value { font-size: 0.8rem; }
+  .ep-card-title { font-size: 1.1rem; margin-bottom: 5px; }
+  .ep-card-desc { font-size: 0.85rem; margin-bottom: 15px; }
 
   /* --- HERO & SEARCH FIXES --- */
   .ep-hero-editorial {
@@ -416,7 +430,7 @@
   }
 
   .ep-hero-content {
-    padding: 30px 15px;
+    padding: 30px 20px;
     text-align: center;
   }
 
@@ -426,20 +440,20 @@
   }
 
   .ep-subtitle-editorial {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
   }
 
   .ep-hero-image-visual {
     width: 100%;
-    height: 250px; /* Shorter image */
+    height: 250px; 
     border-left: none;
     border-top: 1px solid #d1d1d1;
   }
 
   .ep-filter-strip {
     flex-direction: column;
-    gap: 10px;
-    padding: 15px;
+    gap: 15px;
+    padding: 20px;
   }
 
   .ep-search-container-editorial { width: 100%; }
@@ -449,6 +463,6 @@
   .ep-btn-group button {
     flex: 1 1 auto; 
     width: 100%;
-    padding: 8px 10px; /* Smaller buttons */
+    padding: 12px 0; /* Taller touch targets */
   }
 }
