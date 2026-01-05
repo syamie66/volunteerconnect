@@ -566,3 +566,144 @@
   background-color: #f0f0f0;
   color: #555;
 }
+
+/* =========================================
+   MOBILE OPTIMIZATION (EVENTS PAGE)
+   ========================================= */
+
+@media screen and (max-width: 900px) {
+
+  /* --- 1. GLOBAL WRAPPER FIXES --- */
+  .ep-wrapper {
+    padding-bottom: 40px;
+    overflow-x: hidden; /* Prevents side-scrolling */
+  }
+
+  /* --- 2. EDITORIAL HERO (Stacking Image & Text) --- */
+  .ep-hero-editorial {
+    flex-direction: column-reverse; /* Puts text on top, image on bottom (or remove -reverse to swap) */
+  }
+
+  .ep-hero-content {
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .ep-editorial-title {
+    font-size: 2.8rem; /* Scale down title */
+  }
+
+  .ep-subtitle-editorial {
+    font-size: 0.95rem;
+    margin: 0 auto; /* Center the subtitle */
+  }
+
+  .ep-hero-image-visual {
+    width: 100%;
+    height: 300px; /* Give image a fixed height on mobile */
+    border-left: none;
+    border-top: 1px solid #d1d1d1;
+  }
+
+  /* --- 3. FILTER & SEARCH STRIP (Stacking) --- */
+  .ep-filter-strip {
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .ep-search-container-editorial {
+    width: 100%;
+  }
+
+  .ep-search-input-editorial {
+    text-align: center; /* Center the typing */
+    border-bottom: 1px solid #ddd; /* Add a line so they see where to type */
+    padding-bottom: 5px;
+  }
+
+  /* --- 4. EVENTS GRID (1 Column) --- */
+  .ep-events-grid {
+    padding: 40px 20px;
+    grid-template-columns: 1fr; /* Force single column */
+    gap: 30px;
+  }
+
+  /* --- 5. CARD & BUTTONS --- */
+  .ep-card {
+    width: 100%;
+  }
+  
+  .ep-btn-group {
+    justify-content: center;
+    width: 100%;
+  }
+
+  /* Make buttons stretch to fill width on phone for easier tapping */
+  .ep-btn-group button {
+    flex: 1 1 auto; 
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+
+  /* --- 6. NAVBAR (Keep Horizontal) --- */
+  /* Ensures the nav stays in a row even on this page */
+  .rounded-nav {
+    flex-direction: row !important;
+    width: 96% !important;
+    padding: 8px 10px !important;
+    gap: 5px !important;
+    justify-content: space-between;
+  }
+
+  .nav-links {
+    gap: 8px !important; 
+    display: flex !important;
+    flex-direction: row !important;
+  }
+
+  .nav-links a {
+    font-size: 0.6rem !important;
+    padding: 0;
+  }
+
+  .pill-cta {
+    padding: 6px 12px !important;
+    font-size: 0.6rem !important;
+    white-space: nowrap;
+  }
+
+  /* --- 7. FOOTER (Keep Horizontal Grid) --- */
+  .custom-footer {
+    padding: 20px 10px;
+  }
+
+  .footer-hero {
+    flex-direction: row !important;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-email a, .hero-phone {
+    font-size: 0.9rem !important;
+  }
+
+  .footer-details-grid {
+    grid-template-columns: repeat(4, 1fr) !important; 
+    gap: 5px !important;
+    text-align: left;
+  }
+
+  .label { font-size: 8px !important; }
+  .highlight { font-size: 9px !important; }
+  .muted { font-size: 8px !important; }
+  .nav-item { font-size: 9px !important; }
+
+  .footer-bottom {
+    flex-direction: row !important;
+    font-size: 9px !important;
+  }
+}
