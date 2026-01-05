@@ -372,37 +372,40 @@
 
   /* --- GRID FIXES --- */
   .ep-events-grid {
-    padding: 30px 20px; /* Increased side padding for safety */
+    padding: 30px 20px; 
     grid-template-columns: 1fr; /* Force 1 column */
-    gap: 60px; /* Vertical gap between cards */
+    gap: 50px; 
+    overflow: visible; /* Ensure grid doesn't clip children */
   }
 
   /* --- COMPACT CARD FOR MOBILE --- */
   .ep-card {
-    overflow: visible; /* Ensure badge isn't clipped by the card container */
+    overflow: visible !important; /* Force visibility of hanging elements */
+    width: 100%;
+    margin: 0 auto;
   }
 
   .ep-info-box {
     min-height: auto; 
-    padding: 20px 15px; 
-    margin-bottom: 15px;
-    /* Add top margin so the badge (which sits -15px up) doesn't overlap the previous element */
-    margin-top: 20px; 
-    position: relative; /* Anchor for the absolute badge */
+    padding: 25px 20px; 
+    margin-bottom: 20px;
+    margin-top: 25px; /* Extra space at top for the badge */
+    position: relative; 
+    overflow: visible !important; /* Critical: allows badge to overlap border */
   }
 
-  /* ✅ FIX: Date Badge Positioning */
+  /* ✅ FIXED: Badge moved INSIDE the card */
   .ep-date-badge {
     width: 50px;
     height: 50px;
     
-    /* Position: Hang off the top, but stay FLUSH with the right edge */
-    top: -20px; 
-    right: 0px; /* Changed from negative to 0 to prevent cutting off */
+    /* Position: Sits on top border, but pushed INSIDE right edge */
+    top: -25px; 
+    right: 15px; /* Positive value keeps it away from screen edge */
     
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.15); /* Slightly stronger shadow for visibility */
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.15); 
     background-color: #fff;
-    z-index: 10;
+    z-index: 99; /* Ensure it stays on top */
   }
   
   .ep-date-day { font-size: 1rem; }
@@ -463,6 +466,6 @@
   .ep-btn-group button {
     flex: 1 1 auto; 
     width: 100%;
-    padding: 12px 0; /* Taller touch targets */
+    padding: 12px 0;
   }
 }
