@@ -733,3 +733,163 @@ body {
   .home-container-unique .rounded-nav { flex-direction: column; gap: 20px; border-radius: 20px; }
   .home-container-unique .nav-links { flex-direction: column; gap: 15px; }
 }
+
+/* =========================================
+   MOBILE OPTIMIZATION (Add to bottom of file)
+   ========================================= */
+
+@media screen and (max-width: 768px) {
+
+  /* 1. GLOBAL FIXES */
+  body {
+    /* "fixed" background often breaks on mobile browsers, scroll is smoother */
+    background-attachment: scroll; 
+  }
+
+  /* 2. NAVBAR (Stacking the pill) */
+  .rounded-nav {
+    flex-direction: column;
+    padding: 20px;
+    gap: 15px;
+    width: 90%; /* Prevent it touching edges */
+    height: auto;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+    width: 100%;
+  }
+
+  .nav-logo-group {
+    margin-bottom: 5px;
+  }
+
+  /* 3. HERO SECTION */
+  .home-container-unique .hero-section {
+    flex-direction: column;
+    padding: 40px 20px 60px; /* Reduce padding */
+    text-align: center;
+    gap: 30px;
+  }
+
+  .home-container-unique .display-serif {
+    font-size: 2.5rem; /* Shrink big text so it doesn't overflow */
+  }
+
+  .home-container-unique .hero-subtext {
+    font-size: 1rem;
+    margin: 0 auto 40px; /* Center alignment */
+  }
+
+  .home-container-unique .hero-image-wrapper {
+    /* If you want to show the image on mobile, change 'none' to 'flex' */
+    /* and set width to 100%. If hiding is preferred, keep as is. */
+    display: block; 
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .home-container-unique .blob-image-placeholder {
+    height: 300px; /* Smaller blob for phone */
+  }
+
+  /* 4. MISSION CARDS (Remove overlap) */
+  .home-container-unique .mission-section {
+    margin-top: 0; /* Remove negative margin overlap */
+    padding-top: 20px;
+    padding-bottom: 40px;
+  }
+
+  .home-container-unique .mission-grid {
+    grid-template-columns: 1fr; /* Stack cards 1 per row */
+    gap: 20px;
+  }
+
+  /* 5. GET INVOLVED / STEPS */
+  .home-container-unique .get-involved-section {
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .home-container-unique .involved-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .home-container-unique .involved-header h2 {
+    font-size: 2.2rem;
+  }
+
+  .home-container-unique .steps-grid {
+    grid-template-columns: 1fr; /* Stack steps vertically */
+  }
+
+  .home-container-unique .step-item {
+    min-height: auto; /* Let content dictate height */
+    align-items: center; /* Center content */
+    text-align: center;
+    padding: 30px 20px;
+  }
+
+  /* 6. SDG SECTION */
+  .sdg-section {
+    padding: 3rem 1.5rem;
+  }
+
+  .sdg-header-left {
+    text-align: center;
+  }
+  
+  .sdg-header-left h2 {
+    font-size: 2rem;
+  }
+
+  .sdg-row {
+    flex-direction: column; /* Stack items vertically */
+    gap: 2.5rem;
+  }
+
+  .sdg-item {
+    flex-direction: column; /* Icon on top, text below */
+    align-items: center;
+    text-align: center;
+  }
+
+  /* 7. TEAM SECTION */
+  .home-container-unique .team-grid {
+    grid-template-columns: 1fr; /* 1 person per row on phone */
+    gap: 40px;
+  }
+
+  /* 8. FOOTER */
+  .custom-footer {
+    padding: 30px 20px;
+  }
+  
+  .footer-hero {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .hero-email a, .hero-phone {
+    font-size: 1.2rem; /* Make email fit screen */
+    word-break: break-word; /* Ensure long emails don't break layout */
+  }
+
+  .footer-details-grid {
+    grid-template-columns: 1fr; /* Stack footer columns */
+    text-align: center;
+    gap: 30px;
+  }
+
+  .footer-bottom {
+    flex-direction: column-reverse; /* Copyright at bottom, social on top */
+    gap: 20px;
+    text-align: center;
+  }
+}
