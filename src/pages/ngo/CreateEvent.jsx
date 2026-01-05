@@ -43,6 +43,20 @@ export default function CreateEvent() {
     }
   }, [profile]);
 
+  // --- 🔒 VALIDATION LOGIC ---
+  // Check if all required fields have values
+  const isFormValid = 
+    formData.title.trim() !== "" &&
+    formData.date !== "" &&
+    formData.startTime !== "" &&
+    formData.endTime !== "" &&
+    formData.city !== "" &&
+    formData.location.trim() !== "" &&
+    formData.description.trim() !== "" &&
+    formData.registrationStart !== "" &&
+    formData.registrationEnd !== "" &&
+    formData.maxParticipants !== "";
+
   // --- 🔒 SECURITY CHECKS ---
 
   // 1. Check if user is NGO
@@ -60,8 +74,7 @@ export default function CreateEvent() {
     );
   }
 
-  // 2. ✅ NEW: Check if NGO is VERIFIED
-  // If status is "Pending" or missing (undefined), block access.
+  // 2. Check if NGO is VERIFIED
   if (profile && profile.status !== "Verified") {
     return (
       <div className="create-body" style={{ justifyContent: 'center', height: '80vh', alignItems: 'center', display: 'flex' }}>
@@ -87,14 +100,15 @@ export default function CreateEvent() {
     );
   }
 
-  // --- FORM LOGIC (Only runs if Verified) ---
+  // --- FORM LOGIC ---
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    if (!isFormValid) return; // Double check
 
+    setLoading(true);
     const currentOrgName = formData.organization || profile?.orgName || profile?.organizationName || "Organization";
 
     try {
@@ -138,7 +152,18 @@ export default function CreateEvent() {
           <h2>✨ Create New Event</h2>
           <div className="create-actions">
             <button type="button" className="create-btn-cancel" onClick={() => navigate('/dashboard/ngo')}>Cancel</button>
-            <button type="button" className="create-btn-publish" onClick={handleSubmit} disabled={loading}>
+            
+            {/* UPDATED SUBMIT BUTTON */}
+            <button 
+              type="button" 
+              className="create-btn-publish" 
+              onClick={handleSubmit} 
+              disabled={loading || !isFormValid} // Disable if loading OR invalid
+              style={{ 
+                opacity: isFormValid ? 1 : 0.5, 
+                cursor: isFormValid ? 'pointer' : 'not-allowed' 
+              }}
+            >
               {loading ? "Creating..." : "Publish Event"}
             </button>
           </div>
@@ -149,8 +174,8 @@ export default function CreateEvent() {
           <form className="create-form">
             
             <div className="create-group span-2">
-              <label>Event Title</label>
-              <input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="e.g. Beach Cleanup" />
+              <label>Event Title <span style={{color:'red'}}>*</span></label>
+              <input type="text" name="title" value={formData.title} onChange={handleChange} placeholder="e.g. Beach Cleanup" required />
             </div>
             
             <div className="create-group">
@@ -171,48 +196,48 @@ export default function CreateEvent() {
             </div>
 
             <div className="create-group">
-              <label>City</label>
-              <select name="city" value={formData.city} onChange={handleChange}>
+              <label>City <span style={{color:'red'}}>*</span></label>
+              <select name="city" value={formData.city} onChange={handleChange} required>
                 <option value="" disabled>Select</option>
                 {PENANG_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="create-group span-2">
-              <label>Specific Venue</label>
-              <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="e.g. Esplanade" />
+              <label>Specific Venue <span style={{color:'red'}}>*</span></label>
+              <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="e.g. Esplanade" required />
             </div>
 
             {/* Dates */}
             <div className="create-group">
-              <label>Event Date</label>
-              <input type="date" name="date" value={formData.date} onChange={handleChange} />
+              <label>Event Date <span style={{color:'red'}}>*</span></label>
+              <input type="date" name="date" value={formData.date} onChange={handleChange} required />
             </div>
             <div className="create-group">
-              <label>Start Time</label>
-              <input type="time" name="startTime" value={formData.startTime} onChange={handleChange} />
+              <label>Start Time <span style={{color:'red'}}>*</span></label>
+              <input type="time" name="startTime" value={formData.startTime} onChange={handleChange} required />
             </div>
             <div className="create-group">
-              <label>End Time</label>
-              <input type="time" name="endTime" value={formData.endTime} onChange={handleChange} />
+              <label>End Time <span style={{color:'red'}}>*</span></label>
+              <input type="time" name="endTime" value={formData.endTime} onChange={handleChange} required />
             </div>
 
             {/* Registration */}
             <div className="create-group">
-              <label>Reg. Opens</label>
-              <input type="date" name="registrationStart" value={formData.registrationStart} onChange={handleChange} />
+              <label>Reg. Opens <span style={{color:'red'}}>*</span></label>
+              <input type="date" name="registrationStart" value={formData.registrationStart} onChange={handleChange} required />
             </div>
             <div className="create-group">
-              <label>Reg. Closes</label>
-              <input type="date" name="registrationEnd" value={formData.registrationEnd} onChange={handleChange} />
+              <label>Reg. Closes <span style={{color:'red'}}>*</span></label>
+              <input type="date" name="registrationEnd" value={formData.registrationEnd} onChange={handleChange} required />
             </div>
             <div className="create-group">
-              <label>Capacity</label>
-              <input type="number" name="maxParticipants" value={formData.maxParticipants} onChange={handleChange} placeholder="0" />
+              <label>Capacity <span style={{color:'red'}}>*</span></label>
+              <input type="number" name="maxParticipants" value={formData.maxParticipants} onChange={handleChange} placeholder="0" required />
             </div>
 
             <div className="create-group span-3">
-              <label>Description</label>
-              <textarea name="description" value={formData.description} onChange={handleChange} rows="2" />
+              <label>Description <span style={{color:'red'}}>*</span></label>
+              <textarea name="description" value={formData.description} onChange={handleChange} rows="2" required />
             </div>
           </form>
 
@@ -237,6 +262,13 @@ export default function CreateEvent() {
                <span>Target Volunteers</span>
                <strong style={{color: '#557C55'}}>{formData.maxParticipants || 0} Pax</strong>
             </div>
+
+            {/* Validation Helper Message */}
+            {!isFormValid && (
+              <div style={{marginTop: '20px', padding: '10px', background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: '4px', fontSize: '0.85rem', color: '#856404'}}>
+                ⚠️ Please fill in all required fields marked with * to publish.
+              </div>
+            )}
           </div>
         </div>
 

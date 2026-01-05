@@ -47,6 +47,14 @@ export default function Dashboard() {
         fetchData();
     }, [currentUser]);
 
+    // --- HELPER: GET STATUS SAFELY ---
+    const getStatus = (eventId) => {
+        // Access the nested registration object
+        const registration = userInfo?.eventRegistrations?.[eventId];
+        // Return status if it exists, otherwise default to "Pending"
+        return registration?.status || "Pending";
+    };
+
     // --- HANDLE CANCEL APPLICATION ---
     const handleCancelApplication = async (eventId) => {
         const confirmCancel = window.confirm("Are you sure you want to cancel your application for this event?");
@@ -85,7 +93,7 @@ export default function Dashboard() {
 
     // --- HELPER: CHECK IF EVENT IS COMPLETED ---
     const isEventCompleted = (event) => {
-        const status = userInfo?.eventRegistrations?.[event.id]?.status;
+        const status = getStatus(event.id);
         // Logic: Event is complete if status is Approved AND date has passed
         if (status !== 'Approved') return false;
         
@@ -171,33 +179,37 @@ export default function Dashboard() {
                             {upcomingEvents.length === 0 ? (
                                 <div className="empty-state">NO UPCOMING EVENTS</div>
                             ) : (
-                                upcomingEvents.map(event => (
-                                    <div key={event.id} className="event-row">
-                                        <div className="date-box">
-                                            <span className="d-day">{new Date(event.date).getDate()}</span>
-                                            <span className="d-month">{months[new Date(event.date).getMonth()]}</span>
-                                        </div>
-                                        
-                                        <div className="event-info">
-                                            <h4>{event.title.toUpperCase()}</h4>
-                                            <p>{event.location?.toUpperCase() || "REMOTE"}</p>
-                                        </div>
-
-                                        {/* Status and Cancel Button Group */}
-                                        <div className="action-group">
-                                            <span className={`status-tag ${userInfo?.eventRegistrations?.[event.id]?.status.toLowerCase()}`}>
-                                                {userInfo?.eventRegistrations?.[event.id]?.status.toUpperCase()}
-                                            </span>
+                                upcomingEvents.map(event => {
+                                    const status = getStatus(event.id); // Get status safely
+                                    return (
+                                        <div key={event.id} className="event-row">
+                                            <div className="date-box">
+                                                <span className="d-day">{new Date(event.date).getDate()}</span>
+                                                <span className="d-month">{months[new Date(event.date).getMonth()]}</span>
+                                            </div>
                                             
-                                            <button 
-                                                className="cancel-btn"
-                                                onClick={() => handleCancelApplication(event.id)}
-                                            >
-                                                CANCEL APPLICATION
-                                            </button>
+                                            <div className="event-info">
+                                                <h4>{event.title.toUpperCase()}</h4>
+                                                <p>{event.location?.toUpperCase() || "REMOTE"}</p>
+                                            </div>
+
+                                            {/* Status and Cancel Button Group */}
+                                            <div className="action-group">
+                                                {/* STATUS BADGE */}
+                                                <span className={`status-tag ${status.toLowerCase()}`}>
+                                                    {status.toUpperCase()}
+                                                </span>
+                                                
+                                                <button 
+                                                    className="cancel-btn"
+                                                    onClick={() => handleCancelApplication(event.id)}
+                                                >
+                                                    CANCEL APPLICATION
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))
+                                    );
+                                })
                             )}
                         </div>
                     </section>

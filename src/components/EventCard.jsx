@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { db } from '../firebase';
+import { doc, updateDoc, arrayUnion } from "firebase/firestore"; // ✅ Import Firestore functions
 
-export default function EventCard({ event, onJoin, loading, currentUser, profile }) {
+export default function EventCard({ event, onJoin, currentUser, profile }) {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
+  const [joining, setJoining] = useState(false); // Local loading state
 
   // --- Date Parsing ---
   const getDateParts = (dateInput) => {
@@ -35,13 +38,60 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
 
   // --- Navigation to NGO Profile ---
   const handleViewNGO = () => {
-    // Uses 'createdBy' (database field) or 'organizerId' (legacy)
     const ngoId = event.createdBy || event.organizerId; 
-
     if (ngoId) {
       navigate(`/ngo/${ngoId}`);
     } else {
       console.error("No NGO ID found.");
+    }
+  };
+
+  // --- ✅ NEW: Handle Join with Date Recording ---
+  const handleJoinInternal = async () => {
+    if (!currentUser) {
+        alert("Please log in to join events.");
+        return;
+    }
+    if (isAlreadyJoined) return;
+
+    setJoining(true);
+
+    try {
+        // 1. Get Today's Date
+        const today = new Date().toLocaleDateString('en-GB', {
+            day: 'numeric', 
+            month: 'short', 
+            year: 'numeric'
+        });
+
+        // 2. Update USER Document (Add status & date)
+        const userRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userRef, {
+            [`eventRegistrations.${event.id}`]: {
+                status: "Pending",
+                registeredDate: today, // <--- 🗓️ DATE RECORDED HERE
+                eventId: event.id,
+                eventTitle: event.title,
+                eventDate: event.date
+            }
+        });
+
+        // 3. Update EVENT Document (Add user to participants list)
+        const eventRef = doc(db, "events", event.id);
+        await updateDoc(eventRef, {
+            participants: arrayUnion(currentUser.uid)
+        });
+
+        alert("Application submitted successfully!");
+        
+        // 4. Trigger Parent Refresh (if onJoin prop exists)
+        if (onJoin) onJoin(event.id);
+
+    } catch (error) {
+        console.error("Error joining event:", error);
+        alert("Failed to join. Please try again.");
+    } finally {
+        setJoining(false);
     }
   };
 
@@ -120,20 +170,14 @@ export default function EventCard({ event, onJoin, loading, currentUser, profile
             </button>
           )}
 
-          {/* ✅ JOIN BUTTON LOGIC FIXED:
-              - Visible if user is NOT 'admin' AND NOT 'NGO'
-              - This means Guests (profile is null) and Volunteers WILL see it.
-          */}
-          {onJoin && profile?.userType !== "admin" && profile?.userType !== "NGO" && (
+          {/* ✅ UPDATED JOIN BUTTON */}
+          {profile?.userType !== "admin" && profile?.userType !== "NGO" && (
             <button 
               className={`ep-join-btn ${isAlreadyJoined ? 'joined' : ''}`} 
-              onClick={() => {
-                // If the user is a guest (not logged in), onJoin will handle the alert/redirect
-                if (!isAlreadyJoined) onJoin(event.id);
-              }}
-              disabled={loading || isAlreadyJoined}
+              onClick={handleJoinInternal} // <--- Calls the new internal function
+              disabled={joining || isAlreadyJoined}
             >
-              {loading ? "..." : isAlreadyJoined ? "Applied ✓" : "Join Event"}
+              {joining ? "Applying..." : isAlreadyJoined ? "Applied ✓" : "Join Event"}
             </button>
           )}
         </div>

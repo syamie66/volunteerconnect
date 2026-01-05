@@ -1,5 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged } from 'firebase/auth'; 
 import Footer from '../components/Footer';
 
 // Import your SDG images 
@@ -12,6 +13,29 @@ import imgMission from '../images/image3.jpeg';
 import imgVolunteer from '../images/image4.jpeg';
 
 export default function Home() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const auth = getAuth();
+
+  // Listen for authentication state changes
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, [auth]);
+
+  // Handle the logic for "Apply" / "Join" buttons
+  const handleApplyClick = () => {
+    if (user) {
+      // If user is already logged in -> Go to Events page
+      navigate('/events');
+    } else {
+      // If user is NOT logged in -> Go to Login page
+      navigate('/login');
+    }
+  };
+
   return (
     <div className="home-container-unique">
       
@@ -28,7 +52,13 @@ export default function Home() {
               Connect with NGOs, discover local causes, and make an impact. 
               We foster partnerships that drive collective action.
             </p>
-            <Link to="/events" className="main-cta-btn">EXPLORE OPPORTUNITIES</Link>
+            <button 
+              onClick={handleApplyClick} 
+              className="main-cta-btn" 
+              style={{border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1rem'}}
+            >
+              EXPLORE OPPORTUNITIES
+            </button>
           </div>
           
           <div className="hero-image-wrapper">
@@ -74,10 +104,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* --- HOW TO GET INVOLVED SECTION (UPDATED LAYOUT) --- */}
+        {/* --- HOW TO GET INVOLVED SECTION --- */}
         <section className="get-involved-section">
           
-          {/* Header Split: Left Text, Right Button */}
           <div className="involved-header">
             <div className="header-left">
               <span className="section-tag">HOW TO GET INVOLVED</span>
@@ -87,17 +116,21 @@ export default function Home() {
               </p>
             </div>
             <div className="header-right">
-              <Link to="/register" className="join-btn">Join Now</Link>
+              <button 
+                onClick={handleApplyClick} 
+                className="join-btn" 
+                style={{border: 'none', cursor: 'pointer', fontFamily: 'inherit', fontSize: '1rem'}}
+              >
+                Join Now
+              </button>
             </div>
           </div>
 
-          {/* Cards Grid */}
           <div className="steps-grid">
             
-            {/* Step 1: Featured (Dark Green) */}
+            {/* Step 1 */}
             <div className="step-item featured-step">
               <div className="step-icon">
-                {/* Search/Explore Icon */}
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
               </div>
               <h4>1. Explore Opportunities</h4>
@@ -105,27 +138,31 @@ export default function Home() {
               <Link to="/events" className="card-btn">Browse Events</Link>
             </div>
 
-            {/* Step 2: Standard (Light Green) */}
+            {/* Step 2 */}
             <div className="step-item">
               <div className="step-icon">
-                {/* Form/Application Icon */}
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
               </div>
               <h4>2. Fill Out Application</h4>
               <p>Once your application is filled out, we will schedule an interview with you to thoroughly explain the program and our Strength-Based Approach philosophy.</p>
-              <Link to="/register" className="card-btn">Apply Now</Link>
+              <button 
+                onClick={handleApplyClick} 
+                className="card-btn" 
+                style={{border: 'none', cursor: 'pointer', width: '100%', fontFamily: 'inherit', fontSize: '0.9rem'}}
+              >
+                Apply Now
+              </button>
             </div>
 
-            {/* Step 3: Standard (Light Green) */}
+            {/* Step 3 - FIXED: Removed disabled styling */}
             <div className="step-item">
               <div className="step-icon">
-                {/* Heart/Impact Icon */}
                 <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
               </div>
               <h4>3. Start Making An Impact</h4>
               <p>With the proper training and support, you’ll begin contributing to one of our exciting initiatives. Together, we’ll make a difference.</p>
-              <Link to="/events" className="card-btn"style={{opacity: 0.7, cursor: 'default'}}>Events</Link>
-
+              {/* Removed pointerEvents: 'none' */}
+              <Link to="/events" className="card-btn">Events</Link>
             </div>
 
           </div>
@@ -139,7 +176,6 @@ export default function Home() {
           </div>
           
           <div className="sdg-row">
-            
             {/* ITEM 1 */}
             <div className="sdg-item">
               <div className="sdg-dashed-box">
@@ -169,7 +205,6 @@ export default function Home() {
                 </p>
               </div>
             </div>
-
           </div>
         </section>
 

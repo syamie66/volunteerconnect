@@ -24,12 +24,10 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  // --- NEW: Handle Role Selection & Redirect ---
+  // --- Handle Role Selection & Redirect ---
   const handleRoleChange = (e) => {
     const selectedRole = e.target.value;
     setUserType(selectedRole);
-
-    // If NGO is selected, redirect immediately
     if (selectedRole === 'NGO') {
       navigate('/ngo-register'); 
     }
@@ -37,15 +35,28 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage(''); // Clear previous messages
+
+    // --- 🔒 PASSWORD VALIDATION LOGIC ---
+    // Regex: At least one digit (\d) AND one special char ([!@#...])
+    const hasNumber = /\d/.test(password);
+    const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    if (!hasNumber || !hasSymbol) {
+        setMessage("Password must contain at least one number and one symbol (e.g., @, #, $).");
+        return; // Stop execution here
+    }
+
     setLoading(true);
     try {
       const user = await register(email, password);
-      // Only saving Volunteer data here since NGOs use the other form
+      
       await setDoc(doc(db, 'users', user.uid), {
         name, email, age: parseInt(age), userType, phone,
         icNumber, address, emergencyContact, gender, skills,
         createdAt: serverTimestamp(),
       });
+      
       setMessage('Registration successful!');
       setTimeout(() => navigate('/'), 1500);
     } catch (err) {
@@ -59,17 +70,16 @@ export default function Register() {
     <div className="iso-register-container">
       <div className="wide-card">
         
-        {/* LEFT SIDE: FORM CONTENT (Pink Background) */}
+        {/* LEFT SIDE: FORM CONTENT */}
         <div className="wide-form-content">
           <div className="form-header">
-            <div className="washi-tape"></div> {/* Pink Tape Decoration */}
+            <div className="washi-tape"></div> 
             <h2>Create Your Account</h2>
           </div>
 
-          {/* TRIPLE GRID LAYOUT: Organizes fields into 3 columns */}
           <form onSubmit={handleSubmit} className="triple-grid-form">
             
-            {/* --- MODIFIED INPUT GROUP --- */}
+            {/* --- INPUT GROUPS --- */}
             <div className="input-group">
               <label>Role</label>
               <select value={userType} onChange={handleRoleChange} required>
@@ -101,7 +111,14 @@ export default function Register() {
 
             <div className="input-group">
               <label>Password</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="••••••••"/>
+              <input 
+                type="password" 
+                value={password} 
+                onChange={(e) => setPassword(e.target.value)} 
+                required 
+                placeholder="••••••••"
+                title="Must contain at least one number and one symbol"
+              />
             </div>
 
             <div className="input-group">
@@ -147,11 +164,22 @@ export default function Register() {
               </p>
             </div>
             
-            {message && <p style={{gridColumn: 'span 3', color: 'red', textAlign: 'center', marginTop: '10px'}}>{message}</p>}
+            {/* ERROR MESSAGE DISPLAY */}
+            {message && (
+                <p style={{
+                    gridColumn: 'span 3', 
+                    color: message.includes('successful') ? 'green' : 'red', 
+                    textAlign: 'center', 
+                    marginTop: '10px',
+                    fontWeight: 'bold'
+                }}>
+                    {message}
+                </p>
+            )}
           </form>
         </div>
 
-        {/* RIGHT SIDE: PHOTO (Sage Green Background) */}
+        {/* RIGHT SIDE: PHOTO */}
         <div className="wide-photo-side">
           <div className="image-placeholder">
             <div className="photo-caption">

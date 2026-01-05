@@ -1,99 +1,167 @@
-/* --- SCOPED VARIABLES (Green/Pink Theme) --- */
+/* =========================================
+   1. CORE VARIABLES & LAYOUT
+   ========================================= */
 .ep-wrapper {
-  --ep-bg: #FFF9F5;          /* Cream Background */
-  --ep-green: #D4E09B;       /* Sage/Matcha Green */
-  --ep-pink: #F6D6D6;        /* Dusty Pink */
-  --ep-dark: #2A1A1A;        /* Dark Brown/Black text */
+  --ep-bg: #fcfbf7;        /* Cream Background */
+  --ep-green: #D4E09B;     /* Sage/Matcha Green */
+  --ep-pink: #F6D6D6;      /* Dusty Pink */
+  --ep-burgundy: #800020;  /* Burgundy */
+  --ep-dark: #2A1A1A;      /* Dark Brown/Black text */
   --ep-font-serif: "Georgia", "Times New Roman", serif;
-  --ep-font-sans: "Helvetica Neue", sans-serif;
-}
+  --ep-font-sans: "Inter", "Helvetica Neue", sans-serif;
 
-.ep-wrapper {
-  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%);
   color: var(--ep-dark);
   font-family: var(--ep-font-sans);
   min-height: 100vh;
+  width: 100%;
   padding-bottom: 80px;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+/* Minimalist Section Lines */
+.ep-section-line {
+  border: 0;
+  border-top: 1px solid #d1d1d1;
+  margin: 0;
+  width: 100%;
+  opacity: 0.4;
+}
+
+/* =========================================
+   2. TOP DECO NAV
+   ========================================= */
+.ep-top-nav-deco {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 5%;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #6b705c; /* Muted Sage */
+  font-weight: 600;
+}
+
+/* =========================================
+   3. EDITORIAL HERO (TWO-COLUMN)
+   ========================================= */
+.ep-hero-editorial {
+  display: flex;
+  align-items: stretch;
+  padding: 0; 
+  margin: 0;
   width: 100%;
 }
 
-/* --- HERO SECTION --- */
-.ep-hero {
-  text-align: center;
-  padding: 80px 20px 50px;
-}
-
-.ep-main-title {
-  font-family: var(--ep-font-serif);
-  font-size: 3.5rem;
-  font-style: italic;
-  font-weight: 400;
-  margin-bottom: 10px;
-}
-
-.ep-subtitle {
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 0.8rem;
-  margin-bottom: 40px;
-}
-
-/* --- SEARCH BAR (Pill Style) --- */
-.ep-search-container {
+.ep-hero-content {
+  flex: 1.2;
+  padding: 100px 5%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 60px;
 }
 
-.ep-search-input {
-  background-color: var(--ep-green); /* Green Pill */
-  border: 1px solid var(--ep-dark);
-  padding: 12px 25px;
-  border-radius: 50px;
-  font-family: var(--ep-font-sans);
+.ep-editorial-title {
+  font-size: clamp(3rem, 5vw, 4.8rem); /* Fluid typography */
+  font-weight: 700;
+  line-height: 1.05;
+  color: #1a1a1a;
+  margin: 0 0 30px 0;
+  letter-spacing: -2px;
+}
+
+.ep-subtitle-editorial {
+  font-size: 1.1rem;
+  color: #4a4a4a;
+  max-width: 480px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* HERO IMAGE */
+.ep-hero-image-visual {
+  flex: 1;
+  /* UPDATE THIS PATH TO YOUR IMAGE */
+  background-image: url('../../images/image10.png'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-left: 1px solid #d1d1d1;
+}
+
+/* =========================================
+   4. FILTER & SEARCH STRIP
+   ========================================= */
+.ep-filter-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 5%;
+  background-color: #fee8f4; /* Light Pink Strip */
+}
+
+.ep-filter-label {
+  font-size: 0.75rem;
+  font-weight: 700;
   text-transform: uppercase;
-  font-size: 0.85rem;
   letter-spacing: 1px;
-  width: 320px;
+}
+
+.ep-search-container-editorial {
+  width: 40%;
+}
+
+.ep-search-input-editorial {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
   outline: none;
-  transition: 0.3s;
+  text-align: right;
+  color: #1a1a1a;
 }
 
-.ep-search-input:focus {
-  background-color: #cea8a8;
-}
-
-.ep-search-input::placeholder {
-  color: var(--ep-dark);
-  opacity: 0.7;
-}
-
-/* --- GRID LAYOUT --- */
+/* =========================================
+   5. GRID LAYOUT (FIXED GAP)
+   ========================================= */
 .ep-events-grid {
+  /* Ensure grid display is active */
   display: grid;
+  
+  /* Responsive Columns: Min 320px wide, Max fills space */
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 50px;
-  max-width: 1200px;
+  
+  /* ✅ THE FIX: Large gap between cards */
+  gap: 60px; 
+  
+  /* Spacing around the grid */
+  padding: 80px 5%;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  width: 100%;
 }
 
-/* --- CARD STYLES --- */
+/* =========================================
+   6. CARD STYLES
+   ========================================= */
 .ep-card {
   display: flex;
   flex-direction: column;
   background: transparent;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* TOP SECTION: The "Info Box" (Pink Container) */
+/* INFO BOX (Pink Container) */
 .ep-info-box {
   width: 100%;
   background-color: var(--ep-pink);
   border: 1px solid var(--ep-dark);
   border-radius: 15px;
-  padding: 20px;
+  padding: 25px 20px;
   margin-bottom: 25px;
   position: relative;
   min-height: 220px;
@@ -103,7 +171,7 @@
   box-shadow: 4px 4px 0px rgba(42, 26, 26, 0.1);
 }
 
-/* Date Badge in Top Right */
+/* Date Badge */
 .ep-date-badge {
   position: absolute;
   top: -15px;
@@ -132,7 +200,7 @@
   text-transform: uppercase;
 }
 
-/* Organization Name inside Box */
+/* Organization Name */
 .ep-org-name {
   font-family: var(--ep-font-serif);
   font-style: italic;
@@ -141,9 +209,10 @@
   margin-bottom: 20px;
   border-bottom: 1px solid rgba(0,0,0,0.1);
   padding-bottom: 10px;
+  cursor: pointer;
 }
 
-/* Grid for Details inside the Pink Box */
+/* Details Grid inside Card */
 .ep-details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -170,7 +239,9 @@
   line-height: 1.2;
 }
 
-/* --- CARD BODY (Text & Buttons) --- */
+/* =========================================
+   7. CARD BODY & BUTTONS
+   ========================================= */
 .ep-card-body {
   text-align: center;
   width: 100%;
@@ -189,399 +260,126 @@
   line-height: 1.3;
 }
 
-/* Description Text - Default clamped to 3 lines */
+/* Description Text */
 .ep-card-desc {
   font-size: 0.9rem;
   line-height: 1.6;
   color: #555;
   margin-bottom: 20px;
-  
   display: -webkit-box;
   -webkit-line-clamp: 3; 
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: all 0.3s ease; /* Smooth transition if supported */
+  transition: all 0.3s ease;
 }
 
-/* When Expanded, remove clamp */
 .ep-card-desc.expanded {
   -webkit-line-clamp: unset; 
   overflow: visible;
 }
 
-/* --- BUTTON GROUP --- */
+/* BUTTONS */
 .ep-btn-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 10px;
   justify-content: center;
   align-items: center;
   width: 100%;
   margin-top: 10px;
 }
 
-/* Button 1: READ MORE (Outline) */
-.ep-read-more-btn {
-  background-color: transparent;
-  border: 1px solid var(--ep-dark);
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  letter-spacing: 1px;
-}
-
-.ep-read-more-btn:hover {
-  background-color: #fff;
-  transform: translateY(-2px);
-}
-
-/* Button 2: JOIN (Filled) */
-.ep-join-btn {
-  background-color: var(--ep-pink); /* Pink bg */
-  border: 1px solid var(--ep-dark);
-  color: var(--ep-dark);
-  padding: 8px 25px;
-  border-radius: 50px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  cursor: pointer;
-  font-weight: 700;
-  transition: all 0.2s ease;
-  letter-spacing: 1px;
-}
-
-.ep-join-btn:hover {
-  background-color: var(--ep-green); /* Green on hover */
-  transform: translateY(-2px);
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.1);
-}
-
-.ep-join-btn.joined {
-  background-color: #eee;
-  color: #888;
-  cursor: default;
-  border-color: #ccc;
-  transform: none;
-  box-shadow: none;
-}
-
-/* --- FOOTER DECO --- */
-.no-events {
-  grid-column: 1 / -1;
-  text-align: center;
-  font-style: italic;
-  opacity: 0.6;
-}
-
-.ep-footer {
-  margin-top: 80px;
-  border-top: 1px solid var(--ep-dark);
-  padding-top: 40px;
-  text-align: center;
-}
-
-.ep-big-logo {
-  font-family: var(--ep-font-serif);
-  font-size: 5rem;
-  font-style: italic;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .ep-events-grid { grid-template-columns: 1fr; }
-  .ep-main-title { font-size: 2.5rem; }
-  .ep-big-logo { font-size: 3rem; }
-}
-
-/* Truncates text to 3 lines by default */
-.ep-card-desc {
-  font-size: 0.9rem;
-  line-height: 1.6;
-  color: #555;
-  margin-bottom: 20px;
-  
-  display: -webkit-box;
-  -webkit-line-clamp: 3; /* Show only 3 lines */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-/* Removes truncation when the 'expanded' class is added */
-.ep-card-desc.expanded {
-  -webkit-line-clamp: unset; 
-  overflow: visible;
-}
-
-/* --- SECTION DIVIDERS --- */
-.ep-divider {
-  border: 0;
-  height: 1px;
-  /* Soft Sage Green fading to transparent at the edges */
-  background-image: linear-gradient(
-    to right, 
-    rgba(0, 0, 0, 0), 
-    #a3b18a, 
-    rgba(0, 0, 0, 0)
-  );
-  margin: 40px auto;
-  width: 80%; /* Doesn't touch the very edges for a cleaner look */
-  opacity: 0.6;
-}
-
-/* Optional: Add a small decorative element in the middle of the line */
-.ep-divider::after {
-  content: "🍃";
-  display: inline-block;
-  position: relative;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fcfbf7; /* Matches your Cream background */
-  padding: 0 10px;
-  font-size: 0.9rem;
-}
-
-/* --- MINIMALIST SECTION LINES --- */
-.ep-section-line {
-  border: 0;
-  /* Use a very light Sage or Grey for a subtle look */
-  border-top: 1px solid #e0e4d9; 
-  margin: 0 auto;
-  width: 90%; /* Slightly shorter than the container for elegance */
-  padding: 0;
-  /* Adjust the space above/below the line */
-  margin-top: 50px;
-  margin-bottom: 50px;
-}
-
-/* Optional: Different styling for the footer line */
-.ep-footer + .ep-section-line {
-    width: 100%;
-    border-top: 2px solid #223413; /* Dark Matcha for the bottom line */
-}
-
-/* Ensure the wrapper background matches the agency reference */
-.ep-wrapper {
-  background-color: #fcfbf7; /* Cream background */
-  min-height: 100vh;
-}
-
-/* --- 1. CORE LAYOUT & COLORS --- */
-.ep-wrapper {
-    background-color: #fcfbf7; /* Cream Background */
-    min-height: 100vh;
-    padding-bottom: 80px;
-    font-family: 'Inter', sans-serif;
-}
-
-/* 1px Minimalist Section Lines */
-.ep-section-line {
-    border: 0;
-    border-top: 1px solid #d1d1d1;
-    margin: 0;
-    width: 100%;
-    opacity: 0.4;
-}
-
-/* --- 2. TOP DECO NAV --- */
-.ep-top-nav-deco {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 5%;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #6b705c; /* Muted Sage */
-    font-weight: 600;
-}
-
-/* --- 3. EDITORIAL HERO (TWO-COLUMN) --- */
-.ep-hero-editorial {
-    display: flex;
-    align-items: stretch; /* Forces image to match text height */
-    padding: 0; 
-    margin: 0;
-    width: 100%;
-}
-
-.ep-hero-content {
-    flex: 1.2;
-    padding: 100px 5%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.ep-editorial-title {
-    font-size: clamp(3rem, 5vw, 4.8rem); /* Fluid typography */
-    font-weight: 700;
-    line-height: 1.05;
-    color: #1a1a1a;
-    margin: 0 0 30px 0;
-    letter-spacing: -2px;
-}
-
-.ep-subtitle-editorial {
-    font-size: 1.1rem;
-    color: #4a4a4a;
-    max-width: 480px;
-    line-height: 1.6;
-    margin: 0;
-}
-
-/* THE BACKGROUND IMAGE STYLES */
-.ep-hero-image-visual {
-    flex: 1;
-    /* UPDATE THIS PATH TO YOUR IMAGE */
-    background-image: url('../../images/image10.png'); 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    
-    /* Matcha Strawberry Aesthetic Tint */ 
-
-    
-    border-left: 1px solid #d1d1d1; /* Minimal vertical divider */
-}
-
-/* --- 4. FILTER & SEARCH STRIP --- */
-.ep-filter-strip {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 5%;
-    background-color: #fee8f4;
-}
-
-.ep-filter-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.ep-search-container-editorial {
-    width: 40%;
-}
-
-.ep-search-input-editorial {
-    width: 100%;
-    border: none;
-    background: transparent;
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    outline: none;
-    text-align: right;
-    color: #1a1a1a;
-}
-
-/* --- 5. GRID & FOOTER --- */
-.ep-events-grid {
-    padding: 200px 5%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 40px;
-}
-
-.ep-big-logo {
-    padding: 60px 5%;
-    font-size: 1.5rem;
-    font-weight: 900;
-    letter-spacing: -1.5px;
-    text-transform: lowercase;
-    color: #1a1a1a;
-}
-
-/* --- RESPONSIVE ADJUSTMENTS --- */
-@media (max-width: 1024px) {
-    .ep-hero-editorial {
-        flex-direction: column;
-    }
-    .ep-hero-image-visual {
-        height: 400px; /* Give it a height when stacked on mobile */
-        border-left: none;
-        border-top: 1px solid #d1d1d1;
-    }
-    .ep-hero-content {
-        padding: 60px 5%;
-    }
-}
-
-/* Container for the buttons */
-.ep-btn-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 15px;
-  flex-wrap: wrap;
-}
-
-/* Base style for all buttons in the group */
 .ep-btn-group button {
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px; /* Slightly squarer than pill */
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
+  letter-spacing: 0.5px;
 }
 
-/* VIEW PROFILE: Using a soft Sage Green or Outline style */
+/* VIEW PROFILE: Burgundy Background with White Border */
 .ep-view-profile-btn {
-  background-color: #800020;
-  color: white; /* Sage green text */
-  border: 1.5px solid white !important;
+  background-color: var(--ep-burgundy);
+  color: white;
+  border: 1px solid var(--ep-burgundy) !important;
 }
 
 .ep-view-profile-btn:hover {
-  background-color: #574c4f;
-  color: white;
+  background-color: white;
+  color: var(--ep-burgundy);
 }
 
-/* JOIN BUTTON: Using your Burgundy/Pinkish theme */
+/* JOIN BUTTON: Burgundy Filled */
 .ep-join-btn {
-  background-color: #800020; /* Burgundy */
+  background-color: var(--ep-burgundy);
   color: white;
-  flex-grow: 1; /* Makes the primary action stand out */
+  flex-grow: 1; /* Makes it wider than others */
 }
 
 .ep-join-btn:hover {
-  background-color: #a52a2a;
+  background-color: #5e0017; /* Darker burgundy */
+  transform: translateY(-2px);
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
 }
 
 .ep-join-btn.joined {
   background-color: #e2e2e2;
   color: #666;
-  cursor: not-allowed;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
 }
 
-/* READ MORE / INFO BUTTON: Minimalist gray */
+/* READ MORE: Light Grey */
 .ep-read-more-btn {
   background-color: #f0f0f0;
   color: #555;
+  border: 1px solid transparent;
+}
+.ep-read-more-btn:hover {
+  background-color: #e0e0e0;
 }
 
 /* =========================================
-   MOBILE OPTIMIZATION (EVENTS PAGE)
+   8. FOOTER & DECO
    ========================================= */
+.no-events {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-style: italic;
+  opacity: 0.6;
+  padding: 50px;
+}
 
+.ep-big-logo {
+  padding: 60px 5%;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -1.5px;
+  text-transform: lowercase;
+  color: #1a1a1a;
+  text-align: center;
+}
+
+/* =========================================
+   9. MOBILE RESPONSIVENESS
+   ========================================= */
 @media screen and (max-width: 900px) {
 
-  /* --- 1. GLOBAL WRAPPER FIXES --- */
-  .ep-wrapper {
-    padding-bottom: 40px;
-    overflow-x: hidden; /* Prevents side-scrolling */
+  /* Fix Grid to Single Column */
+  .ep-events-grid {
+    padding: 40px 20px;
+    grid-template-columns: 1fr; /* Force 1 column */
+    gap: 50px; /* Still keep good vertical gap */
   }
 
-  /* --- 2. EDITORIAL HERO (Stacking Image & Text) --- */
+  /* Stack Hero Section */
   .ep-hero-editorial {
-    flex-direction: column-reverse; /* Puts text on top, image on bottom (or remove -reverse to swap) */
+    flex-direction: column-reverse;
   }
 
   .ep-hero-content {
@@ -590,26 +388,21 @@
   }
 
   .ep-editorial-title {
-    font-size: 2.8rem; /* Scale down title */
+    font-size: 2.5rem;
   }
 
-  .ep-subtitle-editorial {
-    font-size: 0.95rem;
-    margin: 0 auto; /* Center the subtitle */
-  }
-
+  /* Adjust Hero Image Height */
   .ep-hero-image-visual {
     width: 100%;
-    height: 300px; /* Give image a fixed height on mobile */
+    height: 300px;
     border-left: none;
     border-top: 1px solid #d1d1d1;
   }
 
-  /* --- 3. FILTER & SEARCH STRIP (Stacking) --- */
+  /* Stack Filter Strip */
   .ep-filter-strip {
     flex-direction: column;
     gap: 15px;
-    padding: 20px;
     text-align: center;
   }
 
@@ -618,92 +411,14 @@
   }
 
   .ep-search-input-editorial {
-    text-align: center; /* Center the typing */
-    border-bottom: 1px solid #ddd; /* Add a line so they see where to type */
+    text-align: center;
+    border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
   }
 
-  /* --- 4. EVENTS GRID (1 Column) --- */
-  .ep-events-grid {
-    padding: 40px 20px;
-    grid-template-columns: 1fr; /* Force single column */
-    gap: 30px;
-  }
-
-  /* --- 5. CARD & BUTTONS --- */
-  .ep-card {
-    width: 100%;
-  }
-  
-  .ep-btn-group {
-    justify-content: center;
-    width: 100%;
-  }
-
-  /* Make buttons stretch to fill width on phone for easier tapping */
+  /* Full width buttons on mobile */
   .ep-btn-group button {
     flex: 1 1 auto; 
-    text-align: center;
-    font-size: 0.8rem;
-    padding: 10px;
-  }
-
-  /* --- 6. NAVBAR (Keep Horizontal) --- */
-  /* Ensures the nav stays in a row even on this page */
-  .rounded-nav {
-    flex-direction: row !important;
-    width: 96% !important;
-    padding: 8px 10px !important;
-    gap: 5px !important;
-    justify-content: space-between;
-  }
-
-  .nav-links {
-    gap: 8px !important; 
-    display: flex !important;
-    flex-direction: row !important;
-  }
-
-  .nav-links a {
-    font-size: 0.6rem !important;
-    padding: 0;
-  }
-
-  .pill-cta {
-    padding: 6px 12px !important;
-    font-size: 0.6rem !important;
-    white-space: nowrap;
-  }
-
-  /* --- 7. FOOTER (Keep Horizontal Grid) --- */
-  .custom-footer {
-    padding: 20px 10px;
-  }
-
-  .footer-hero {
-    flex-direction: row !important;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .hero-email a, .hero-phone {
-    font-size: 0.9rem !important;
-  }
-
-  .footer-details-grid {
-    grid-template-columns: repeat(4, 1fr) !important; 
-    gap: 5px !important;
-    text-align: left;
-  }
-
-  .label { font-size: 8px !important; }
-  .highlight { font-size: 9px !important; }
-  .muted { font-size: 8px !important; }
-  .nav-item { font-size: 9px !important; }
-
-  .footer-bottom {
-    flex-direction: row !important;
-    font-size: 9px !important;
+    width: 100%;
   }
 }
