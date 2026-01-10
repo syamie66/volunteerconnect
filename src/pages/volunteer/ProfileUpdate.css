@@ -266,88 +266,85 @@
 }
 
 /* =========================================
-   MOBILE RESPONSIVENESS (OPTIMIZED)
+   MOBILE RESPONSIVENESS (NO CLIPPING FIX)
    ========================================= */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 900px) {
 
-    /* 1. WRAPPER & CONTAINER */
+    /* 1. WRAPPER: Fix Screen Overflow */
     .pu-wrapper {
-        padding: 20px; /* Reduce padding from 40px to 20px */
-        align-items: flex-start;
-        height: auto; /* Allow scrolling */
-        min-height: 100vh;
+        display: block;    /* Disable flex centering to allow natural scroll */
+        width: 100%;       /* Use % instead of vw to prevent horizontal scrollbars */
+        height: auto;      /* Remove fixed height so it grows with content */
+        min-height: 100vh; /* Cover at least full screen */
+        padding: 20px 15px; /* Smaller padding on sides to maximize space */
+        overflow-x: hidden; /* Prevent horizontal side-scroll */
     }
 
     .pu-container {
-        flex-direction: column; /* Stack columns vertically */
-        gap: 40px; /* Reduce gap between summary and form */
+        display: flex;
+        flex-direction: column;
         width: 100%;
+        max-width: 100%; /* Ensure it never exceeds screen width */
+        gap: 30px;
     }
 
-    /* 2. SUMMARY CARD (Top Section) */
+    /* 2. SUMMARY CARD: Remove Fixed Width */
     .pu-summary-card {
-        width: 100%;
-        align-items: center; /* Center the avatar and name */
+        width: 100%;      /* Override the 320px fixed width */
+        max-width: 100%;
+        margin-bottom: 20px;
+        align-items: center; /* Center content */
         text-align: center;
-        padding-bottom: 0;
-        border-bottom: 1px dashed rgba(0,0,0,0.1); /* visual separator */
-        margin-bottom: 10px;
     }
 
-    /* Keep the list items left/right aligned, not centered text */
-    .pu-info-list {
-        width: 100%; /* Ensure it spans full width */
-        margin-top: 10px;
+    /* Fix Avatar centering */
+    .pu-avatar-container {
+        margin: 0 auto 20px auto;
     }
 
+    /* Ensure text in rows doesn't clip */
     .pu-info-row {
-        justify-content: space-between;
         width: 100%;
+        display: flex;
+        justify-content: space-between;
+        /* Allow text to wrap if values are long */
+        flex-wrap: wrap; 
+        gap: 10px;
     }
 
-    .pu-info-label { font-size: 0.75rem; }
-    .pu-info-value { font-size: 0.9rem; }
-
-    /* 3. FORM SECTION */
+    /* 3. FORM SECTION: Safe Widths */
     .pu-form-card {
         width: 100%;
         padding: 0;
     }
 
     .pu-form-grid {
-        grid-template-columns: 1fr; /* Force single column layout */
+        display: flex;       /* Use Flex column instead of Grid to prevent overflow */
+        flex-direction: column; 
+        width: 100%;
         gap: 20px;
     }
 
-    .pu-span-2 {
-        grid-column: span 1; /* Reset span for single column */
-    }
-
-    /* 4. INPUTS */
+    /* Force inputs to stay inside the screen */
     .pu-input {
-        /* 16px font prevents iOS from zooming in when typing */
-        font-size: 16px; 
-        padding: 14px; /* Larger touch target */
+        width: 100%;
+        box-sizing: border-box; /* Crucial: includes padding in width calculation */
+        font-size: 16px; /* Prevents iOS zoom */
+        min-width: 0; /* Prevents flex items from breaking out */
     }
 
-    /* 5. BUTTONS (Stacked & Full Width) */
+    /* 4. BUTTONS: Stack vertically */
     .pu-actions {
-        flex-direction: column-reverse; /* Put 'Save' on top, 'Cancel' below */
+        flex-direction: column-reverse;
         width: 100%;
+        margin-top: 10px;
         gap: 15px;
-        margin-top: 20px;
     }
 
     .pu-btn-save, 
     .pu-btn-cancel {
-        width: 100%; /* Full width for easier tapping */
-        text-align: center;
-        padding: 15px; /* Taller buttons */
-        font-size: 0.9rem;
-    }
-    
-    .pu-btn-cancel {
-        border: none; /* Cleaner look for secondary action on mobile */
-        color: #999;
+        width: 100%;
+        padding: 15px;
+        box-sizing: border-box;
     }
 }
