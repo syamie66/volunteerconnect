@@ -508,3 +508,150 @@
   text-align: center;
   display: inline-block;
 }
+
+/* =========================================
+   MOBILE RESPONSIVENESS (SMART STACK)
+   ========================================= */
+@media screen and (max-width: 1000px) {
+
+  /* 1. MAIN LAYOUT: Switch to Single Column */
+  .ngo-layout-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;       /* Allow page to grow */
+    min-height: 100vh;
+    overflow-y: auto;   /* Enable full page scrolling */
+    background: var(--bg-cream); /* Simplified background */
+  }
+
+  /* 2. SIDEBAR -> TOP NAVIGATION */
+  .ngo-sidebar {
+    width: auto;
+    height: auto;
+    margin: 15px;
+    padding: 20px;
+    border-radius: 20px;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .sidebar-header { margin-bottom: 15px; }
+  
+  /* Horizontal Scrollable Menu */
+  .sidebar-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 5px;
+    gap: 10px;
+  }
+  
+  .nav-item {
+    white-space: nowrap; /* Keep text on one line */
+    background: rgba(255,255,255,0.1);
+    padding: 10px 15px;
+  }
+
+  /* Hide footer card on mobile to save space */
+  .sidebar-footer-card { display: none; }
+
+  /* 3. MAIN CONTENT AREA */
+  .ngo-main-content {
+    padding: 10px 20px;
+    overflow: visible; /* Let content expand */
+    height: auto;
+  }
+
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .header-user {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* 4. STATS GRID: Stack Vertically */
+  .stats-grid {
+    grid-template-columns: 1fr; /* Single column */
+    gap: 20px;
+  }
+
+  /* 5. TABLE TRANSFORM -> CARDS */
+  /* This completely changes the table to a list of cards for mobile */
+  .events-table-section {
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .search-input-compact { width: 100%; }
+
+  /* Hide Table Headings */
+  .table-head-row { display: none; }
+
+  /* Card-Style Rows */
+  .table-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    background: #fcfcfc;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+  }
+
+  .col { width: 100%; }
+  
+  /* Make Title Bold */
+  .col.title { 
+    font-size: 1.1rem; 
+    margin-bottom: 5px; 
+  }
+  
+  /* Add labels via pseudo-elements for clarity */
+  .col.date::before { content: "📅 "; }
+  .col.loc::before { content: "📍 "; }
+
+  /* Action Buttons: Full width grid */
+  .col.manage.action-buttons {
+    margin-top: 10px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* 3 Equal buttons */
+    gap: 10px;
+  }
+
+  .btn-text {
+    width: 100%;
+    text-align: center;
+    padding: 12px 0; /* Taller for touch */
+    border-radius: 8px;
+  }
+
+  /* 6. RIGHT PANEL -> BOTTOM SECTION */
+  .ngo-right-panel {
+    height: auto;
+    padding: 20px;
+  }
+
+  .right-card-dark {
+    height: auto;
+    padding: 30px 20px;
+  }
+
+  .activity-list {
+    max-height: 300px; /* Limit height so page isn't endless */
+    overflow-y: auto;
+  }
+}
