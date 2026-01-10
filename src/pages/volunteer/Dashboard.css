@@ -317,3 +317,126 @@
     align-items: flex-end;
     gap: 8px;
 }
+
+/* =========================================
+   MOBILE RESPONSIVENESS (DASHBOARD)
+   ========================================= */
+@media screen and (max-width: 900px) {
+
+    /* 1. WRAPPER: Switch to vertical stacking & enable scrolling */
+    .dashboard-scope {
+        flex-direction: column;
+        height: auto;      /* Remove fixed height */
+        min-height: 100vh; /* Ensure it covers screen */
+        overflow-y: auto;  /* Enable vertical scroll */
+        background: #fcfbf7; /* Fallback flat color */
+    }
+
+    /* 2. SIDEBAR -> TOP HEADER */
+    .dashboard-scope .sidebar {
+        width: calc(100% - 40px); /* Full width minus margins */
+        height: auto;
+        margin: 20px;
+        padding: 20px;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* Horizontal scrollable menu for mobile */
+    .dashboard-scope .nav-menu {
+        flex-direction: row;
+        overflow-x: auto; /* Allow horizontal scrolling */
+        padding-bottom: 5px; /* Space for scrollbar */
+        gap: 10px;
+        width: 100%;
+    }
+
+    .dashboard-scope .nav-item {
+        white-space: nowrap; /* Keep text on one line */
+        padding: 10px 15px;
+        background: rgba(255,255,255,0.1);
+        font-size: 0.8rem;
+    }
+
+    /* Hide Logout on mobile header to save space (optional) */
+    .dashboard-scope .logout-item {
+        display: none; 
+    }
+
+    /* 3. MAIN CONTENT */
+    .dashboard-scope .main-content {
+        padding: 0 20px 40px 20px; /* Reduced padding */
+        width: 100%;
+        overflow: visible;
+    }
+
+    /* Top Bar (Welcome + CTA) */
+    .dashboard-scope .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .dashboard-scope .cta-btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* 4. EVENT GRID: Single Column */
+    .dashboard-scope .expanded-events-grid {
+        grid-template-columns: 1fr; /* Force 1 column */
+        gap: 20px;
+    }
+
+    /* 5. EVENT ROW: Smart Grid Layout */
+    /* This prevents buttons from overlapping text */
+    .dashboard-scope .event-row {
+        display: grid;
+        /* Layout: [DateBox] [InfoText] */
+        grid-template-columns: auto 1fr;
+        gap: 15px;
+        padding: 15px;
+        align-items: start;
+        position: relative;
+    }
+
+    /* Date Box stays in top-left */
+    .dashboard-scope .date-box {
+        grid-column: 1;
+        grid-row: 1;
+    }
+
+    /* Info Text stays in top-right */
+    .dashboard-scope .event-info {
+        grid-column: 2;
+        grid-row: 1;
+        padding-right: 0;
+    }
+
+    /* Action Group moves to a new row at the bottom */
+    .action-group {
+        grid-column: 1 / -1; /* Spans full width */
+        grid-row: 2;
+        
+        display: flex;
+        flex-direction: row; /* Side-by-side buttons */
+        justify-content: space-between; /* Spread them out */
+        align-items: center;
+        
+        margin-top: 10px;
+        padding-top: 12px;
+        border-top: 1px dashed rgba(0,0,0,0.1); /* Separator line */
+        width: 100%;
+    }
+
+    /* Adjust buttons for mobile touch targets */
+    .status-tag {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+    }
+
+    .cancel-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+}
