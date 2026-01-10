@@ -510,87 +510,94 @@
 }
 
 /* =========================================
-   MOBILE RESPONSIVENESS (FIXED NAV SCROLL)
+   MOBILE RESPONSIVENESS (SMART STACK)
    ========================================= */
 @media screen and (max-width: 1000px) {
 
-  /* 1. MAIN CONTAINER: Prevent Horizontal Scroll */
+  /* 1. MAIN LAYOUT: Switch to Single Column */
   .ngo-layout-container {
     display: flex;
     flex-direction: column;
-    width: 100%;          /* Strict width */
-    height: auto;
+    height: auto;       /* Allow page to grow */
     min-height: 100vh;
-    overflow-x: hidden;   /* CRITICAL: Cuts off anything sticking out right */
-    overflow-y: auto;
-    background: var(--bg-cream);
+    overflow-y: auto;   /* Enable full page scrolling */
+    background: var(--bg-cream); /* Simplified background */
   }
 
-  /* 2. SIDEBAR -> HEADER */
+  /* 2. SIDEBAR -> TOP NAVIGATION */
   .ngo-sidebar {
-    /* Calculate width: 100% minus 30px total margin (15 left + 15 right) */
-    width: calc(100% - 30px); 
-    margin: 15px auto;    /* Center it */
-    padding: 20px;
+    width: auto;
     height: auto;
-    box-sizing: border-box; /* Ensure padding doesn't increase width */
-    
-    display: flex;
+    margin: 15px;
+    padding: 20px;
+    border-radius: 20px;
     flex-direction: column;
     gap: 15px;
   }
 
-  .sidebar-header { margin-bottom: 0; }
-  .sidebar-footer-card { display: none; }
-
-  /* 3. SCROLLABLE NAV ( The Fix ) */
+  .sidebar-header { margin-bottom: 15px; }
+  
+  /* Horizontal Scrollable Menu */
   .sidebar-nav {
-    display: flex;
     flex-direction: row;
-    
-    /* Force the container to respect parent width */
-    width: 100%;
-    max-width: 100%;
-    
-    /* Enable horizontal scrolling */
     overflow-x: auto;
-    
-    /* Smooth scrolling on iOS */
-    -webkit-overflow-scrolling: touch; 
-    
-    padding-bottom: 10px; /* Space for scrollbar */
+    padding-bottom: 5px;
     gap: 10px;
   }
-
-  /* Custom scrollbar for the menu only */
-  .sidebar-nav::-webkit-scrollbar { height: 4px; }
-  .sidebar-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
-
+  
   .nav-item {
-    white-space: nowrap; /* Don't wrap text */
-    flex-shrink: 0;      /* CRITICAL: Ensures items don't squish, they trigger scroll */
+    white-space: nowrap; /* Keep text on one line */
     background: rgba(255,255,255,0.1);
     padding: 10px 15px;
   }
 
-  /* 4. MAIN CONTENT */
+  /* Hide footer card on mobile to save space */
+  .sidebar-footer-card { display: none; }
+
+  /* 3. MAIN CONTENT AREA */
   .ngo-main-content {
     padding: 10px 20px;
-    width: 100%;
-    box-sizing: border-box;
-    overflow: visible;
+    overflow: visible; /* Let content expand */
+    height: auto;
   }
 
-  /* 5. TABLE -> CARDS */
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .header-user {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* 4. STATS GRID: Stack Vertically */
+  .stats-grid {
+    grid-template-columns: 1fr; /* Single column */
+    gap: 20px;
+  }
+
+  /* 5. TABLE TRANSFORM -> CARDS */
+  /* This completely changes the table to a list of cards for mobile */
   .events-table-section {
     padding: 20px;
     margin-bottom: 30px;
-    width: 100%;
-    box-sizing: border-box;
   }
   
-  .table-head-row { display: none; } /* Hide headers */
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .search-input-compact { width: 100%; }
 
+  /* Hide Table Headings */
+  .table-head-row { display: none; }
+
+  /* Card-Style Rows */
   .table-row {
     display: flex;
     flex-direction: column;
@@ -601,48 +608,50 @@
     border-radius: 15px;
     margin-bottom: 15px;
     background: #fcfcfc;
-    width: 100%;
-    box-sizing: border-box; /* Keeps borders inside 100% */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
   }
 
   .col { width: 100%; }
   
-  /* Pseudo Labels */
-  .col.date::before { content: "📅 "; opacity: 0.7; }
-  .col.loc::before { content: "📍 "; opacity: 0.7; }
-  .col.title { font-size: 1.1rem; font-weight: 700; }
+  /* Make Title Bold */
+  .col.title { 
+    font-size: 1.1rem; 
+    margin-bottom: 5px; 
+  }
+  
+  /* Add labels via pseudo-elements for clarity */
+  .col.date::before { content: "📅 "; }
+  .col.loc::before { content: "📍 "; }
 
-  /* Buttons Grid */
+  /* Action Buttons: Full width grid */
   .col.manage.action-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    width: 100%;
     margin-top: 10px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* 3 Equal buttons */
+    gap: 10px;
   }
 
   .btn-text {
     width: 100%;
-    padding: 12px 0;
     text-align: center;
-    background-color: #f0f0f0; /* Default background for visibility */
+    padding: 12px 0; /* Taller for touch */
+    border-radius: 8px;
   }
 
-  /* 6. RIGHT PANEL */
+  /* 6. RIGHT PANEL -> BOTTOM SECTION */
   .ngo-right-panel {
-    padding: 20px;
-    width: 100%;
-    box-sizing: border-box;
     height: auto;
+    padding: 20px;
   }
 
   .right-card-dark {
-    padding: 30px 20px;
     height: auto;
+    padding: 30px 20px;
   }
-  
+
   .activity-list {
-    max-height: 300px;
+    max-height: 300px; /* Limit height so page isn't endless */
     overflow-y: auto;
   }
 }
