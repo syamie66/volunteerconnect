@@ -366,142 +366,86 @@
 }
 
 /* =========================================
-   9. MOBILE RESPONSIVENESS (PHONE OPTIMIZED)
+   9. MOBILE RESPONSIVENESS (FIXED CLIPPING)
    ========================================= */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 900px) {
 
-  /* --- 1. GLOBAL LAYOUT --- */
-  .ep-wrapper {
-    padding-bottom: 40px; /* Less bottom padding */
-  }
-
-  .ep-big-logo {
-    padding: 40px 20px;
-    font-size: 1.2rem;
-  }
-
-  /* --- 2. HERO SECTION --- */
-  .ep-hero-editorial {
-    flex-direction: column-reverse; /* Image on top, Text below */
-  }
-
-  .ep-hero-image-visual {
-    width: 100%;
-    height: 200px; /* Reduced height to let user see content sooner */
-    border-left: none;
-    border-bottom: 1px solid #d1d1d1;
-  }
-
-  .ep-hero-content {
-    padding: 40px 20px; /* Tighter padding */
-    text-align: center;
-    flex: auto;
-  }
-
-  .ep-editorial-title {
-    font-size: 2rem; /* Smaller title to prevent wrapping 3-4 lines */
-    margin-bottom: 15px;
-    line-height: 1.1;
-  }
-
-  .ep-subtitle-editorial {
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  /* --- 3. FILTER & SEARCH --- */
-  .ep-filter-strip {
-    flex-direction: column;
-    gap: 15px;
-    padding: 20px;
-    align-items: stretch; /* Stretch items to full width */
-  }
-
-  .ep-search-container-editorial {
-    width: 100%;
-  }
-
-  .ep-search-input-editorial {
-    text-align: center;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 5px;
-    font-size: 16px; /* CRITICAL: Prevents iOS from zooming in when tapped */
-  }
-
-  /* --- 4. GRID & CARD LAYOUT --- */
+  /* 1. CONTAINER FIXES */
   .ep-events-grid {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    gap: 40px; /* Reduced gap between cards */
+    display: block; /* Simpler than grid for mobile stacking */
+    /* Top padding 50px ensures the first card's badge isn't cut off */
+    padding: 50px 20px 80px 20px; 
+    width: 100%;
+    box-sizing: border-box; /* Prevents horizontal scroll */
+    overflow: visible; /* Allows shadows/badges to spill out */
   }
 
+  /* 2. CARD SPACING */
   .ep-card {
     width: 100%;
-    margin: 0;
-    overflow: visible; /* Allows badge to float */
+    margin-bottom: 60px; /* Big gap between cards */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: visible !important; /* CRITICAL: Allows badge to sit outside */
   }
 
-  /* --- 5. INFO BOX & BADGE --- */
+  /* 3. INFO BOX (Pink Container) */
   .ep-info-box {
-    margin-top: 30px; /* Spacing for the floating badge */
-    margin-bottom: 15px;
-    padding: 25px 20px;
+    width: 100%;
     min-height: auto;
-    /* Ensure badge doesn't get cut off */
+    padding: 30px 20px;
+    margin: 0;
+    position: relative;
+    /* Ensure the box itself doesn't clip the badge */
     overflow: visible !important; 
-    /* Slightly smaller shadow for mobile */
-    box-shadow: 3px 3px 0px rgba(42, 26, 26, 0.1); 
+    box-sizing: border-box;
   }
 
+  /* 4. DATE BADGE (The element likely causing issues) */
   .ep-date-badge {
     width: 50px;
     height: 50px;
-    top: -25px; /* Pulls it exactly half-way up */
-    right: 20px; /* Inset from the right */
-    box-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    /* Move UP: -25px puts it half-in/half-out of the top border */
+    top: -25px; 
+    /* Move IN: 15px ensures it doesn't get cut off on the right screen edge */
+    right: 15px; 
     z-index: 10;
+    box-shadow: 2px 2px 4px rgba(0,0,0,0.15);
   }
-  
+
   .ep-date-day { font-size: 1.1rem; }
   .ep-date-month { font-size: 0.65rem; }
 
-  /* --- 6. TEXT DETAILS --- */
+  /* 5. TEXT CONTENT */
   .ep-org-name {
-    font-size: 1.1rem;
-    margin-bottom: 15px;
-  }
-
-  .ep-details-grid {
-    gap: 10px;
+    font-size: 1.2rem;
+    margin-top: 10px; /* Extra space so it doesn't hit the badge */
   }
   
-  /* Stack labels/values slightly tighter */
-  .ep-value { font-size: 0.85rem; }
-  .ep-label { font-size: 0.6rem; }
+  .ep-card-desc {
+    font-size: 0.9rem;
+    padding: 0 5px; /* prevent text hitting edges */
+  }
 
-  /* --- 7. BUTTON LAYOUT (SMART GRID) --- */
-  /* Instead of stacking 3 huge buttons, we use a grid to save height */
+  /* 6. BUTTONS (Stacked Layout) */
   .ep-btn-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Two side-by-side */
-    gap: 10px;
+    flex-direction: column;
     width: 100%;
   }
 
   .ep-btn-group button {
     width: 100%;
-    padding: 12px 0;
-    font-size: 0.75rem;
+    padding: 14px 0; /* Taller buttons for easy tapping */
+    margin-bottom: 8px;
   }
 
-  /* Make "Join" Button span the full width at the bottom */
-  .ep-join-btn {
-    grid-column: 1 / -1; /* Spans both columns */
-    order: 3; /* Forces it to the bottom */
-  }
-  
-  /* View Profile & Read More share the top row */
-  .ep-view-profile-btn { order: 1; }
-  .ep-read-more-btn { order: 2; }
+  /* --- HERO ADJUSTMENTS (Keep these to fit screen) --- */
+  .ep-hero-editorial { flex-direction: column-reverse; }
+  .ep-hero-image-visual { height: 200px; width: 100%; }
+  .ep-hero-content { padding: 40px 20px; text-align: center; }
+  .ep-editorial-title { font-size: 2.2rem; }
+  .ep-filter-strip { flex-direction: column; padding: 20px; }
+  .ep-search-container-editorial { width: 100%; }
+  .ep-search-input-editorial { text-align: center; font-size: 16px; }
 }
