@@ -137,7 +137,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* DYNAMIC ACTIVITY TABLE */}
+          {/* ACTIVITY TABLE */}
           <div className="card activity-section">
             <div className="card-header">
               <h3>Recent System Activity</h3>
@@ -155,7 +155,6 @@ export default function AdminDashboard() {
                   {activities.map((activity) => (
                     <tr 
                       key={activity.id} 
-                      // 🔴 FIX: Navigate to the correct Admin Users route
                       onClick={() => activity.status === "Pending" && navigate('/admin/users')}
                       style={{ cursor: activity.status === "Pending" ? 'pointer' : 'default' }}
                       title={activity.status === "Pending" ? "Click to verify NGO" : ""}

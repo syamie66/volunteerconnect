@@ -1,13 +1,10 @@
-/* --- SCOPED VARIABLES & CONTAINER --- */
+/* SCOPED VARIABLES & CONTAINER */
 .edit-profile-container {
     --sage: #8A9A5B;       
     --dark-sage: #5d6d3e;
     --text-main: #2d3431;  
     --border-color: #e0e6db;
-    
     background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%);; 
-    
-    /* FORCE SINGLE SCREEN (No Scroll) */
     height: 100vh; 
     overflow: hidden; 
     padding: 20px 40px; 
@@ -19,7 +16,7 @@
     align-items: center; 
 }
 
-/* --- MAIN CARD --- */
+/* MAIN CARD */
 .edit-profile-card {
     width: 100%;
     max-width: 1200px;
@@ -28,12 +25,12 @@
     flex-direction: column;
 }
 
-/* --- HEADER (Compact) --- */
+/* HEADER */
 .edit-profile-header {
     margin-bottom: 15px; 
     flex-shrink: 0; 
     display: flex;
-    justify-content: space-between; /* Photo on right */
+    justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #f0f0f0;
     padding-bottom: 10px;
@@ -52,7 +49,7 @@
     margin: 0;
 }
 
-/* --- PHOTO SECTION (Inside Header now for space) --- */
+/* PHOTO SECTION */
 .edit-photo-section {
     display: flex;
     gap: 15px;
@@ -83,25 +80,20 @@
     padding: 6px 12px !important;
     width: 200px;
 }
-
-/* --- FORM FLEX WRAPPER --- */
 .edit-profile-form {
-    flex: 1; /* Occupy all remaining height */
+    flex: 1; 
     display: flex;
     flex-direction: column;
-    gap: 12px; /* Tighter gaps */
+    gap: 12px; 
     padding-top: 10px;
 }
-
-/* --- GRID (4 Columns for General Info) --- */
 .edit-form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1.2fr 1.2fr; /* Email/Web slightly wider */
+    grid-template-columns: 1fr 1fr 1.2fr 1.2fr; 
     gap: 15px; 
     flex-shrink: 0;
 }
 
-/* --- INPUTS --- */
 .edit-input-group {
     display: flex;
     flex-direction: column;
@@ -136,31 +128,28 @@
     box-shadow: 0 0 0 1px var(--sage);
 }
 
-/* --- THE BIG BOXES LOGIC --- */
 
-/* 1. Mission Statement (Grows a bit) */
 .box-grow-small {
-    flex: 1; /* Grows to take space */
-    min-height: 80px; /* Minimum size */
+    flex: 1; 
+    min-height: 80px; 
     display: flex;
     flex-direction: column;
 }
 
-/* 2. Description (Grows MORE) */
+
 .box-grow-large {
-    flex: 2; /* Grows 2x faster than Mission */
+    flex: 2; 
     min-height: 120px;
     display: flex;
     flex-direction: column;
 }
 
 .edit-input-group textarea {
-    flex: 1; /* Fill the container */
+    flex: 1; 
     resize: none;
     height: 100%;
 }
 
-/* --- CHECKBOXES --- */
 .checkbox-grid-edit {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
@@ -209,7 +198,6 @@
 
 .checkbox-item-edit input[type="checkbox"]:checked::before { transform: scale(1); }
 
-/* --- BUTTONS --- */
 .edit-form-actions {
     display: flex;
     justify-content: flex-end; 
@@ -243,8 +231,6 @@
     font-size: 0.85rem;
 }
 
-/* --- RESPONSIVE FALLBACK --- */
-/* If height is too small (e.g. laptop 1366x768 or smaller), allow scroll */
 @media (max-height: 750px) {
     .edit-profile-container { overflow-y: auto; display: block; height: auto; }
     .edit-profile-form { overflow: visible; }
@@ -253,5 +239,5 @@
 
 @media (max-width: 900px) {
     .edit-form-grid { grid-template-columns: 1fr 1fr; }
-    .edit-photo-section { display: none; /* Hide photo upload on small screens to save space */ }
+    .edit-photo-section { display: none; }
 }

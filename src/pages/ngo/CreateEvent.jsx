@@ -43,8 +43,7 @@ export default function CreateEvent() {
     }
   }, [profile]);
 
-  // --- 🔒 VALIDATION LOGIC ---
-  // Check if all required fields have values
+  // VALIDATION LOGIC 
   const isFormValid = 
     formData.title.trim() !== "" &&
     formData.date !== "" &&
@@ -57,7 +56,6 @@ export default function CreateEvent() {
     formData.registrationEnd !== "" &&
     formData.maxParticipants !== "";
 
-  // --- 🔒 SECURITY CHECKS ---
 
   // 1. Check if user is NGO
   if (profile && profile.userType !== "NGO") {
@@ -100,13 +98,13 @@ export default function CreateEvent() {
     );
   }
 
-  // --- FORM LOGIC ---
+  // FORM LOGIC
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isFormValid) return; // Double check
+    if (!isFormValid) return; 
 
     setLoading(true);
     const currentOrgName = formData.organization || profile?.orgName || profile?.organizationName || "Organization";
@@ -153,12 +151,12 @@ export default function CreateEvent() {
           <div className="create-actions">
             <button type="button" className="create-btn-cancel" onClick={() => navigate('/dashboard/ngo')}>Cancel</button>
             
-            {/* UPDATED SUBMIT BUTTON */}
+            {/* SUBMIT BUTTON */}
             <button 
               type="button" 
               className="create-btn-publish" 
               onClick={handleSubmit} 
-              disabled={loading || !isFormValid} // Disable if loading OR invalid
+              disabled={loading || !isFormValid}
               style={{ 
                 opacity: isFormValid ? 1 : 0.5, 
                 cursor: isFormValid ? 'pointer' : 'not-allowed' 
@@ -263,7 +261,7 @@ export default function CreateEvent() {
                <strong style={{color: '#557C55'}}>{formData.maxParticipants || 0} Pax</strong>
             </div>
 
-            {/* Validation Helper Message */}
+            {/* Validation Message */}
             {!isFormValid && (
               <div style={{marginTop: '20px', padding: '10px', background: '#fff3cd', border: '1px solid #ffeeba', borderRadius: '4px', fontSize: '0.85rem', color: '#856404'}}>
                 ⚠️ Please fill in all required fields marked with * to publish.

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase";
-import { collection, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore"; // ✅ Added deleteDoc
+import { collection, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { 
   Users, Eye, X, Shield, Heart, 
-  Calendar, Trash2, CheckCircle, User // ✅ Added Trash2
+  Calendar, Trash2, CheckCircle, User
 } from "lucide-react";
 import './AdminCSS.css';
 
@@ -54,12 +54,11 @@ export default function ManageUsers() {
     }
   };
 
-  // 4. ✅ NEW: Handle Delete User
+  // 4. Handle Delete User
   const handleDeleteUser = async (userId) => {
     if (window.confirm("Are you sure you want to PERMANENTLY delete this user? This action cannot be undone.")) {
       try {
         await deleteDoc(doc(db, "users", userId));
-        // Remove from local state to update UI instantly
         setUsers((prev) => prev.filter((u) => u.id !== userId));
         alert("User account deleted successfully.");
       } catch (error) {
@@ -193,7 +192,7 @@ export default function ManageUsers() {
                               {user.disabled ? "Enable" : "Disable"}
                             </button>
 
-                            {/* ✅ NEW: Delete Button */}
+                            {/* Delete Button */}
                             <button
                               onClick={() => handleDeleteUser(user.id)}
                               className="btn-icon"
@@ -219,7 +218,7 @@ export default function ManageUsers() {
           </div>
         </div>
 
-        {/* --- DETAILS MODAL --- */}
+        {/* DETAILS MODAL */}
         {selectedUser && (
           <div className="modal-overlay" onClick={() => setSelectedUser(null)}>
             <div className="modal-container" onClick={(e) => e.stopPropagation()}>

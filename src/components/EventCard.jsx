@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from '../firebase';
-import { doc, updateDoc, arrayUnion } from "firebase/firestore"; // ✅ Import Firestore functions
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 
 export default function EventCard({ event, onJoin, currentUser, profile }) {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(false);
-  const [joining, setJoining] = useState(false); // Local loading state
+  const [joining, setJoining] = useState(false); 
 
-  // --- Date Parsing ---
+  // Date Parsing
   const getDateParts = (dateInput) => {
     if (!dateInput) return { day: "00", month: "XXX" };
     const dateObj = (dateInput && typeof dateInput.toDate === 'function') 
@@ -22,7 +22,7 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
   };
   const { day, month } = getDateParts(event.date);
 
-  // --- Time Formatting ---
+  // Time Formatting
   const formatTime = (timeStr) => {
     if (!timeStr) return "-";
     const [h, m] = timeStr.split(":");
@@ -32,11 +32,20 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
   };
 
   const isAlreadyJoined = event.participants?.includes(currentUser?.uid);
-  const currentCount = event.participants?.length || 0;
-  const maxCount = event.maxParticipants || "-";
+  
+  // --- STRICT CAPACITY LOGIC ---
+  const maxCountVal = parseInt(event.maxParticipants) || 0;
+  
+  // STRICT CHECK: We default to 0. 
+  // We do NOT use event.participants.length because that includes 'Pending' users.
+  // This ensures ONLY 'Approved' users count toward the limit.
+  const currentApprovedCount = event.approvedCount || 0;
+
+  // isFull is TRUE only if Approved Count hits the Max
+  const isFull = maxCountVal > 0 && currentApprovedCount >= maxCountVal;
+
   const isLongDesc = event.description && event.description.length > 100;
 
-  // --- Navigation to NGO Profile ---
   const handleViewNGO = () => {
     const ngoId = event.createdBy || event.organizerId; 
     if (ngoId) {
@@ -46,45 +55,48 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
     }
   };
 
-  // --- ✅ NEW: Handle Join with Date Recording ---
+  // Handle Join
   const handleJoinInternal = async () => {
     if (!currentUser) {
         alert("Please log in to join events.");
         return;
     }
     if (isAlreadyJoined) return;
+    
+    // Strict block if full
+    if (isFull) {
+        alert("Sorry, this event is already full.");
+        return;
+    }
 
     setJoining(true);
 
     try {
-        // 1. Get Today's Date
         const today = new Date().toLocaleDateString('en-GB', {
-            day: 'numeric', 
-            month: 'short', 
-            year: 'numeric'
+            day: 'numeric', month: 'short', year: 'numeric'
         });
 
-        // 2. Update USER Document (Add status & date)
+        // Update User
         const userRef = doc(db, "users", currentUser.uid);
         await updateDoc(userRef, {
             [`eventRegistrations.${event.id}`]: {
                 status: "Pending",
-                registeredDate: today, // <--- 🗓️ DATE RECORDED HERE
+                registeredDate: today, 
                 eventId: event.id,
                 eventTitle: event.title,
                 eventDate: event.date
             }
         });
 
-        // 3. Update EVENT Document (Add user to participants list)
+        // Update Event
         const eventRef = doc(db, "events", event.id);
         await updateDoc(eventRef, {
             participants: arrayUnion(currentUser.uid)
+            // NOTE: We do NOT increment approvedCount here. 
+            // That happens only when the NGO clicks "Approve" in the dashboard.
         });
 
         alert("Application submitted successfully!");
-        
-        // 4. Trigger Parent Refresh (if onJoin prop exists)
         if (onJoin) onJoin(event.id);
 
     } catch (error) {
@@ -94,6 +106,23 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
         setJoining(false);
     }
   };
+
+  // --- BUTTON STATE LOGIC ---
+  let joinButtonText = "Join Event";
+  let isButtonDisabled = joining || isAlreadyJoined;
+  let buttonClass = "ep-join-btn";
+
+  if (joining) {
+      joinButtonText = "Applying...";
+  } else if (isAlreadyJoined) {
+      joinButtonText = "Applied ✓";
+      buttonClass += " joined";
+  } else if (isFull) {
+      // Logic: Only displays "Event Full" if approvedCount >= maxParticipants
+      joinButtonText = "Event Full";
+      isButtonDisabled = true;
+      buttonClass += " full"; 
+  }
 
   return (
     <div className="ep-card">
@@ -134,10 +163,6 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
                     {event.registrationEnd ? new Date(event.registrationEnd).toLocaleDateString(undefined, {month:'short', day:'numeric'}) : 'TBD'}
                 </span>
             </div>
-            <div className="ep-detail-item">
-                <span className="ep-label">Capacity</span>
-                <span className="ep-value">{currentCount} / {maxCount}</span>
-            </div>
         </div>
       </div>
 
@@ -151,7 +176,6 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
 
         <div className="ep-btn-group">
           
-          {/* VIEW NGO BUTTON */}
           <button 
             className="ep-view-profile-btn"
             onClick={handleViewNGO}
@@ -170,14 +194,15 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
             </button>
           )}
 
-          {/* ✅ UPDATED JOIN BUTTON */}
+          {/* JOIN BUTTON */}
           {profile?.userType !== "admin" && profile?.userType !== "NGO" && (
             <button 
-              className={`ep-join-btn ${isAlreadyJoined ? 'joined' : ''}`} 
-              onClick={handleJoinInternal} // <--- Calls the new internal function
-              disabled={joining || isAlreadyJoined}
+              className={buttonClass} 
+              onClick={handleJoinInternal} 
+              disabled={isButtonDisabled}
+              style={isFull && !isAlreadyJoined ? { backgroundColor: '#e0e0e0', color: '#888', cursor: 'not-allowed', boxShadow: 'none' } : {}}
             >
-              {joining ? "Applying..." : isAlreadyJoined ? "Applied ✓" : "Join Event"}
+              {joinButtonText}
             </button>
           )}
         </div>

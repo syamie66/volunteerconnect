@@ -28,7 +28,6 @@ export default function EditNGOProfile() {
     "General Public / Community", "Other"
   ];
 
-  // --- FIX IS HERE IN USE EFFECT ---
   useEffect(() => {
     async function fetchProfile() {
       if (currentUser) {
@@ -42,14 +41,10 @@ export default function EditNGOProfile() {
                 setFormData(prev => ({ 
                     ...prev, 
                     ...data, 
-                    // 1. Try database 'contactEmail'
-                    // 2. If empty, try database 'email'
-                    // 3. If empty, use the Google/Login email (currentUser.email)
                     contactEmail: data.contactEmail || data.email || currentUser.email || '',
                     beneficiaries: data.beneficiaries || [] 
                 }));
             } else {
-                // If doc doesn't exist yet, at least pre-fill the email from login
                 setFormData(prev => ({ ...prev, contactEmail: currentUser.email }));
             }
         } catch (error) {
@@ -125,7 +120,7 @@ export default function EditNGOProfile() {
                     <input type="number" name="yearFounded" value={formData.yearFounded || ''} onChange={handleChange} required />
                 </div>
                 
-                {/* EMAIL INPUT - Now populated correctly */}
+                {/* EMAIL INPUT */}
                 <div className="edit-input-group">
                     <label>Email</label>
                     <input 
@@ -143,7 +138,7 @@ export default function EditNGOProfile() {
                 </div>
             </div>
 
-            {/* ROW 2: MISSION STATEMENT (Big Box 1) */}
+            {/* ROW 2: MISSION STATEMENT */}
             <div className="edit-input-group full-width box-grow-small">
                 <label>Mission Statement</label>
                 <textarea name="missionStatement" value={formData.missionStatement || ''} onChange={handleChange} required></textarea>
@@ -159,13 +154,11 @@ export default function EditNGOProfile() {
                 ))}
             </div>
 
-            {/* ROW 4: DESCRIPTION (Big Box 2 - Largest) */}
+            {/* ROW 4: DESCRIPTION */}
             <div className="edit-input-group full-width box-grow-large">
                 <label>Description</label>
                 <textarea name="description" value={formData.description || ''} onChange={handleChange}></textarea>
             </div>
-
-            {/* FOOTER: BUTTONS */}
             <div className="edit-form-actions">
                 <button type="button" className="btn-cancel" onClick={() => navigate('/ngo-dashboard')}>Cancel</button>
                 <button type="submit" className="btn-save" disabled={loading}>{loading ? "Saving..." : "PUBLISH PROFILE"}</button>

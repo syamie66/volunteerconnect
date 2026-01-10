@@ -49,7 +49,6 @@ export default function ManageEvents() {
     return title.includes(term) || ngo.includes(term) || loc.includes(term);
   });
 
-  // Helper to format date nicely
   const formatDate = (dateString) => {
     if (!dateString) return "Date TBD";
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
@@ -57,19 +56,12 @@ export default function ManageEvents() {
   };
 
   return (
-    // WRAPPER CLASS FOR SCOPED CSS
     <div className="admin-dashboard-scope">
       <div className="content-container">
-        
-        {/* --- PAGE TITLE --- */}
         <h1 className="page-title">Manage Events</h1>
-
-        {/* --- TABLE CARD --- */}
         <div className="card table-card">
           <div className="card-header">
             <h3>All Active Events</h3>
-            
-            {/* Search Input */}
             <div className="search-bar" style={{ width: '250px', border: '1px solid #eee' }}>
               <input 
                 type="text" 
@@ -160,7 +152,7 @@ export default function ManageEvents() {
           </div>
         </div>
 
-        {/* --- DETAILS MODAL --- */}
+        {/* DETAILS MODAL */}
         {selectedEvent && (
           <div className="modal-overlay" onClick={() => setSelectedEvent(null)}>
             <div className="modal-container" onClick={(e) => e.stopPropagation()}>
@@ -214,7 +206,7 @@ export default function ManageEvents() {
                     </p>
                   </div>
 
-                  {/* Row 3: Participants (Using Status Tag Style) */}
+                  {/* Row 3: Participants */}
                   <div className="detail-item span-full">
                     <label>Participation</label>
                     <div style={{ marginTop: '5px' }}>

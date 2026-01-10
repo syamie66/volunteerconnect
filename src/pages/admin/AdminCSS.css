@@ -1,24 +1,14 @@
-/* ==============================================================
-   SCOPED ADMIN THEME: MATCHA STRAWBERRY (MASTER UNIFIED)
-   --------------------------------------------------------------
-   Usage: Wrap your entire Admin Component in <div className="admin-dashboard-scope">
-   ============================================================== */
-
-/* --- 1. MAIN LAYOUT WRAPPER --- */
+/*MAIN LAYOUT WRAPPER*/
 .admin-dashboard-scope {
-  --sidebar-bg: #1e3932;       /* Dark Matcha */
+  --sidebar-bg: #1e3932;      
   --sidebar-text: #aebfb5;
-  --bg-color: #fcfbf7;         /* Cream Background */
+  --bg-color: #fcfbf7;        
   --card-bg: #ffffff;
-  
-  /* UPDATED THEME COLORS */
-  --primary-pink: #fce7f3;      /* Light Pink (Avatars/Buttons) */
-  --primary-pink-dark: #9d174d; /* Burgundy (Text/Icons) */
-  --primary-red-btn: #ef4444;   /* Vibrant Red (Disable) */
-  
+  --primary-pink: #fce7f3;      
+  --primary-pink-dark: #9d174d; 
+  --primary-red-btn: #ef4444;   
   --primary-green: #d1fae5;    
-  --primary-green-dark: #047857;
-  
+  --primary-green-dark: #047857;  
   --primary-sage: #e8eeb8;     
   --primary-sage-dark: #656d0a;
 
@@ -31,7 +21,7 @@
   overflow: hidden;
 }
 
-/* --- 2. SIDEBAR --- */
+/* SIDEBAR */
 .admin-dashboard-scope .admin-sidebar {
   width: 280px;
   background-color: #223413;
@@ -41,19 +31,11 @@
   flex-direction: column;
   justify-content: flex-start; 
   gap: 50px; 
-  
-  /* --- CHANGED LINES --- */
   margin: 20px; 
-  /* Use 100vh to cover full screen, minus the margins (20px top + 20px bottom) */
-  height: calc(100vh - 40px); 
-  /* --------------------- */
-  
+  height: calc(100vh - 40px);  
   border-radius: 30px;          
   box-shadow: 5px 10px 30px rgba(53, 94, 59, 0.2); 
-  
-  /* Prevent sidebar from shrinking if content grows */
   flex-shrink: 0; 
-  /* Keep sidebar fixed while content scrolls */
   position: sticky;
   top: 20px;
 }
@@ -85,32 +67,27 @@
 .admin-dashboard-scope .logout:hover { background-color: rgba(255, 0, 0, 0.1); color: #ff8080; }
 
 
-/* --- 3. MAIN CONTENT AREA --- */
+/* MAIN CONTENT AREA */
 .admin-dashboard-scope .admin-main {
   flex: 1; display: flex; flex-direction: column;
   overflow-y: auto; position: relative; width: 100%;
 }
-
 .admin-dashboard-scope .content-container {
   padding: 0 40px 40px 40px; width: 100%; box-sizing: border-box; flex: 1;
 }
-
 .admin-dashboard-scope .page-title {
   font-size: 2rem; margin-bottom: 30px; color: #1f2937; font-weight: 700;
 }
-
-
-/* --- 4. DASHBOARD OVERVIEW GRID (Specific to AdminDashboard.jsx) --- */
 .admin-dashboard-scope .dashboard-grid {
   display: grid;
-  grid-template-columns: 320px 1fr; /* Fixed Left (Stats), Flex Right (Table) */
+  grid-template-columns: 320px 1fr;
   gap: 25px;
   align-items: start;
 }
 
 @media (max-width: 1100px) {
   .admin-dashboard-scope .dashboard-grid {
-    grid-template-columns: 1fr; /* Stack on smaller screens */
+    grid-template-columns: 1fr; 
   }
   .admin-dashboard-scope .chart-flex { flex-direction: column; }
 }
@@ -118,15 +95,12 @@
 .admin-dashboard-scope .left-col { display: flex; flex-direction: column; gap: 25px; }
 .admin-dashboard-scope .right-col { height: 100%; }
 
-
-/* --- 5. CARDS & WIDGETS --- */
 .admin-dashboard-scope .card {
   background: white; border-radius: 20px; padding: 24px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid rgba(0,0,0,0.02);
   width: 100%; box-sizing: border-box; margin-bottom: 25px;
 }
 
-/* Stats Stack (Vertical Cards) */
 .admin-dashboard-scope .stats-stack { display: flex; flex-direction: column; gap: 15px; }
 
 .admin-dashboard-scope .stat-card {
@@ -134,8 +108,6 @@
   gap: 15px; transition: transform 0.2s; background-color: white;
 }
 .admin-dashboard-scope .stat-card:hover { transform: translateY(-2px); }
-
-/* Stat Theme Colors */
 .admin-dashboard-scope .pink-theme { background-color: var(--primary-pink); color: #831843; }
 .admin-dashboard-scope .green-theme { background-color: var(--primary-green); color: #064e3b; }
 .admin-dashboard-scope .sage-theme { background-color: var(--primary-sage); color: #365314; }

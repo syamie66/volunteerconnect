@@ -1,19 +1,19 @@
-/* --- Page Layout --- */
+/* Page Layout */
 .create-body {
   background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
-  height: 100vh; /* Full viewport height */
+  height: 100vh; 
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: 'Poppins', sans-serif;
-  overflow: hidden; /* No scroll on main body */
+  overflow: hidden; 
 }
 
 .create-container {
   background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
   width: 90%;
   max-width: 1000px;
-  height: 85vh; /* Compact container */
+  height: 85vh; 
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.08);
   padding: 30px;
@@ -22,7 +22,7 @@
   flex-direction: column;
 }
 
-/* --- Header --- */
+/* Header */
 .create-header {
   display: flex;
   justify-content: space-between;
@@ -34,11 +34,11 @@
 
 .create-header h2 {
   margin: 0;
-  color: #2F4F4F; /* Dark Slate Green */
+  color: #2F4F4F; 
   font-size: 1.5rem;
 }
 
-/* --- Buttons --- */
+
 .create-actions {
   display: flex;
   gap: 10px;
@@ -46,7 +46,7 @@
 
 .create-btn-cancel {
   background: transparent;
-  border: 1px solid #D8A7B1; /* Muted Pink Border */
+  border: 1px solid #D8A7B1; 
   color: #D8A7B1;
   padding: 8px 20px;
   border-radius: 8px;
@@ -60,7 +60,7 @@
 }
 
 .create-btn-publish {
-  background: #557C55; /* Sage Green */
+  background: #557C55;
   border: none;
   color: white;
   padding: 8px 25px;
@@ -74,19 +74,19 @@
   background: #3A5A40;
 }
 
-/* --- Main Grid Content --- */
+/* Main Grid Content */
 .create-grid {
   display: flex;
   gap: 30px;
   height: 100%;
-  overflow-y: auto; /* Scroll only inside grid if screen is very short */
+  overflow-y: auto; 
 }
 
-/* --- Form Side --- */
+/* Form Side */
 .create-form {
   flex: 2;
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 Columns */
+  grid-template-columns: repeat(3, 1fr); 
   gap: 15px;
   align-content: start;
 }
@@ -96,7 +96,6 @@
   flex-direction: column;
 }
 
-/* Span utilities */
 .span-2 { grid-column: span 2; }
 .span-3 { grid-column: span 3; }
 
@@ -133,10 +132,10 @@
   height: 80px;
 }
 
-/* --- Preview Side --- */
+/* Preview Side */
 .create-preview {
   flex: 1;
-  background: #F8FBF8; /* Light Mint */
+  background: #F8FBF8; 
   border-radius: 15px;
   padding: 20px;
   display: flex;
@@ -165,8 +164,8 @@
 }
 
 .cp-date-box {
-  background: #FFE4E8; /* Soft Pink */
-  color: #C75B7A; /* Darker Pink */
+  background: #FFE4E8; 
+  color: #C75B7A; 
   padding: 8px 12px;
   border-radius: 8px;
   text-align: center;
@@ -193,11 +192,11 @@
   padding-top: 10px;
 }
 
-/* --- Mobile Responsiveness --- */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
   .create-body { height: auto; overflow: auto; padding: 20px 0; }
   .create-container { height: auto; width: 95%; }
-  .create-grid { flex-direction: column-reverse; } /* Put preview on top on mobile */
+  .create-grid { flex-direction: column-reverse; }
   .create-form { grid-template-columns: 1fr; }
   .span-2, .span-3 { grid-column: span 1; }
 }

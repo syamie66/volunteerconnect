@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { db } from '../../firebase';
-import { doc, getDoc, updateDoc, arrayRemove } from 'firebase/firestore';
+// Added 'increment' to imports
+import { doc, getDoc, updateDoc, arrayRemove, increment } from 'firebase/firestore';
 import './EventParticipants.css';
 
 export default function EventParticipants() {
@@ -11,7 +12,6 @@ export default function EventParticipants() {
     const [loading, setLoading] = useState(true);
     const [expandedParticipants, setExpandedParticipants] = useState({});
 
-    // --- FETCH DATA ---
     useEffect(() => {
         const fetchEvent = async () => {
             const eventRef = doc(db, 'events', eventId);
@@ -55,25 +55,59 @@ export default function EventParticipants() {
         setExpandedParticipants((prev) => ({ ...prev, [uid]: !prev[uid] }));
     };
 
-    const updateParticipantStatus = async (uid, newStatus) => {
+    // --- UPDATED: HANDLES COUNTER SYNC ---
+    const updateParticipantStatus = async (uid, currentStatus, newStatus) => {
         if(!window.confirm(`Mark this user as ${newStatus}?`)) return;
         setLoading(true);
+        
         try {
+            // 1. Update the User Document
             const userRef = doc(db, 'users', uid);
             await updateDoc(userRef, { [`eventRegistrations.${eventId}.status`]: newStatus });
+
+            // 2. Sync the Event 'approvedCount' for "Event Full" logic
+            const eventRef = doc(db, 'events', eventId);
+
+            // Logic: 
+            // If we are Approving (and they weren't already approved) -> Count +1
+            // If we are Rejecting (and they WERE approved previously) -> Count -1
+            
+            if (newStatus === "Approved" && currentStatus !== "Approved") {
+                await updateDoc(eventRef, { approvedCount: increment(1) });
+            } 
+            else if (newStatus === "Rejected" && currentStatus === "Approved") {
+                await updateDoc(eventRef, { approvedCount: increment(-1) });
+            }
+
+            // 3. Update UI State locally
             setParticipants(prev => prev.map(p => p.uid === uid ? { ...p, status: newStatus } : p));
-        } catch (error) { alert(error.message); }
+        
+        } catch (error) { 
+            console.error(error);
+            alert("Error updating status: " + error.message); 
+        }
         setLoading(false);
     };
 
-    const handleDelete = async (uid, name) => {
+    const handleDelete = async (uid, name, currentStatus) => {
         if (!window.confirm(`Remove ${name} from this event?`)) return;
         setLoading(true);
         try {
             const eventRef = doc(db, "events", eventId);
+            
+            // 1. Remove from participants array
             await updateDoc(eventRef, { participants: arrayRemove(uid) });
+
+            // 2. If they were approved, decrement the count
+            if (currentStatus === "Approved") {
+                await updateDoc(eventRef, { approvedCount: increment(-1) });
+            }
+
+            // 3. Remove from User document
             const userRef = doc(db, "users", uid);
             await updateDoc(userRef, { [`eventRegistrations.${eventId}`]: null });
+
+            // 4. Update UI
             setParticipants(prev => prev.filter(p => p.uid !== uid));
         } catch (error) { alert(error.message); }
         setLoading(false);
@@ -93,7 +127,7 @@ export default function EventParticipants() {
                     <div className="meta-badges">
                         <span>📅 {event.date}</span>
                         <span>📍 {event.location}</span>
-                        <span className="count-badge">👥 {participants.length} Participants</span>
+                        <span className="count-badge">👥 {participants.length} Registrations</span>
                     </div>
                 </div>
             </div>
@@ -137,7 +171,8 @@ export default function EventParticipants() {
                                                     
                                                     <button 
                                                         className="tbl-btn approve-btn" 
-                                                        onClick={() => updateParticipantStatus(p.uid, "Approved")}
+                                                        // Pass current status so we know whether to increment
+                                                        onClick={() => updateParticipantStatus(p.uid, p.status, "Approved")}
                                                         disabled={p.status === "Approved"}
                                                     >
                                                         Approve
@@ -145,7 +180,8 @@ export default function EventParticipants() {
                                                     
                                                     <button 
                                                         className="tbl-btn reject-btn" 
-                                                        onClick={() => updateParticipantStatus(p.uid, "Rejected")}
+                                                        // Pass current status so we know whether to decrement
+                                                        onClick={() => updateParticipantStatus(p.uid, p.status, "Rejected")}
                                                         disabled={p.status === "Rejected"}
                                                     >
                                                         Reject
@@ -153,7 +189,7 @@ export default function EventParticipants() {
 
                                                     <button 
                                                         className="tbl-btn delete-btn" 
-                                                        onClick={() => handleDelete(p.uid, p.name)}
+                                                        onClick={() => handleDelete(p.uid, p.name, p.status)}
                                                     >
                                                         Delete
                                                     </button>

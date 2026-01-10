@@ -1,6 +1,6 @@
-/* --- SCOPED CONTAINER --- */
+
 .participants-container {
-  max-width: 1100px; /* Made slightly wider for text buttons */
+  max-width: 1100px; 
   margin: 3rem auto;
   padding: 2rem;
   font-family: 'Poppins', sans-serif;
@@ -10,9 +10,9 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
-/* --- HEADER SECTION --- */
+
 .participants-container .back-link {
-  color: #88b04b; /* Matcha */
+  color: #88b04b; 
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
@@ -41,14 +41,14 @@
 }
 
 .participants-container .count-badge {
-  background-color: #ffe0e6; /* Pale Pink */
+  background-color: #ffe0e6; 
   color: #d66d85;
   padding: 2px 10px;
   border-radius: 12px;
   font-weight: 600;
 }
 
-/* --- TABLE STYLING --- */
+/* TABLE STYLING */
 .participants-container .table-wrapper {
   margin-top: 2rem;
   overflow-x: auto;
@@ -63,7 +63,7 @@
 }
 
 .participants-container .aesthetic-table thead tr {
-  background-color: #eaf4eb; /* Light Matcha Milk */
+  background-color: #eaf4eb; 
   color: #4f6f52;
   text-align: left;
 }
@@ -82,7 +82,7 @@
   vertical-align: middle;
 }
 
-/* Row Hover & Active States */
+
 .participants-container .aesthetic-table tbody tr.main-row {
   transition: background-color 0.2s;
 }
@@ -98,8 +98,6 @@
   font-weight: 600;
   color: #2c2c2c;
 }
-
-/* --- STATUS BADGES --- */
 .status-badge {
   padding: 4px 12px;
   border-radius: 20px;
@@ -113,9 +111,9 @@
 .status-badge.rejected { background-color: #ffebee; color: #c62828; }
 
 
-/* --- TEXT BUTTONS --- */
+
 .participants-container .action-cell {
-  width: 320px; /* Fixed width to prevent wrapping */
+  width: 320px; 
 }
 
 .participants-container .btn-group {
@@ -134,14 +132,13 @@
   white-space: nowrap;
 }
 
-/* View (Neutral) */
 .participants-container .view-btn {
   background-color: #f0f0f0;
   color: #555;
 }
 .participants-container .view-btn:hover { background-color: #e0e0e0; }
 
-/* Approve (Matcha) */
+
 .participants-container .approve-btn {
   background-color: #9DC183;
   color: white;
@@ -153,7 +150,6 @@
   cursor: not-allowed;
 }
 
-/* Reject (Strawberry) */
 .participants-container .reject-btn {
   background-color: #ff8da1;
   color: white;
@@ -165,7 +161,7 @@
   cursor: not-allowed;
 }
 
-/* Delete (Ghost) */
+
 .participants-container .delete-btn {
   background-color: transparent;
   color: #999;
@@ -177,7 +173,7 @@
   border-color: #ffcdd2;
 }
 
-/* --- DETAILS ROW --- */
+
 .participants-container .detail-row td {
   background-color: #fdfdfd;
   padding: 0;
@@ -209,7 +205,7 @@
   border-radius: 8px;
 }
 
-/* Loading/Error */
+
 .loading-state, .error-state {
     text-align: center;
     padding: 3rem;

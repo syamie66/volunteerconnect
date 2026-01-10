@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
-import './EditEvent.css'; // Importing the isolated CSS
+import './EditEvent.css'; 
 
 const PENANG_CITIES = [
   "Air Itam", "Balik Pulau", "Batu Ferringhi", "Batu Kawan", "Batu Maung",
@@ -83,7 +83,6 @@ export default function EditEvent() {
         </div>
 
         <div className="compact-grid">
-          {/* LEFT: The Form (Grid Layout for compactness) */}
           <form className="compact-form">
             
             {/* Row 1 */}

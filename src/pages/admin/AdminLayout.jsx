@@ -5,7 +5,6 @@ import './AdminCSS.css';
 
 export default function AdminLayout() {
   return (
-    // We use the scoped class to apply the Green/Pink theme to the whole layout
     <div className="admin-dashboard-scope">
       
       {/* --- SIDEBAR --- */}
@@ -44,15 +43,12 @@ export default function AdminLayout() {
         </nav>
       </aside>
 
-      {/* --- MAIN CONTENT SHELL --- */}
+      {/* MAIN CONTENT SHELL */}
       <main className="admin-main">
-        {/* Persistent Header (Search bar, Profile) */}
         <header className="admin-header">
           <div className="header-actions">
           </div>
         </header>
-
-        {/* Dynamic Page Content Rendered Here */}
         <div className="content-container">
            <Outlet /> 
         </div>
