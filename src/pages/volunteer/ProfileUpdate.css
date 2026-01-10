@@ -266,85 +266,95 @@
 }
 
 /* =========================================
-   MOBILE RESPONSIVENESS (NO CLIPPING FIX)
+   MOBILE RESPONSIVENESS (STRICT FIT FIX)
    ========================================= */
 @media screen and (max-width: 900px) {
 
-    /* 1. WRAPPER: Fix Screen Overflow */
+    /* 1. GLOBAL RESET for this section */
     .pu-wrapper {
-        display: block;    /* Disable flex centering to allow natural scroll */
-        width: 100%;       /* Use % instead of vw to prevent horizontal scrollbars */
-        height: auto;      /* Remove fixed height so it grows with content */
-        min-height: 100vh; /* Cover at least full screen */
-        padding: 20px 15px; /* Smaller padding on sides to maximize space */
-        overflow-x: hidden; /* Prevent horizontal side-scroll */
+        width: 100%;        /* Changed from 100vw to 100% */
+        padding: 20px 15px; /* Reduce side padding to 15px */
+        box-sizing: border-box; /* Includes padding in width calculation */
+        overflow-x: hidden; /* Cuts off anything that tries to stick out */
+        display: block;     /* Enables natural vertical scrolling */
+        height: auto;
+        min-height: 100vh;
     }
 
+    /* 2. CONTAINER */
     .pu-container {
+        width: 100%;
+        max-width: 100%;
         display: flex;
         flex-direction: column;
-        width: 100%;
-        max-width: 100%; /* Ensure it never exceeds screen width */
         gap: 30px;
+        margin: 0;
+        padding: 0;
     }
 
-    /* 2. SUMMARY CARD: Remove Fixed Width */
-    .pu-summary-card {
-        width: 100%;      /* Override the 320px fixed width */
+    /* 3. INPUTS (The usual culprit for right-side overflow) */
+    .pu-input {
+        width: 100% !important; /* Force it to fit */
         max-width: 100%;
-        margin-bottom: 20px;
-        align-items: center; /* Center content */
-        text-align: center;
+        box-sizing: border-box; /* Vital: padding sits INSIDE the 100% width */
+        font-size: 16px; /* Fixes iOS zoom */
+        min-width: 0;    /* Prevents flex items from resisting shrinking */
     }
 
-    /* Fix Avatar centering */
-    .pu-avatar-container {
-        margin: 0 auto 20px auto;
+    /* 4. SUMMARY CARD */
+    .pu-summary-card {
+        width: 100% !important; /* Override fixed 320px */
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    /* Ensure text in rows doesn't clip */
+    /* Fix for long emails breaking layout */
+    .pu-info-value {
+        word-break: break-word; /* Forces long text to wrap */
+        text-align: right;
+    }
+
     .pu-info-row {
         width: 100%;
         display: flex;
         justify-content: space-between;
-        /* Allow text to wrap if values are long */
-        flex-wrap: wrap; 
-        gap: 10px;
+        gap: 15px; /* Gap instead of fixed margins */
     }
 
-    /* 3. FORM SECTION: Safe Widths */
+    /* 5. FORM LAYOUT */
     .pu-form-card {
         width: 100%;
         padding: 0;
+        box-sizing: border-box;
     }
 
     .pu-form-grid {
-        display: flex;       /* Use Flex column instead of Grid to prevent overflow */
-        flex-direction: column; 
+        display: flex;       /* Use Flex instead of Grid for safety */
+        flex-direction: column;
         width: 100%;
         gap: 20px;
     }
 
-    /* Force inputs to stay inside the screen */
-    .pu-input {
+    .pu-span-2 {
         width: 100%;
-        box-sizing: border-box; /* Crucial: includes padding in width calculation */
-        font-size: 16px; /* Prevents iOS zoom */
-        min-width: 0; /* Prevents flex items from breaking out */
     }
 
-    /* 4. BUTTONS: Stack vertically */
+    /* 6. BUTTONS */
     .pu-actions {
-        flex-direction: column-reverse;
         width: 100%;
-        margin-top: 10px;
+        flex-direction: column-reverse;
         gap: 15px;
+        margin-top: 10px;
+        padding: 0; /* Remove padding causing overflow */
     }
 
     .pu-btn-save, 
     .pu-btn-cancel {
         width: 100%;
-        padding: 15px;
-        box-sizing: border-box;
+        box-sizing: border-box; /* Ensure padding doesn't widen button */
     }
 }
