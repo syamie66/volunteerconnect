@@ -459,3 +459,178 @@
     font-weight: 700;
     cursor: pointer;
 }
+
+/* =========================================
+   MOBILE RESPONSIVENESS (ADMIN DASHBOARD)
+   ========================================= */
+@media screen and (max-width: 1024px) {
+
+  /* 1. WRAPPER: Vertical Stack & Scroll */
+  .admin-dashboard-scope {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    overflow-y: auto; /* Enable full page scrolling */
+  }
+
+  /* 2. SIDEBAR -> TOP NAVIGATION */
+  .admin-dashboard-scope .admin-sidebar {
+    width: auto;
+    height: auto;
+    margin: 15px;
+    padding: 20px;
+    position: relative; /* Remove sticky behavior */
+    top: 0;
+    gap: 15px;
+    flex-shrink: 0;
+  }
+
+  /* Compact Header Area */
+  .admin-dashboard-scope .logo-area h2 {
+    margin-bottom: 0;
+    font-size: 1.2rem;
+  }
+  .admin-dashboard-scope .logo-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  /* Horizontal Scrollable Menu */
+  .admin-dashboard-scope .menu-label { display: none; } /* Hide labels to save space */
+  
+  .admin-dashboard-scope .nav-item {
+    white-space: nowrap;
+    width: auto;
+    background: rgba(255,255,255,0.1);
+    padding: 10px 15px;
+    margin: 0;
+  }
+
+  /* Flex container for nav items */
+  .admin-dashboard-scope .admin-sidebar > div:not(.logo-area):not(.logout-area) {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 10px;
+    padding-bottom: 5px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hide Logout on Mobile Top Bar (Optional, saves space) */
+  .admin-dashboard-scope .logout-area { display: none; }
+
+  /* 3. MAIN CONTENT */
+  .admin-dashboard-scope .admin-main {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .admin-dashboard-scope .content-container {
+    padding: 10px 20px 40px 20px;
+    overflow: visible;
+  }
+
+  .admin-dashboard-scope .page-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  /* 4. GRIDS: Force Single Column */
+  .admin-dashboard-scope .dashboard-grid,
+  .admin-layout-compact .compact-main-grid {
+    grid-template-columns: 1fr; /* Stack vertically */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .admin-dashboard-scope .left-col, 
+  .admin-dashboard-scope .right-col {
+    width: 100%;
+  }
+
+  /* 5. STATS CARDS */
+  /* Normal Dashboard */
+  .admin-dashboard-scope .stat-card {
+    padding: 15px;
+  }
+  .admin-dashboard-scope .stat-info h2 { font-size: 1.5rem; }
+
+  /* Compact Dashboard Stats */
+  .admin-layout-compact .compact-stats-row {
+    grid-template-columns: 1fr; /* Stack stats vertically */
+    gap: 10px;
+  }
+
+  /* 6. CHARTS */
+  .admin-dashboard-scope .chart-flex {
+    flex-direction: column;
+    text-align: center;
+  }
+  .admin-dashboard-scope .chart-legend {
+    align-items: center;
+  }
+
+  /* 7. TABLES: Horizontal Scroll Wrapper */
+  /* Instead of breaking table layout, we allow scrolling */
+  .admin-dashboard-scope .table-card,
+  .admin-layout-compact .activity-section {
+    width: 100%;
+    overflow: hidden; /* Prevent container overflow */
+  }
+
+  .admin-dashboard-scope .admin-table,
+  .admin-layout-compact .admin-table-compact {
+    display: block;
+    width: 100%;
+    overflow-x: auto; /* Enable horizontal scroll */
+    white-space: nowrap; /* Prevent awkward wrapping */
+  }
+
+  /* 8. SEARCH & TABS */
+  .admin-dashboard-scope .header-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .admin-dashboard-scope .search-bar {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .admin-dashboard-scope .tab-group {
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+  .admin-dashboard-scope .tab-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* 9. MODAL FIXES */
+  .admin-dashboard-scope .modal-container {
+    width: 95%;
+    max-height: 90vh;
+  }
+  .admin-dashboard-scope .detail-grid {
+    grid-template-columns: 1fr; /* Single column in modal */
+  }
+  .admin-dashboard-scope .span-full {
+    grid-column: span 1;
+  }
+
+  /* 10. COMPACT LAYOUT OVERRIDES */
+  /* Remove fixed height constraints on mobile so scrolling works */
+  .admin-dashboard-scope .content-container.admin-layout-compact {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: visible;
+    padding: 15px;
+  }
+  
+  .admin-layout-compact .table-responsive-area {
+    overflow: visible;
+  }
+}
