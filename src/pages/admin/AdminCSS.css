@@ -500,22 +500,30 @@
   /* Horizontal Scrollable Menu */
   .admin-dashboard-scope .menu-label { display: none; } /* Hide labels to save space */
   
-  .admin-dashboard-scope .nav-item {
-    white-space: nowrap;
-    width: auto;
-    background: rgba(255,255,255,0.1);
-    padding: 10px 15px;
-    margin: 0;
-  }
-
-  /* Flex container for nav items */
+  /* Flex container for nav items - WITH SPACING FIX */
   .admin-dashboard-scope .admin-sidebar > div:not(.logo-area):not(.logout-area) {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
-    gap: 10px;
-    padding-bottom: 5px;
+    gap: 15px; /* Increased gap between buttons */
+    padding-bottom: 12px; /* More space for scrollbar */
+    margin-bottom: 5px;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-dashboard-scope .nav-item {
+    white-space: nowrap;
+    width: auto;
+    background: rgba(255,255,255,0.08); /* Faint background */
+    padding: 12px 20px; /* Larger touch target */
+    margin: 0;
+    border-radius: 15px; /* Soft pill shape */
+    font-size: 0.9rem;
+  }
+
+  .admin-dashboard-scope .nav-item.active {
+    background: rgba(255,255,255,0.25); /* Clearer active state */
+    font-weight: 700;
   }
 
   /* Hide Logout on Mobile Top Bar (Optional, saves space) */
@@ -587,6 +595,37 @@
     width: 100%;
     overflow-x: auto; /* Enable horizontal scroll */
     white-space: nowrap; /* Prevent awkward wrapping */
+  }
+
+  /* TABLE SPACING ADJUSTMENTS */
+  .admin-dashboard-scope .admin-table th, 
+  .admin-dashboard-scope .admin-table td {
+    padding: 12px 10px; /* Reduced vertical padding */
+    font-size: 0.85rem;
+  }
+
+  .admin-dashboard-scope .admin-table th {
+    padding-bottom: 10px;
+  }
+
+  .admin-dashboard-scope .admin-table td:first-child {
+    padding-left: 5px; /* Minimize left gap */
+  }
+
+  /* ACTION COLUMN ALIGNMENT */
+  .admin-dashboard-scope .admin-table th:last-child,
+  .admin-dashboard-scope .admin-table td:last-child {
+    text-align: left; /* Align left for visibility */
+    padding-right: 5px;
+  }
+
+  .admin-dashboard-scope .admin-table td:last-child > div {
+    justify-content: flex-start; /* Start align buttons */
+    gap: 15px; /* Spread buttons */
+  }
+
+  .admin-dashboard-scope .btn-icon {
+    width: 44px; height: 44px; /* Larger touch target */
   }
 
   /* 8. SEARCH & TABS */
