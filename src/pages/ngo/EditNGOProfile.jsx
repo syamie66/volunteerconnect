@@ -28,6 +28,7 @@ export default function EditNGOProfile() {
     "General Public / Community", "Other"
   ];
 
+  // --- 1. FETCH EXISTING DATA ---
   useEffect(() => {
     async function fetchProfile() {
       if (currentUser) {
@@ -41,6 +42,7 @@ export default function EditNGOProfile() {
                 setFormData(prev => ({ 
                     ...prev, 
                     ...data, 
+                    // Fallback logic for critical fields
                     contactEmail: data.contactEmail || data.email || currentUser.email || '',
                     beneficiaries: data.beneficiaries || [] 
                 }));
@@ -55,6 +57,7 @@ export default function EditNGOProfile() {
     fetchProfile();
   }, [currentUser]);
 
+  // --- 2. HANDLERS ---
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -86,8 +89,12 @@ export default function EditNGOProfile() {
         contactEmail: formData.contactEmail,
         photoURL: formData.photoURL
       });
+      
       alert("Profile updated successfully! 🌱");
-      navigate('/ngo-dashboard');
+      
+      // REDIRECT TO NGO DASHBOARD
+      navigate('/dashboard/ngo');
+      
     } catch (error) {
       console.error("Error updating profile:", error);
       alert("Failed to update profile.");
@@ -109,7 +116,7 @@ export default function EditNGOProfile() {
 
         <form onSubmit={handleSubmit} className="edit-profile-form">
             
-            {/* ROW 1: General Info (4 Columns) */}
+            {/* ROW 1: General Info */}
             <div className="edit-form-grid">
                 <div className="edit-input-group">
                     <label>Org Name</label>
@@ -120,7 +127,6 @@ export default function EditNGOProfile() {
                     <input type="number" name="yearFounded" value={formData.yearFounded || ''} onChange={handleChange} required />
                 </div>
                 
-                {/* EMAIL INPUT */}
                 <div className="edit-input-group">
                     <label>Email</label>
                     <input 
@@ -159,8 +165,10 @@ export default function EditNGOProfile() {
                 <label>Description</label>
                 <textarea name="description" value={formData.description || ''} onChange={handleChange}></textarea>
             </div>
+
             <div className="edit-form-actions">
-                <button type="button" className="btn-cancel" onClick={() => navigate('/ngo-dashboard')}>Cancel</button>
+                {/* Fixed Cancel Redirect to match Dashboard Route */}
+                <button type="button" className="btn-cancel" onClick={() => navigate('/dashboard/ngo')}>Cancel</button>
                 <button type="submit" className="btn-save" disabled={loading}>{loading ? "Saving..." : "PUBLISH PROFILE"}</button>
             </div>
         </form>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { db } from '../../firebase';
-// Added 'increment' to imports
 import { doc, getDoc, updateDoc, arrayRemove, increment } from 'firebase/firestore';
 import './EventParticipants.css';
 
@@ -14,38 +13,52 @@ export default function EventParticipants() {
 
     useEffect(() => {
         const fetchEvent = async () => {
-            const eventRef = doc(db, 'events', eventId);
-            const eventSnap = await getDoc(eventRef);
+            try {
+                const eventRef = doc(db, 'events', eventId);
+                const eventSnap = await getDoc(eventRef);
 
-            if (eventSnap.exists()) {
-                const eventData = eventSnap.data();
-                setEvent(eventData);
+                if (eventSnap.exists()) {
+                    const eventData = eventSnap.data();
+                    setEvent(eventData);
 
-                const participantsData = await Promise.all(
-                    (eventData.participants || []).map(async (uid) => {
-                        const userRef = doc(db, "users", uid);
-                        const userSnap = await getDoc(userRef);
-                        let user = userSnap.exists() ? userSnap.data() : {};
-                        const reg = user.eventRegistrations?.[eventId] || {};
+                    const participantsData = await Promise.all(
+                        (eventData.participants || []).map(async (uid) => {
+                            const userRef = doc(db, "users", uid);
+                            const userSnap = await getDoc(userRef);
 
-                        return {
-                            uid,
-                            name: user.name || "Unknown",
-                            email: user.email || "N/A",
-                            phone: user.phone || "N/A",
-                            icNumber: user.icNumber || "N/A",
-                            address: user.address || "N/A",
-                            emergencyContact: user.emergencyContact || "N/A",
-                            gender: user.gender || "N/A",
-                            skills: user.skills || "N/A",
-                            status: reg.status || "Pending",
-                            registeredDate: reg.registeredDate || "N/A",
-                        };
-                    })
-                );
-                setParticipants(participantsData);
+                            // ✅ FIX: If user deleted (doesn't exist), return null immediately
+                            if (!userSnap.exists()) {
+                                return null;
+                            }
+
+                            const user = userSnap.data();
+                            const reg = user.eventRegistrations?.[eventId] || {};
+
+                            return {
+                                uid,
+                                name: user.name || "Unknown",
+                                email: user.email || "N/A",
+                                phone: user.phone || "N/A",
+                                icNumber: user.icNumber || "N/A",
+                                address: user.address || "N/A",
+                                emergencyContact: user.emergencyContact || "N/A",
+                                gender: user.gender || "N/A",
+                                skills: user.skills || "N/A",
+                                status: reg.status || "Pending",
+                                registeredDate: reg.registeredDate || "N/A",
+                            };
+                        })
+                    );
+
+                    // ✅ FIX: Filter out the nulls (deleted users) before setting state
+                    const existingParticipants = participantsData.filter(p => p !== null);
+                    setParticipants(existingParticipants);
+                }
+            } catch (error) {
+                console.error("Error fetching participants:", error);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
         fetchEvent();
     }, [eventId]);
@@ -55,7 +68,6 @@ export default function EventParticipants() {
         setExpandedParticipants((prev) => ({ ...prev, [uid]: !prev[uid] }));
     };
 
-    // --- UPDATED: HANDLES COUNTER SYNC ---
     const updateParticipantStatus = async (uid, currentStatus, newStatus) => {
         if(!window.confirm(`Mark this user as ${newStatus}?`)) return;
         setLoading(true);
@@ -65,13 +77,9 @@ export default function EventParticipants() {
             const userRef = doc(db, 'users', uid);
             await updateDoc(userRef, { [`eventRegistrations.${eventId}.status`]: newStatus });
 
-            // 2. Sync the Event 'approvedCount' for "Event Full" logic
+            // 2. Sync the Event 'approvedCount'
             const eventRef = doc(db, 'events', eventId);
 
-            // Logic: 
-            // If we are Approving (and they weren't already approved) -> Count +1
-            // If we are Rejecting (and they WERE approved previously) -> Count -1
-            
             if (newStatus === "Approved" && currentStatus !== "Approved") {
                 await updateDoc(eventRef, { approvedCount: increment(1) });
             } 
@@ -104,8 +112,12 @@ export default function EventParticipants() {
             }
 
             // 3. Remove from User document
+            // We check if the user doc exists first to avoid errors if they were already deleted
             const userRef = doc(db, "users", uid);
-            await updateDoc(userRef, { [`eventRegistrations.${eventId}`]: null });
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                await updateDoc(userRef, { [`eventRegistrations.${eventId}`]: null });
+            }
 
             // 4. Update UI
             setParticipants(prev => prev.filter(p => p.uid !== uid));
@@ -145,7 +157,7 @@ export default function EventParticipants() {
                     </thead>
                     <tbody>
                         {participants.length === 0 ? (
-                            <tr><td colSpan="5" className="empty-row">No participants yet.</td></tr>
+                            <tr><td colSpan="5" className="empty-row">No participants found.</td></tr>
                         ) : (
                             participants.map((p) => {
                                 const isExpanded = expandedParticipants[p.uid];
@@ -171,7 +183,6 @@ export default function EventParticipants() {
                                                     
                                                     <button 
                                                         className="tbl-btn approve-btn" 
-                                                        // Pass current status so we know whether to increment
                                                         onClick={() => updateParticipantStatus(p.uid, p.status, "Approved")}
                                                         disabled={p.status === "Approved"}
                                                     >
@@ -180,7 +191,6 @@ export default function EventParticipants() {
                                                     
                                                     <button 
                                                         className="tbl-btn reject-btn" 
-                                                        // Pass current status so we know whether to decrement
                                                         onClick={() => updateParticipantStatus(p.uid, p.status, "Rejected")}
                                                         disabled={p.status === "Rejected"}
                                                     >
@@ -196,7 +206,6 @@ export default function EventParticipants() {
                                                 </div>
                                             </td>
                                         </tr>
-                                        {/* EXPANDED ROW */}
                                         {isExpanded && (
                                             <tr className="detail-row">
                                                 <td colSpan="5">

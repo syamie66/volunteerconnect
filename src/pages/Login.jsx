@@ -1,39 +1,72 @@
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../firebase';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext'; // Import Context
+import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import './Login.css'; 
 
 export default function Login() {
+  // Use the login function from AuthContext
+  const { login } = useAuth();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // 1. New state for toggling visibility
   const [showPassword, setShowPassword] = useState(false);
   
+  // State for handling errors
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(''); // Clear previous errors
     setLoading(true);
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
 
+    try {
+      // 1. Call login from Context 
+      // (This triggers the check for deleted users inside AuthContext)
+      const user = await login(email, password);
+
+      // 2. Fetch the profile to check the ROLE
       const docRef = doc(db, 'users', user.uid);
       const docSnap = await getDoc(docRef);
       const profile = docSnap.exists() ? docSnap.data() : null;
 
-      if (profile?.role === 'ngo') {
+      // --- DEBUGGING LOGS ---
+      console.log("Login Successful. User ID:", user.uid);
+      console.log("Firestore Profile Data:", profile);
+      // ----------------------
+
+      // 3. Handle Navigation based on User Type
+      // Checking both 'userType' and 'role' to be safe
+      const userType = profile?.userType || profile?.role;
+
+      if (userType === 'NGO' || userType === 'ngo') {
+        console.log("Redirecting to NGO Dashboard...");
         navigate('/dashboard/ngo');
-      } else if (profile?.role === 'volunteer') {
+      } else if (userType === 'Volunteer' || userType === 'volunteer') {
+        console.log("Redirecting to Volunteer Dashboard...");
         navigate('/dashboard');
+      } else if (userType === 'admin') {
+        navigate('/admin/users');
       } else {
+        console.log("Unknown role, redirecting home...");
         navigate('/');
       }
+
     } catch (err) {
-      alert(err.message);
+      console.error("Login Error:", err);
+      
+      // 4. Custom Error Handling
+      if (err.message && (err.message.includes("permanently deleted") || err.message.includes("Access Denied"))) {
+         setError("Access Denied: This account has been deleted by an administrator.");
+      } else if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+         setError("Invalid email or password.");
+      } else {
+         setError("Failed to log in. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
@@ -58,6 +91,21 @@ export default function Login() {
           <div className="login-box">
             <h2>Login</h2>
             
+            {/* Error Message Display */}
+            {error && (
+              <div style={{ 
+                backgroundColor: '#fee2e2', 
+                color: '#dc2626', 
+                padding: '10px', 
+                borderRadius: '6px', 
+                marginBottom: '15px',
+                fontSize: '0.9rem',
+                border: '1px solid #fecaca'
+              }}>
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="login-form">
               <div className="input-group">
                 <label>Email</label>
@@ -72,17 +120,14 @@ export default function Login() {
 
               <div className="input-group">
                 <label>Password</label>
-                {/* 2. Wrapper for relative positioning */}
                 <div className="password-wrapper">
                   <input
-                    // 3. Toggle type based on state
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
                   />
-                  {/* 4. Toggle Button with SVG Icons */}
                   <button
                     type="button"
                     className="password-toggle-btn"

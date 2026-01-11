@@ -6,9 +6,6 @@ import {
   onSnapshot,
   query,
   orderBy,
-  doc,
-  updateDoc,
-  arrayUnion,
 } from "firebase/firestore";
 import EventCard from "../../components/EventCard"; 
 import './EventsPublic.css'; 
@@ -16,52 +13,34 @@ import './EventsPublic.css';
 export default function Events() {
   const { currentUser, profile } = useAuth();
   const [events, setEvents] = useState([]);
-  const [loadingJoin, setLoadingJoin] = useState({});
   const [searchTerm, setSearchTerm] = useState(""); 
+  const [loading, setLoading] = useState(true);
 
-  // --- 1. Fetch Events from Firestore ---
+  // --- 1. Fetch Events from Firestore (Real-Time) ---
   useEffect(() => {
+    // We listen to the collection in real-time.
+    // This supports the "Cascading Delete" feature:
+    // If an Admin deletes an NGO & their events, this listener updates instantly.
     const q = query(collection(db, "events"), orderBy("date", "asc")); 
-    const unsubscribe = onSnapshot(query(collection(db, "events"), orderBy("date", "asc")), (snapshot) => {
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const eventsData = snapshot.docs.map(doc => ({ 
           id: doc.id, 
           ...doc.data() 
       }));
       setEvents(eventsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching events:", error);
+      setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // --- 2. Handle Join Logic ---
-  const handleJoin = async (eventId) => {
-    if (!currentUser) {
-        alert("Please login to join events.");
-        return;
-    }
-    if (profile?.userType !== "volunteer") {
-        alert("Only volunteers can join events.");
-        return;
-    }
-
-    setLoadingJoin((prev) => ({ ...prev, [eventId]: true }));
-    
-    try {
-      const eventRef = doc(db, "events", eventId);
-      await updateDoc(eventRef, {
-        participants: arrayUnion(currentUser.uid),
-      });
-      alert("You have successfully joined the event!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to join the event. Please try again.");
-    } finally {
-      setLoadingJoin((prev) => ({ ...prev, [eventId]: false }));
-    }
-  };
-
-  // --- 3. Filter Logic (Search + Date Check) ---
+  // --- 2. Filter Logic (Search + Date Check) ---
   const filteredEvents = events.filter((event) => {
+    // A. Parse Date safely
     let eventDateObj = null;
     if (event.date) {
         eventDateObj = typeof event.date.toDate === 'function' 
@@ -69,6 +48,7 @@ export default function Events() {
             : new Date(event.date);
     }
 
+    // B. Filter out past events
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -76,13 +56,21 @@ export default function Events() {
         return false;
     }
 
+    // C. Search Filter
     const term = searchTerm.toLowerCase();
     const title = event.title?.toLowerCase() || "";
     const loc = event.location?.toLowerCase() || "";
     const org = event.organization?.toLowerCase() || "";
+    const ngoName = event.ngoName?.toLowerCase() || "";
 
-    return title.includes(term) || loc.includes(term) || org.includes(term);
+    return title.includes(term) || loc.includes(term) || org.includes(term) || ngoName.includes(term);
   });
+
+  // Optional: Callback for when a user successfully joins via EventCard
+  const onJoinSuccess = (eventId) => {
+     // You can add a toast notification here if you like
+     console.log("User joined event:", eventId);
+  };
 
   return (
     <div className="ep-wrapper">
@@ -135,9 +123,13 @@ export default function Events() {
 
       {/* 4. EVENTS GRID */}
       <section className="ep-events-grid">
-        {filteredEvents.length === 0 ? (
-          <div className="no-events">
-            <p>No upcoming events found.</p>
+        {loading ? (
+             <div className="no-events" style={{gridColumn: '1 / -1', textAlign: 'center', padding: '40px'}}>
+                <p>Loading opportunities...</p>
+             </div>
+        ) : filteredEvents.length === 0 ? (
+          <div className="no-events" style={{gridColumn: '1 / -1', textAlign: 'center', padding: '40px'}}>
+            <p>No upcoming events found matching your search.</p>
           </div>
         ) : (
           filteredEvents.map((event) => (
@@ -146,8 +138,7 @@ export default function Events() {
               event={event}
               currentUser={currentUser}
               profile={profile}
-              loading={loadingJoin[event.id]}
-              onJoin={handleJoin}
+              onJoin={onJoinSuccess}
             />
           ))
         )}

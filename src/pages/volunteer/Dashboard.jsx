@@ -5,10 +5,8 @@ import {
     collection, 
     getDocs, 
     doc, 
-    getDoc, 
-    updateDoc, 
-    arrayRemove, 
-    deleteField 
+    onSnapshot, 
+    runTransaction, 
 } from "firebase/firestore";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
@@ -18,20 +16,26 @@ export default function Dashboard() {
     const [userInfo, setUserInfo] = useState(null);
     const [appliedEvents, setAppliedEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    
+    // State for Chart Filter (Default to Current Year)
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
     const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
     useEffect(() => {
         if (!currentUser) return;
 
-        const fetchData = async () => {
-            try {
-                // Fetch User Data
-                const userRef = doc(db, "users", currentUser.uid);
-                const docSnap = await getDoc(userRef);
-                if (docSnap.exists()) setUserInfo(docSnap.data());
+        // 1. Listen to User Profile
+        const userRef = doc(db, "users", currentUser.uid);
+        const unsubscribeUser = onSnapshot(userRef, (docSnap) => {
+            if (docSnap.exists()) {
+                setUserInfo(docSnap.data());
+            }
+        });
 
-                // Fetch Events where user is a participant
+        // 2. Fetch Events
+        const fetchEvents = async () => {
+            try {
                 const eventsSnap = await getDocs(collection(db, "events"));
                 const events = eventsSnap.docs
                     .map(doc => ({ id: doc.id, ...doc.data() }))
@@ -44,90 +48,133 @@ export default function Dashboard() {
                 setLoading(false);
             }
         };
-        fetchData();
+        fetchEvents();
+
+        return () => unsubscribeUser();
     }, [currentUser]);
 
-    // --- HELPER: GET STATUS SAFELY ---
     const getStatus = (eventId) => {
-        // Access the nested registration object
         const registration = userInfo?.eventRegistrations?.[eventId];
-        // Return status if it exists, otherwise default to "Pending"
         return registration?.status || "Pending";
     };
 
-    // --- HANDLE CANCEL APPLICATION ---
+    // --- MAIN LOGIC: CANCEL APPLICATION ---
     const handleCancelApplication = async (eventId) => {
-        const confirmCancel = window.confirm("Are you sure you want to cancel your application for this event?");
+        const confirmCancel = window.confirm("Are you sure you want to cancel your application?");
         if (!confirmCancel) return;
 
         try {
-            // 1. Remove user ID from the Event's 'participants' array
-            const eventRef = doc(db, "events", eventId);
-            await updateDoc(eventRef, {
-                participants: arrayRemove(currentUser.uid)
+            await runTransaction(db, async (transaction) => {
+                const eventRef = doc(db, "events", eventId);
+                const userRef = doc(db, "users", currentUser.uid);
+
+                const eventDoc = await transaction.get(eventRef);
+                const userDoc = await transaction.get(userRef);
+
+                if (!eventDoc.exists() || !userDoc.exists()) throw "Document missing!";
+
+                const eventData = eventDoc.data();
+                const userData = userDoc.data();
+
+                const regData = userData.eventRegistrations ? userData.eventRegistrations[eventId] : null;
+                const currentStatus = regData ? regData.status : "Pending";
+                const isApproved = currentStatus && currentStatus.toLowerCase() === 'approved';
+
+                const newParticipants = (eventData.participants || []).filter(uid => uid !== currentUser.uid);
+                
+                let newApprovedCount = parseInt(eventData.approvedCount) || 0;
+                if (isApproved && newApprovedCount > 0) {
+                    newApprovedCount -= 1;
+                }
+
+                const newRegistrations = { ...userData.eventRegistrations };
+                delete newRegistrations[eventId];
+
+                transaction.update(eventRef, {
+                    participants: newParticipants,
+                    approvedCount: newApprovedCount
+                });
+
+                transaction.update(userRef, {
+                    eventRegistrations: newRegistrations
+                });
             });
 
-            // 2. Remove the specific event key from the User's 'eventRegistrations' map
-            const userRef = doc(db, "users", currentUser.uid);
-            await updateDoc(userRef, {
-                [`eventRegistrations.${eventId}`]: deleteField()
-            });
-
-            // 3. Update Local State (UI) immediately
-            setAppliedEvents(prevEvents => prevEvents.filter(e => e.id !== eventId));
-            
-            // Update userInfo state to remove the status tag immediately
-            const updatedUserInfo = { ...userInfo };
-            if (updatedUserInfo.eventRegistrations) {
-                delete updatedUserInfo.eventRegistrations[eventId];
-            }
-            setUserInfo(updatedUserInfo);
-
+            setAppliedEvents(prev => prev.filter(e => e.id !== eventId));
             alert("Application cancelled successfully.");
 
         } catch (error) {
-            console.error("Error cancelling application:", error);
-            alert("Failed to cancel application. Please try again.");
+            console.error("Cancellation failed:", error);
+            alert("Failed to cancel application.");
         }
     };
 
-    // --- HELPER: CHECK IF EVENT IS COMPLETED ---
     const isEventCompleted = (event) => {
         const status = getStatus(event.id);
-        // Logic: Event is complete if status is Approved AND date has passed
-        if (status !== 'Approved') return false;
-        
+        if (!status || status.toLowerCase() !== 'approved') return false;
         const today = new Date().setHours(0,0,0,0);
         const eventDate = new Date(event.date).setHours(0,0,0,0);
         return eventDate < today;
     };
-
+    
     const completedEvents = appliedEvents.filter(event => isEventCompleted(event));
     const upcomingEvents = appliedEvents.filter(event => !isEventCompleted(event));
+    
+    // ✅ HELPER: Generate Years from Current Year down to 2020
+    const getAvailableYears = () => {
+        const currentYear = new Date().getFullYear();
+        const startYear = 2020; 
+        const years = new Set();
 
-    // --- HELPER: CHART DATA ---
-    const getMonthlyData = () => {
-        const counts = new Array(12).fill(0);
-        completedEvents.forEach(event => {
-            const monthIndex = new Date(event.date).getMonth();
-            counts[monthIndex]++;
+        // 1. Add standard range (Current -> 2020)
+        for (let y = currentYear; y >= startYear; y--) {
+            years.add(y);
+        }
+
+        // 2. Also include years from actual data if they are older than 2020
+        completedEvents.forEach(e => {
+            const eventYear = new Date(e.date).getFullYear();
+            years.add(eventYear);
         });
-        const max = Math.max(...counts, 1);
-        return counts.map(count => ({
-            count,
-            height: (count / max) * 100
-        }));
+
+        // Return sorted descending (2025, 2024, 2023...)
+        return Array.from(years).sort((a, b) => b - a);
     };
 
-    if (loading) return <div className="dashboard-scope"><p className="loading-text">LOADING...</p></div>;
+    // ✅ CHART LOGIC: Filter by Selected Year
+    const getMonthlyData = () => {
+        const counts = new Array(12).fill(0);
+        
+        completedEvents.forEach(event => {
+            const eventDate = new Date(event.date);
+            if (eventDate.getFullYear() === selectedYear) {
+                const monthIndex = eventDate.getMonth();
+                counts[monthIndex]++;
+            }
+        });
 
+        const max = Math.max(...counts, 1);
+        return counts.map(count => ({ count, height: max === 0 ? 0 : (count / max) * 100 }));
+    };
+
+    if (loading) return <div className="dashboard-scope"><p>Loading...</p></div>;
+
+    if (userInfo?.disabled) {
+        return (
+            <div className="dashboard-scope" style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'80vh' }}>
+                <div style={{ padding: '40px', textAlign: 'center', maxWidth: '500px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                    <h2 style={{ color: '#dc2626', marginBottom: '1rem', fontSize: '1.5rem', fontWeight: 'bold' }}>Account Restricted</h2>
+                    <p style={{ color: '#374151', marginBottom: '0.5rem'}}>Your account has been disabled by the administrator.</p>
+                    <p style={{ color: '#4b5563'}}>You cannot access the dashboard or apply for events at this time.</p>
+                </div>
+            </div>
+        );
+    }
+    
     return (
         <div className="dashboard-scope">
-            {/* --- SIDEBAR --- */}
             <aside className="sidebar">
-                <div className="logo-section">
-                    <h2>VOLUN<span>TIER</span></h2>
-                </div>
+                <div className="logo-section"><h2>VOLUN<span>TIER</span></h2></div>
                 <nav className="nav-menu">
                     <Link to="/dashboard" className="nav-item active">DASHBOARD</Link>
                     <Link to="/profile/update" className="nav-item">MY PROFILE</Link>
@@ -135,31 +182,42 @@ export default function Dashboard() {
                     <button className="nav-item logout-item">LOGOUT</button>
                 </nav>
             </aside>
-
-            {/* --- MAIN CONTENT --- */}
             <main className="main-content">
                 <header className="top-bar">
-                    <div className="welcome-text">
-                        <h1>WELCOME BACK, {userInfo?.name?.toUpperCase() || "USER"}!</h1>
-                        <p>HERE IS YOUR VOLUNTEER OVERVIEW</p>
-                    </div>
+                    <div className="welcome-text"><h1>WELCOME BACK, {userInfo?.name?.toUpperCase() || "USER"}!</h1><p>HERE IS YOUR VOLUNTEER OVERVIEW</p></div>
                     <Link to="/events" className="cta-btn">JOIN NEW EVENT</Link>
                 </header>
-
-                {/* --- ACTIVITY CHART SECTION --- */}
+                
                 <section className="activity-container">
                     <div className="content-card chart-card">
-                        <div className="card-header">
+                        {/* Header with Year Dropdown */}
+                        <div className="card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <h3>ACTIVITY PER MONTH</h3>
+                            
+                            <select 
+                                value={selectedYear} 
+                                onChange={(e) => setSelectedYear(Number(e.target.value))}
+                                style={{
+                                    padding: '5px 10px',
+                                    borderRadius: '6px',
+                                    border: '1px solid #e5e7eb',
+                                    backgroundColor: '#f9fafb',
+                                    fontSize: '0.9rem',
+                                    fontWeight: '600',
+                                    color: '#374151',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {getAvailableYears().map(year => (
+                                    <option key={year} value={year}>{year}</option>
+                                ))}
+                            </select>
                         </div>
+
                         <div className="chart-visual">
                             {getMonthlyData().map((data, index) => (
                                 <div key={months[index]} className="chart-bar-container">
-                                    <div 
-                                        className="chart-bar" 
-                                        style={{ height: `${data.height}%` }}
-                                        title={`${data.count} Events`}
-                                    ></div>
+                                    <div className="chart-bar" style={{ height: `${data.height}%` }} title={`${data.count} Events in ${selectedYear}`}></div>
                                     <span className="chart-label">{months[index]}</span>
                                 </div>
                             ))}
@@ -167,72 +225,41 @@ export default function Dashboard() {
                     </div>
                 </section>
 
-                {/* --- EXPANDED EVENTS GRID --- */}
                 <div className="expanded-events-grid">
-                    
-                    {/* UPCOMING EVENTS */}
                     <section className="content-card event-section">
-                        <div className="card-header">
-                            <h3>UPCOMING EVENTS ({upcomingEvents.length})</h3>
-                        </div>
+                        <div className="card-header"><h3>UPCOMING EVENTS ({upcomingEvents.length})</h3></div>
                         <div className="scrollable-list">
-                            {upcomingEvents.length === 0 ? (
-                                <div className="empty-state">NO UPCOMING EVENTS</div>
-                            ) : (
+                            {upcomingEvents.length === 0 ? <div className="empty-state">NO UPCOMING EVENTS</div> : 
                                 upcomingEvents.map(event => {
-                                    const status = getStatus(event.id); // Get status safely
+                                    const status = getStatus(event.id);
+                                    const isRejected = status.toLowerCase() === 'rejected';
                                     return (
                                         <div key={event.id} className="event-row">
-                                            <div className="date-box">
-                                                <span className="d-day">{new Date(event.date).getDate()}</span>
-                                                <span className="d-month">{months[new Date(event.date).getMonth()]}</span>
-                                            </div>
-                                            
-                                            <div className="event-info">
-                                                <h4>{event.title.toUpperCase()}</h4>
-                                                <p>{event.location?.toUpperCase() || "REMOTE"}</p>
-                                            </div>
-
-                                            {/* Status and Cancel Button Group */}
+                                            <div className="date-box"><span className="d-day">{new Date(event.date).getDate()}</span><span className="d-month">{months[new Date(event.date).getMonth()]}</span></div>
+                                            <div className="event-info"><h4>{event.title.toUpperCase()}</h4><p>{event.location?.toUpperCase() || "REMOTE"}</p></div>
                                             <div className="action-group">
-                                                {/* STATUS BADGE */}
-                                                <span className={`status-tag ${status.toLowerCase()}`}>
-                                                    {status.toUpperCase()}
-                                                </span>
-                                                
-                                                <button 
-                                                    className="cancel-btn"
-                                                    onClick={() => handleCancelApplication(event.id)}
-                                                >
-                                                    CANCEL APPLICATION
-                                                </button>
+                                                <span className={`status-tag ${status.toLowerCase()}`}>{status.toUpperCase()}</span>
+                                                {!isRejected && (
+                                                    <button className="cancel-btn" onClick={() => handleCancelApplication(event.id)}>CANCEL APPLICATION</button>
+                                                )}
                                             </div>
                                         </div>
                                     );
                                 })
-                            )}
+                            }
                         </div>
                     </section>
-
-                    {/* COMPLETED EVENTS */}
                     <section className="content-card event-section">
-                        <div className="card-header">
-                            <h3>COMPLETED HISTORY ({completedEvents.length})</h3>
-                        </div>
+                        <div className="card-header"><h3>COMPLETED HISTORY ({completedEvents.length})</h3></div>
                         <div className="scrollable-list">
-                            {completedEvents.length === 0 ? (
-                                <div className="empty-state">NO COMPLETED EVENTS</div>
-                            ) : (
+                            {completedEvents.length === 0 ? <div className="empty-state">NO COMPLETED EVENTS</div> : 
                                 completedEvents.map(event => (
                                     <div key={event.id} className="event-row completed">
-                                        <div className="event-info">
-                                            <h4>{event.title.toUpperCase()}</h4>
-                                            <p>COMPLETED ON {event.date}</p>
-                                        </div>
+                                        <div className="event-info"><h4>{event.title.toUpperCase()}</h4><p>COMPLETED ON {event.date}</p></div>
                                         <span className="status-tag done">DONE</span>
                                     </div>
                                 ))
-                            )}
+                            }
                         </div>
                     </section>
                 </div>

@@ -34,6 +34,8 @@ export function AuthProvider({ children }) {
             setProfile(docSnap.data());
           } else {
             console.log("No profile found for this user.");
+            // OPTIONAL: If you want to auto-logout deleted users who are already verified by session:
+            // await signOut(auth); 
             setProfile(null);
           }
         } catch (err) {
@@ -63,7 +65,7 @@ export function AuthProvider({ children }) {
         uid: user.uid,
         email: email,
         fullName: fullName,
-        userType: 'Volunteer', // <--- Distinct userType
+        userType: 'Volunteer', 
         createdAt: serverTimestamp(),
       });
 
@@ -80,11 +82,11 @@ export function AuthProvider({ children }) {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      // Save NGO details to 'users' collection (SAME collection as volunteers)
+      // Save NGO details to 'users' collection
       await setDoc(doc(db, 'users', user.uid), {
         uid: user.uid,
         email: email,
-        userType: 'NGO', // <--- Distinct userType
+        userType: 'NGO',
         createdAt: serverTimestamp(),
         ...additionalData 
       });
@@ -105,9 +107,26 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Login
+  // Login - UPDATED TO CHECK FOR DELETED ACCOUNTS
   const login = async (email, password) => {
-    return await signInWithEmailAndPassword(auth, email, password);
+    try {
+      // 1. Auth Check
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // 2. Firestore Existence Check (Enforce "Deleted Users Can't Login")
+      const userDocRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userDocRef);
+
+      if (!userDocSnap.exists()) {
+        await signOut(auth); // Force logout immediately
+        throw new Error("This account has been permanently deleted by the administrator.");
+      }
+
+      return user;
+    } catch (error) {
+      throw error;
+    }
   };
 
   // Logout

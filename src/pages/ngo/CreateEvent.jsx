@@ -64,7 +64,7 @@ export default function CreateEvent() {
         <div className="create-container" style={{ textAlign: 'center', padding: '40px' }}>
           <h2>Access Denied</h2>
           <p>Only registered NGOs can create events.</p>
-          <button className="create-btn-cancel" onClick={() => navigate('/dashboard')}>
+          <button className="create-btn-cancel" onClick={() => navigate('/dashboard/ngo')}>
             Go Back
           </button>
         </div>

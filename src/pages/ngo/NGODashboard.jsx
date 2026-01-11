@@ -8,7 +8,6 @@ import './NGODashboard.css';
 export default function NGODashboard() {
   const { currentUser, profile } = useAuth();
   const [events, setEvents] = useState([]);
-  const [participantsMap, setParticipantsMap] = useState({});
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -26,11 +25,6 @@ export default function NGODashboard() {
         .filter(e => e.createdBy === currentUser.uid);
 
       setEvents(eventsData);
-      
-      const tempMap = {};
-      eventsData.forEach(event => { tempMap[event.id] = event.participants || []; });
-      setParticipantsMap(tempMap);
-      
       setLoading(false); 
     }, (error) => {
       console.error("Error fetching events:", error);
@@ -64,14 +58,33 @@ export default function NGODashboard() {
   };
 
   // --- CALCULATE REAL STATS ---
-  const totalParticipants = Object.values(participantsMap).reduce((acc, curr) => acc + curr.length, 0);
-  const activeEventsCount = events.length;
+  // ✅ UPDATED LOGIC:
+  // We sum the 'approvedCount' field.
+  // 1. Pending users are NOT counted here.
+  // 2. Approved users ARE counted.
+  // 3. If an approved user cancels, Dashboard.js decrements this field, so the count drops automatically.
+  const totalParticipants = events.reduce((acc, event) => {
+    return acc + (parseInt(event.approvedCount) || 0);
+  }, 0);
 
-  // Define targets for the progress bars (adjust these numbers as needed)
+  const activeEventsCount = events.length;
   const eventGoal = 10;
   const volunteerGoal = 50;
 
   if (loading) return <div className="ngo-loader">Loading Dashboard...</div>;
+
+  // --- RESTRICTED VIEW: If NGO is Disabled ---
+  if (profile?.disabled) {
+      return (
+          <div className="ngo-layout-container" style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'100vh', backgroundColor:'#f0fdf4' }}>
+              <div style={{ padding: '40px', textAlign: 'center', maxWidth: '500px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                  <h2 style={{ color: '#dc2626', marginBottom: '1rem', fontSize: '1.5rem', fontWeight: 'bold' }}>Organization Account Restricted</h2>
+                  <p style={{ color: '#374151', marginBottom: '0.5rem'}}>Your organization account has been disabled by the administrator.</p>
+                  <p style={{ color: '#4b5563'}}>You cannot manage events or access the dashboard at this time.</p>
+              </div>
+          </div>
+      );
+  }
 
   return (
     <div className="ngo-layout-container">
@@ -128,7 +141,7 @@ export default function NGODashboard() {
                     <span className="num">{activeEventsCount}</span>
                 </div>
                 <div className="stat-item">
-                    <span className="label">Total Volunteers</span>
+                    <span className="label">Total Application</span>
                     <div className="bar-container">
                       <div 
                         className="bar fill-green" 
@@ -222,7 +235,7 @@ export default function NGODashboard() {
                 <div className="activity-item">
                     <div className="icon-box">👥</div>
                     <div className="text">
-                        <span className="ts">Update</span>
+                        <span className="ts">Current</span>
                         <p>{totalParticipants} Volunteers</p>
                     </div>
                 </div>

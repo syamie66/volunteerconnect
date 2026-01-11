@@ -34,7 +34,7 @@ export default function EditEvent() {
           const data = docSnap.data();
           setFormData({ ...data, city: data.city || '' });
         } else {
-          navigate('/dashboard');
+          navigate('/dashboard/ngo');
         }
       } catch (error) { console.error(error); } 
       finally { setLoading(false); }
@@ -50,7 +50,7 @@ export default function EditEvent() {
     try {
       await updateDoc(doc(db, 'events', id), formData);
       alert("Event updated successfully!");
-      navigate('/dashboard');
+      navigate('/dashboard/ngo');
     } catch (error) { alert("Failed to update."); } 
     finally { setSaving(false); }
   };

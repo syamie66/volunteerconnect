@@ -8,21 +8,27 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
   const [expanded, setExpanded] = useState(false);
   const [joining, setJoining] = useState(false); 
 
-  // Date Parsing
-  const getDateParts = (dateInput) => {
-    if (!dateInput) return { day: "00", month: "XXX" };
-    const dateObj = (dateInput && typeof dateInput.toDate === 'function') 
-      ? dateInput.toDate() 
-      : new Date(dateInput);
-    if (isNaN(dateObj)) return { day: "00", month: "XXX" };
+  // --- HELPER: Safe Date Parsing ---
+  const parseDate = (dateInput) => {
+    if (!dateInput) return null;
+    if (typeof dateInput.toDate === 'function') {
+      return dateInput.toDate();
+    }
+    return new Date(dateInput);
+  };
+
+  // --- EVENT DATE DISPLAY ---
+  const getDisplayDate = (dateInput) => {
+    const dateObj = parseDate(dateInput);
+    if (!dateObj || isNaN(dateObj)) return { day: "00", month: "XXX" };
     return {
       day: dateObj.getDate(),
       month: dateObj.toLocaleString("default", { month: "short" }).toUpperCase()
     };
   };
-  const { day, month } = getDateParts(event.date);
+  const { day, month } = getDisplayDate(event.date);
 
-  // Time Formatting
+  // --- TIME FORMATTING ---
   const formatTime = (timeStr) => {
     if (!timeStr) return "-";
     const [h, m] = timeStr.split(":");
@@ -31,69 +37,65 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
     return `${hour % 12 || 12}:${m} ${ampm}`;
   };
 
-  const isAlreadyJoined = event.participants?.includes(currentUser?.uid);
-  
-  // --- STRICT CAPACITY LOGIC ---
-  const maxCountVal = parseInt(event.maxParticipants) || 0;
-  
-  // STRICT CHECK: We default to 0. 
-  // We do NOT use event.participants.length because that includes 'Pending' users.
-  // This ensures ONLY 'Approved' users count toward the limit.
-  const currentApprovedCount = event.approvedCount || 0;
+  // --- REGISTRATION WINDOW CHECK ---
+  const now = new Date();
+  const regStart = parseDate(event.registrationStart);
+  const regEnd = parseDate(event.registrationEnd);
 
-  // isFull is TRUE only if Approved Count hits the Max
+  const isBeforeReg = regStart && now < regStart;
+  const isAfterReg = regEnd && now > regEnd;
+
+  // --- CAPACITY CHECKS ---
+  const isAlreadyJoined = event.participants?.includes(currentUser?.uid);
+  const maxCountVal = parseInt(event.maxParticipants) || 0;
+  const currentApprovedCount = event.approvedCount || 0;
   const isFull = maxCountVal > 0 && currentApprovedCount >= maxCountVal;
 
   const isLongDesc = event.description && event.description.length > 100;
 
   const handleViewNGO = () => {
     const ngoId = event.createdBy || event.organizerId; 
-    if (ngoId) {
-      navigate(`/ngo/${ngoId}`);
-    } else {
-      console.error("No NGO ID found.");
-    }
+    if (ngoId) navigate(`/ngo/${ngoId}`);
   };
 
-  // Handle Join
+  // --- JOIN HANDLER ---
   const handleJoinInternal = async () => {
-    if (!currentUser) {
-        alert("Please log in to join events.");
-        return;
+    if (!currentUser) return alert("Please log in to join events.");
+
+    // --- STRICT CHECK: DISABLED USER ---
+    if (profile?.disabled) {
+        alert("Action Denied: Your account is currently disabled by the administrator. You cannot apply for events.");
+        return; 
     }
+
     if (isAlreadyJoined) return;
     
-    // Strict block if full
-    if (isFull) {
-        alert("Sorry, this event is already full.");
-        return;
-    }
+    // Strict block based on Registration Window
+    if (isBeforeReg) return alert("Registration has not started yet.");
+    if (isAfterReg) return alert("Registration has closed.");
+    if (isFull) return alert("Sorry, this event is already full.");
 
     setJoining(true);
 
     try {
-        const today = new Date().toLocaleDateString('en-GB', {
+        const todayStr = new Date().toLocaleDateString('en-GB', {
             day: 'numeric', month: 'short', year: 'numeric'
         });
 
-        // Update User
         const userRef = doc(db, "users", currentUser.uid);
         await updateDoc(userRef, {
             [`eventRegistrations.${event.id}`]: {
                 status: "Pending",
-                registeredDate: today, 
+                registeredDate: todayStr, 
                 eventId: event.id,
                 eventTitle: event.title,
                 eventDate: event.date
             }
         });
 
-        // Update Event
         const eventRef = doc(db, "events", event.id);
         await updateDoc(eventRef, {
             participants: arrayUnion(currentUser.uid)
-            // NOTE: We do NOT increment approvedCount here. 
-            // That happens only when the NGO clicks "Approve" in the dashboard.
         });
 
         alert("Application submitted successfully!");
@@ -114,20 +116,38 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
 
   if (joining) {
       joinButtonText = "Applying...";
-  } else if (isAlreadyJoined) {
+  } 
+  else if (isAlreadyJoined) {
       joinButtonText = "Applied ✓";
       buttonClass += " joined";
-  } else if (isFull) {
-      // Logic: Only displays "Event Full" if approvedCount >= maxParticipants
+  } 
+  else if (isBeforeReg) {
+      const startStr = regStart.toLocaleDateString(undefined, {month:'short', day:'numeric'});
+      joinButtonText = `Opens ${startStr}`;
+      isButtonDisabled = true;
+      buttonClass += " disabled";
+  } 
+  else if (isAfterReg) {
+      joinButtonText = "Registration Closed";
+      isButtonDisabled = true;
+      buttonClass += " disabled";
+  } 
+  else if (isFull) {
       joinButtonText = "Event Full";
       isButtonDisabled = true;
-      buttonClass += " full"; 
+      buttonClass += " full";
   }
+
+  const disabledStyle = { 
+    backgroundColor: '#e0e0e0', 
+    color: '#888', 
+    cursor: 'not-allowed', 
+    boxShadow: 'none',
+    border: '1px solid #ccc'
+  };
 
   return (
     <div className="ep-card">
-      
-      {/* Top Section */}
       <div className="ep-info-box">
         <div className="ep-date-badge">
           <span className="ep-date-day">{day}</span>
@@ -158,15 +178,14 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
             <div className="ep-detail-item">
                 <span className="ep-label">Registration</span>
                 <span className="ep-value" style={{fontSize: '0.75rem'}}>
-                    {event.registrationStart ? new Date(event.registrationStart).toLocaleDateString(undefined, {month:'short', day:'numeric'}) : 'Now'} 
+                    {regStart ? regStart.toLocaleDateString(undefined, {month:'short', day:'numeric'}) : 'Now'} 
                     {' - '} 
-                    {event.registrationEnd ? new Date(event.registrationEnd).toLocaleDateString(undefined, {month:'short', day:'numeric'}) : 'TBD'}
+                    {regEnd ? regEnd.toLocaleDateString(undefined, {month:'short', day:'numeric'}) : 'TBD'}
                 </span>
             </div>
         </div>
       </div>
 
-      {/* Bottom Section */}
       <div className="ep-card-body">
         <h3 className="ep-card-title">{event.title || "Event Title"}</h3>
         
@@ -175,7 +194,6 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
         </p>
 
         <div className="ep-btn-group">
-          
           <button 
             className="ep-view-profile-btn"
             onClick={handleViewNGO}
@@ -200,7 +218,7 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
               className={buttonClass} 
               onClick={handleJoinInternal} 
               disabled={isButtonDisabled}
-              style={isFull && !isAlreadyJoined ? { backgroundColor: '#e0e0e0', color: '#888', cursor: 'not-allowed', boxShadow: 'none' } : {}}
+              style={isButtonDisabled && !isAlreadyJoined ? disabledStyle : {}}
             >
               {joinButtonText}
             </button>

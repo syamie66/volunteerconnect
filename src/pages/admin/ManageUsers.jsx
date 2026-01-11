@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../firebase";
-import { collection, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { 
+  collection, 
+  getDocs, 
+  updateDoc, 
+  deleteDoc, 
+  doc, 
+  query, 
+  where 
+} from "firebase/firestore";
 import { 
   Users, Eye, X, Shield, Heart, 
   Calendar, Trash2, CheckCircle, User
@@ -27,59 +35,108 @@ export default function ManageUsers() {
     fetchUsers();
   }, []);
 
-  // 2. Toggle Account Status (Enable/Disable)
+  // 2. Toggle Account Status
   const toggleStatus = async (id, disabled) => {
     try {
       await updateDoc(doc(db, "users", id), { disabled: !disabled });
       setUsers((prev) => prev.map((u) => (u.id === id ? { ...u, disabled: !disabled } : u)));
     } catch (error) {
-      console.error("Error updating user:", error.message);
+      console.error("Error updating status:", error);
       alert("Failed to update status.");
     }
   };
 
   // 3. Handle NGO Verification
   const handleVerifyNGO = async (userId) => {
-    if (window.confirm("Verify this organization? This will allow them to post events.")) {
+    if (window.confirm("Verify this organization?")) {
       try {
-        const userRef = doc(db, "users", userId);
-        await updateDoc(userRef, { status: "Verified" });
-        
+        await updateDoc(doc(db, "users", userId), { status: "Verified" });
         setUsers((prev) => prev.map((u) => u.id === userId ? { ...u, status: "Verified" } : u));
-        alert("NGO has been verified! 🌱");
       } catch (error) {
         console.error("Error verifying NGO:", error);
-        alert("Failed to verify NGO.");
       }
     }
   };
 
-  // 4. Handle Delete User
-  const handleDeleteUser = async (userId) => {
-    if (window.confirm("Are you sure you want to PERMANENTLY delete this user? This action cannot be undone.")) {
-      try {
-        await deleteDoc(doc(db, "users", userId));
-        setUsers((prev) => prev.filter((u) => u.id !== userId));
-        alert("User account deleted successfully.");
-      } catch (error) {
-        console.error("Error deleting user:", error);
-        alert("Failed to delete user. Check console for details.");
+  // --- 4. DEBUGGED DELETE FUNCTION ---
+  const handleDeleteUser = async (user) => {
+    // 1. Determine if user is NGO (Check both 'userType' and 'role')
+    const type = user.userType || user.role || '';
+    const isNGO = type.toLowerCase() === 'ngo';
+
+    console.log("--- START DELETE PROCESS ---");
+    console.log("User ID:", user.id);
+    console.log("Detected Type:", type);
+    console.log("Is NGO?", isNGO);
+
+    const confirmMessage = isNGO 
+      ? `WARNING: You are deleting an NGO.\nThis will also delete ALL events created by them.\n\nProceed?`
+      : "Are you sure you want to delete this user?";
+
+    if (!window.confirm(confirmMessage)) return;
+
+    try {
+      if (isNGO) {
+        console.log("Searching for associated events...");
+        const eventsRef = collection(db, "events");
+
+        // QUERY 1: Check 'createdBy'
+        const q1 = query(eventsRef, where("createdBy", "==", user.id));
+        const snap1 = await getDocs(q1);
+        console.log(`Found ${snap1.size} events via 'createdBy'`);
+
+        // QUERY 2: Check 'organizerId' (Backup)
+        const q2 = query(eventsRef, where("organizerId", "==", user.id));
+        const snap2 = await getDocs(q2);
+        console.log(`Found ${snap2.size} events via 'organizerId'`);
+
+        // Combine results
+        const allEvents = [...snap1.docs, ...snap2.docs];
+        
+        // Remove duplicates (in case an event matched both queries)
+        const uniqueEvents = Array.from(new Set(allEvents.map(d => d.id)))
+            .map(id => allEvents.find(d => d.id === id));
+
+        if (uniqueEvents.length > 0) {
+            console.log(`Deleting ${uniqueEvents.length} unique events...`);
+            const deletePromises = uniqueEvents.map(d => deleteDoc(d.ref));
+            await Promise.all(deletePromises);
+            console.log("Events deleted successfully.");
+        } else {
+            console.log("No events found for this NGO.");
+        }
       }
+
+      // Delete the User
+      console.log("Deleting user profile...");
+      await deleteDoc(doc(db, "users", user.id));
+      
+      setUsers((prev) => prev.filter((u) => u.id !== user.id));
+      setSelectedUser(null);
+      alert("User and data deleted successfully.");
+
+    } catch (error) {
+      console.error("DELETE FAILED:", error);
+      alert("Error: " + error.message);
     }
   };
 
-  // 5. Filter Logic (Tab + Search)
+  // 5. Filter Logic
   const filteredUsers = users.filter(user => {
-    const matchesTab = activeTab === 'NGO' 
-      ? user.userType === 'NGO' 
-      : user.userType === 'volunteer';
+    // Normalize type check
+    const type = user.userType || user.role || 'volunteer';
+    const isNGO = type.toLowerCase() === 'ngo';
     
+    // Tab filtering
+    if (activeTab === 'NGO' && !isNGO) return false;
+    if (activeTab === 'volunteer' && isNGO) return false;
+
+    // Search filtering
     const name = user.name || user.orgName || '';
     const email = user.email || '';
-    const matchesSearch = name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          email.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return matchesTab && matchesSearch;
+    const term = searchTerm.toLowerCase();
+    
+    return name.toLowerCase().includes(term) || email.toLowerCase().includes(term);
   });
 
   return (
@@ -89,16 +146,10 @@ export default function ManageUsers() {
         <h1 className="page-title">Manage Users</h1>
 
         <div className="tab-group">
-          <button
-            onClick={() => setActiveTab('volunteer')}
-            className={`tab-btn ${activeTab === 'volunteer' ? 'active' : 'inactive'}`}
-          >
+          <button onClick={() => setActiveTab('volunteer')} className={`tab-btn ${activeTab === 'volunteer' ? 'active' : 'inactive'}`}>
             <Heart size={18} /> Volunteers
           </button>
-          <button
-            onClick={() => setActiveTab('NGO')}
-            className={`tab-btn ${activeTab === 'NGO' ? 'active' : 'inactive'}`}
-          >
+          <button onClick={() => setActiveTab('NGO')} className={`tab-btn ${activeTab === 'NGO' ? 'active' : 'inactive'}`}>
             <Shield size={18} /> NGOs
           </button>
         </div>
@@ -107,12 +158,7 @@ export default function ManageUsers() {
           <div className="card-header">
             <h3>{activeTab === 'NGO' ? 'Registered Organizations' : 'Volunteer List'}</h3>
             <div className="search-bar" style={{ width: '250px', border: '1px solid #eee' }}>
-              <input 
-                type="text" 
-                placeholder="Search name or email..." 
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <input type="text" placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
             </div>
           </div>
 
@@ -120,179 +166,42 @@ export default function ManageUsers() {
             <table className="admin-table">
               <thead>
                 <tr>
-                  <th>{activeTab === 'NGO' ? 'Organization Name' : 'Volunteer Name'}</th>
+                  <th>Name</th>
                   <th>Email</th>
-                  {activeTab === 'volunteer' && <th>Phone</th>}
-                  {activeTab === 'NGO' && <th>Founded</th>}
                   <th>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
-
               <tbody>
-                {filteredUsers.length > 0 ? (
-                  filteredUsers.map((user) => {
-                    const currentStatus = user.status || (user.userType === 'NGO' ? 'Pending' : 'Verified');
-                    
-                    return (
+                {filteredUsers.map((user) => {
+                   const currentStatus = user.status || 'Verified'; 
+                   return (
                       <tr key={user.id}>
-                        <td>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div className={`profile-pic ${activeTab === 'NGO' ? 'green-theme' : 'pink-theme'}`} style={{ width: '32px', height: '32px', fontSize: '0.8rem' }}>
-                              {(user.name || user.orgName || "?").charAt(0).toUpperCase()}
-                            </div>
-                            <span style={{ fontWeight: '600' }}>{user.name || user.orgName || "Unknown"}</span>
-                          </div>
-                        </td>
-                        
+                        <td>{user.name || user.orgName}</td>
                         <td>{user.email}</td>
-
-                        {activeTab === 'volunteer' && <td>{user.phone || "-"}</td>}
-                        {activeTab === 'NGO' && <td>{user.yearFounded || "-"}</td>}
-
                         <td>
-                          {user.disabled ? (
-                            <span className="status-tag error">Disabled</span>
-                          ) : (
-                            <span className={`status-tag ${currentStatus === 'Verified' ? 'success' : 'warning'}`}>
-                              {currentStatus}
-                            </span>
-                          )}
+                          {user.disabled ? <span className="status-tag error">Disabled</span> : 
+                           <span className="status-tag success">{currentStatus}</span>}
                         </td>
-
                         <td>
                           <div style={{ display: 'flex', gap: '8px' }}>
-                            {/* View Details */}
-                            <button
-                              onClick={() => setSelectedUser(user)}
-                              className="btn-icon btn-view"
-                              title="View Details"
-                            >
-                              <Eye size={18} />
+                            <button onClick={() => setSelectedUser(user)} className="btn-icon btn-view"><Eye size={18}/></button>
+                            <button onClick={() => toggleStatus(user.id, user.disabled)} className="btn-toggle">
+                                {user.disabled ? "Enable" : "Disable"}
                             </button>
-                            
-                            {/* Verify NGO Button */}
-                            {activeTab === 'NGO' && currentStatus === 'Pending' && !user.disabled && (
-                                <button
-                                  onClick={() => handleVerifyNGO(user.id)}
-                                  className="btn-icon"
-                                  style={{ backgroundColor: '#d1fae5', color: '#047857' }}
-                                  title="Verify NGO"
-                                >
-                                  <CheckCircle size={18} />
-                                </button>
-                            )}
-
-                            {/* Enable/Disable Toggle */}
-                            <button
-                              onClick={() => toggleStatus(user.id, user.disabled)}
-                              className={`btn-toggle ${user.disabled ? 'is-active' : 'is-disabled'}`}
-                              style={{ padding: '4px 8px', fontSize: '0.8rem', height: '32px' }}
-                            >
-                              {user.disabled ? "Enable" : "Disable"}
-                            </button>
-
-                            {/* Delete Button */}
-                            <button
-                              onClick={() => handleDeleteUser(user.id)}
-                              className="btn-icon"
-                              style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}
-                              title="Delete User"
-                            >
-                              <Trash2 size={18} />
+                            {/* Pass the WHOLE user object here */}
+                            <button onClick={() => handleDeleteUser(user)} className="btn-icon" style={{ backgroundColor: '#fee2e2', color: '#dc2626' }}>
+                                <Trash2 size={18} />
                             </button>
                           </div>
                         </td>
                       </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan="6" style={{ textAlign: 'center', padding: '30px', color: '#999' }}>
-                      No {activeTab} users found matching "{searchTerm}".
-                    </td>
-                  </tr>
-                )}
+                   );
+                })}
               </tbody>
             </table>
           </div>
         </div>
-
-        {/* DETAILS MODAL */}
-        {selectedUser && (
-          <div className="modal-overlay" onClick={() => setSelectedUser(null)}>
-            <div className="modal-container" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-header">
-                <h2>
-                  {selectedUser.userType === 'NGO' ? <Shield size={24}/> : <User size={24}/>}
-                  {selectedUser.name || selectedUser.orgName}
-                </h2>
-                <button className="btn-close" onClick={() => setSelectedUser(null)}>
-                  <X size={20} />
-                </button>
-              </div>
-
-              <div className="modal-body">
-                <div className="detail-grid">
-                  <div className="detail-item">
-                      <label>Email Address</label>
-                      <p>{selectedUser.email}</p>
-                  </div>
-                  <div className="detail-item">
-                      <label>Account Type</label>
-                      <p style={{ textTransform: 'capitalize' }}>{selectedUser.userType}</p>
-                  </div>
-
-                  {selectedUser.userType === 'volunteer' && (
-                    <>
-                      <div className="detail-item">
-                        <label>Phone Number</label>
-                        <p>{selectedUser.phone || "N/A"}</p>
-                      </div>
-                      <div className="detail-item">
-                        <label>Age & Gender</label>
-                        <p>{selectedUser.age || "?"} yrs • {selectedUser.gender || "?"}</p>
-                      </div>
-                      <div className="detail-item span-full">
-                        <label>Skills & Notes</label>
-                        <div className="desc-box">
-                          {selectedUser.skills || "No skills listed."}
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {selectedUser.userType === 'NGO' && (
-                    <>
-                      <div className="detail-item">
-                        <label>Year Founded</label>
-                        <p><Calendar size={16} color="#be185d" style={{display:'inline', marginRight:'5px'}}/> {selectedUser.yearFounded}</p>
-                      </div>
-                      <div className="detail-item span-full">
-                        <label>Mission Statement</label>
-                        <div className="mission-box" style={{ fontStyle: 'italic', borderLeft: '4px solid #be185d' }}>
-                          "{selectedUser.missionStatement}"
-                        </div>
-                      </div>
-                      <div className="detail-item span-full">
-                        <label>Description</label>
-                        <div className="desc-box">
-                          {selectedUser.description || "No description provided."}
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-
-              <div className="modal-footer">
-                <button className="btn-secondary" onClick={() => setSelectedUser(null)}>
-                  Close Details
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
