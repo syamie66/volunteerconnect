@@ -3,12 +3,14 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { db } from '../firebase';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { Eye, EyeOff } from 'lucide-react'; // Import icons
 import './Register.css'; 
 
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  // --- Form State ---
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,8 +23,10 @@ export default function Register() {
   const [gender, setGender] = useState('');
   const [skills, setSkills] = useState('');
 
+  // --- UI State ---
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // NEW: Toggle state
 
   // --- Handle Role Selection & Redirect ---
   const handleRoleChange = (e) => {
@@ -106,16 +110,38 @@ export default function Register() {
               <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="hello@email.com" required />
             </div>
 
+            {/* --- PASSWORD INPUT WITH EYE TOGGLE --- */}
             <div className="input-group">
               <label>Password</label>
-              <input 
-                type="password" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
-                required 
-                placeholder="••••••••"
-                title="Must contain at least one number and one symbol"
-              />
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input 
+                  type={showPassword ? "text" : "password"} 
+                  value={password} 
+                  onChange={(e) => setPassword(e.target.value)} 
+                  required 
+                  placeholder="••••••••"
+                  title="Must contain at least one number and one symbol"
+                  style={{ paddingRight: '40px', width: '100%' }} // Add padding for icon
+                />
+                <button
+                    type="button" // Prevent form submission
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                        position: 'absolute',
+                        right: '10px',
+                        background: 'none',
+                        border: 'none',
+                        cursor: 'pointer',
+                        color: '#64748b',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0
+                    }}
+                >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
             <div className="input-group">

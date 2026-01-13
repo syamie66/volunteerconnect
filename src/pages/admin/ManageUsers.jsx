@@ -212,16 +212,36 @@ export default function ManageUsers() {
         </div>
       </div>
       
-      {/* Optional: Simple Modal to view details */}
+      {/* --- UPDATED MODAL SECTION --- */}
       {selectedUser && (
         <div className="modal-overlay" onClick={() => setSelectedUser(null)}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
                 <h3>User Details</h3>
-                <p><strong>ID:</strong> {selectedUser.id}</p>
-                <p><strong>Name:</strong> {selectedUser.name || selectedUser.orgName}</p>
-                <p><strong>Email:</strong> {selectedUser.email}</p>
-                <p><strong>Role:</strong> {selectedUser.role || selectedUser.userType}</p>
+
+                {/* --- Account Info --- */}
+                <h4 style={{ fontSize: '0.85rem', color: '#94a3b8', textTransform: 'uppercase', marginBottom: '10px' }}>Account Info</h4>
+                <p><strong>Role:</strong> {selectedUser.userType || selectedUser.role || 'Volunteer'}</p>
                 <p><strong>Status:</strong> {selectedUser.status || 'Pending'}</p>
+                <p><strong>Joined:</strong> {selectedUser.createdAt ? new Date(selectedUser.createdAt.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
+
+                {/* --- Personal Info (Matches Registration Form) --- */}
+                <h4 style={{ fontSize: '0.85rem', color: '#94a3b8', textTransform: 'uppercase', margin: '20px 0 10px 0' }}>Personal Details</h4>
+                
+                <p><strong>Full Name:</strong> {selectedUser.name || selectedUser.orgName || '-'}</p>
+                <p><strong>Email:</strong> {selectedUser.email || '-'}</p>
+                <p><strong>Phone:</strong> {selectedUser.phone || '-'}</p>
+                <p><strong>IC Number:</strong> {selectedUser.icNumber || '-'}</p>
+                <p><strong>Age:</strong> {selectedUser.age || '-'}</p>
+                <p><strong>Gender:</strong> {selectedUser.gender || '-'}</p>
+                
+                {/* --- Emergency & Address --- */}
+                <h4 style={{ fontSize: '0.85rem', color: '#94a3b8', textTransform: 'uppercase', margin: '20px 0 10px 0' }}>Address & Emergency</h4>
+                <p><strong>Address:</strong> {selectedUser.address || '-'}</p>
+                <p><strong>Emergency Contact:</strong> {selectedUser.emergencyContact || '-'}</p>
+
+                <h4 style={{ fontSize: '0.85rem', color: '#94a3b8', textTransform: 'uppercase', margin: '20px 0 10px 0' }}>Additional Info</h4>
+                <p><strong>Skills/Notes:</strong> {selectedUser.skills || '-'}</p>
+
                 <button onClick={() => setSelectedUser(null)} style={{marginTop: '20px'}}>Close</button>
             </div>
         </div>
