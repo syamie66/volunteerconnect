@@ -26,7 +26,6 @@ export default function EventParticipants() {
                             const userRef = doc(db, "users", uid);
                             const userSnap = await getDoc(userRef);
 
-                            // ✅ FIX: If user deleted (doesn't exist), return null immediately
                             if (!userSnap.exists()) {
                                 return null;
                             }
@@ -50,7 +49,6 @@ export default function EventParticipants() {
                         })
                     );
 
-                    // ✅ FIX: Filter out the nulls (deleted users) before setting state
                     const existingParticipants = participantsData.filter(p => p !== null);
                     setParticipants(existingParticipants);
                 }
@@ -73,11 +71,9 @@ export default function EventParticipants() {
         setLoading(true);
         
         try {
-            // 1. Update the User Document
             const userRef = doc(db, 'users', uid);
             await updateDoc(userRef, { [`eventRegistrations.${eventId}.status`]: newStatus });
 
-            // 2. Sync the Event 'approvedCount'
             const eventRef = doc(db, 'events', eventId);
 
             if (newStatus === "Approved" && currentStatus !== "Approved") {
@@ -87,7 +83,6 @@ export default function EventParticipants() {
                 await updateDoc(eventRef, { approvedCount: increment(-1) });
             }
 
-            // 3. Update UI State locally
             setParticipants(prev => prev.map(p => p.uid === uid ? { ...p, status: newStatus } : p));
         
         } catch (error) { 
@@ -102,24 +97,18 @@ export default function EventParticipants() {
         setLoading(true);
         try {
             const eventRef = doc(db, "events", eventId);
-            
-            // 1. Remove from participants array
             await updateDoc(eventRef, { participants: arrayRemove(uid) });
 
-            // 2. If they were approved, decrement the count
             if (currentStatus === "Approved") {
                 await updateDoc(eventRef, { approvedCount: increment(-1) });
             }
 
-            // 3. Remove from User document
-            // We check if the user doc exists first to avoid errors if they were already deleted
             const userRef = doc(db, "users", uid);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
                 await updateDoc(userRef, { [`eventRegistrations.${eventId}`]: null });
             }
 
-            // 4. Update UI
             setParticipants(prev => prev.filter(p => p.uid !== uid));
         } catch (error) { alert(error.message); }
         setLoading(false);
@@ -132,7 +121,7 @@ export default function EventParticipants() {
         <div className="participants-container">
             <div className="header-section">
                 <Link to="/dashboard/ngo" className="back-link">
-                   ← Back to Dashboard
+                    ← Back to Dashboard
                 </Link>
                 <div className="title-block">
                     <h1>{event.title}</h1>
@@ -148,6 +137,8 @@ export default function EventParticipants() {
                 <table className="aesthetic-table">
                     <thead>
                         <tr>
+                            {/* 1. Added numbering header */}
+                            <th style={{ width: '50px' }}>#</th> 
                             <th>Name</th>
                             <th>Email</th>
                             <th>Registered Date</th>
@@ -157,13 +148,17 @@ export default function EventParticipants() {
                     </thead>
                     <tbody>
                         {participants.length === 0 ? (
-                            <tr><td colSpan="5" className="empty-row">No participants found.</td></tr>
+                            // 2. Updated colSpan to 6
+                            <tr><td colSpan="6" className="empty-row">No participants found.</td></tr>
                         ) : (
-                            participants.map((p) => {
+                            // 3. Added index parameter
+                            participants.map((p, index) => {
                                 const isExpanded = expandedParticipants[p.uid];
                                 return (
                                     <React.Fragment key={p.uid}>
                                         <tr className={`main-row ${isExpanded ? 'active-row' : ''}`}>
+                                            {/* 4. Display numbering (index + 1) */}
+                                            <td className="fw-bold">{index + 1}</td> 
                                             <td className="fw-bold">{p.name}</td>
                                             <td>{p.email}</td>
                                             <td>{p.registeredDate}</td>
@@ -208,7 +203,8 @@ export default function EventParticipants() {
                                         </tr>
                                         {isExpanded && (
                                             <tr className="detail-row">
-                                                <td colSpan="5">
+                                                {/* 5. Updated colSpan to 6 */}
+                                                <td colSpan="6">
                                                     <div className="detail-grid">
                                                         <div><strong>Phone:</strong> {p.phone}</div>
                                                         <div><strong>IC Number:</strong> {p.icNumber}</div>

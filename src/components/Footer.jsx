@@ -36,7 +36,7 @@ export default function Footer() {
 
           <div className="detail-col right">
             <span className="label">Availability</span>
-            <p className="highlight">Mon — Fri / 9-6</p>
+            <p className="highlight">Mon — Fri / 10-6</p>
           </div>
         </div>
 

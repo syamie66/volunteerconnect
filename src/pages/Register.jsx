@@ -36,15 +36,12 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage(''); // Clear previous messages
-
-    // --- 🔒 PASSWORD VALIDATION LOGIC ---
-    // Regex: At least one digit (\d) AND one special char ([!@#...])
     const hasNumber = /\d/.test(password);
     const hasSymbol = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
     if (!hasNumber || !hasSymbol) {
         setMessage("Password must contain at least one number and one symbol (e.g., @, #, $).");
-        return; // Stop execution here
+        return; 
     }
 
     setLoading(true);

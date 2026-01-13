@@ -18,9 +18,6 @@ export default function Events() {
 
   // --- 1. Fetch Events from Firestore (Real-Time) ---
   useEffect(() => {
-    // We listen to the collection in real-time.
-    // This supports the "Cascading Delete" feature:
-    // If an Admin deletes an NGO & their events, this listener updates instantly.
     const q = query(collection(db, "events"), orderBy("date", "asc")); 
     
     const unsubscribe = onSnapshot(q, (snapshot) => {

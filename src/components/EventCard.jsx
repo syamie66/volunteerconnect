@@ -208,7 +208,7 @@ export default function EventCard({ event, onJoin, currentUser, profile }) {
                 onClick={() => setExpanded(!expanded)}
                 type="button"
             >
-                {expanded ? "Less" : "Info"}
+                {expanded ? "Less" : "Read More"}
             </button>
           )}
 

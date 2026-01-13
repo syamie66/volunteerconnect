@@ -75,7 +75,7 @@ export default function EditEvent() {
         <div className="compact-header">
           <h2>✏️ Edit Event</h2>
           <div className="compact-actions">
-            <button type="button" className="btn-cancel" onClick={() => navigate('/dashboard')}>Cancel</button>
+            <button type="button" className="btn-cancel" onClick={() => navigate('/dashboard/ngo')}>Cancel</button>
             <button type="button" className="btn-save" onClick={handleSubmit} disabled={saving}>
               {saving ? "Saving..." : "Save Changes"}
             </button>

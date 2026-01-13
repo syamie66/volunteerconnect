@@ -120,7 +120,7 @@ export default function Dashboard() {
     const completedEvents = appliedEvents.filter(event => isEventCompleted(event));
     const upcomingEvents = appliedEvents.filter(event => !isEventCompleted(event));
     
-    // ✅ HELPER: Generate Years from Current Year down to 2020
+ 
     const getAvailableYears = () => {
         const currentYear = new Date().getFullYear();
         const startYear = 2020; 
@@ -174,7 +174,7 @@ export default function Dashboard() {
     return (
         <div className="dashboard-scope">
             <aside className="sidebar">
-                <div className="logo-section"><h2>VOLUN<span>TIER</span></h2></div>
+                <div className="logo-section"><h2>VOLUN<span>TEER</span></h2></div>
                 <nav className="nav-menu">
                     <Link to="/dashboard" className="nav-item active">DASHBOARD</Link>
                     <Link to="/profile/update" className="nav-item">MY PROFILE</Link>

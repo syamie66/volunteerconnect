@@ -48,7 +48,7 @@ const NGORegister = () => {
       await registerNGO(email, password, ngoDetails);
 
       console.log("NGO Registered Successfully");
-      navigate('/dashboard'); 
+      navigate('/dashboard/ngo'); 
 
     } catch (err) {
       console.error("Registration failed:", err);

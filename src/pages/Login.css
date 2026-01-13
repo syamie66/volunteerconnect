@@ -1,6 +1,4 @@
-/* ====================================================== */
-/* LOGIN PAGE - LARGE CARD, NO GRID, SCROLLABLE           */
-/* ====================================================== */
+
 
 .iso-login-container {
   /* 1. SCROLLABLE LAYOUT */
@@ -8,19 +6,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  
-  /* Ensures it takes at least full screen, but grows if needed */
   min-height: 100vh; 
   width: 100%;
-  
-  padding: 4rem 2rem; /* Add generous padding top/bottom for scrolling space */
+  padding: 4rem 2rem;
   box-sizing: border-box;
-  
-  /* 2. BACKGROUND UPDATES */
-   background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%); 
-  /* If you want it to perfectly match your global app background, 
-     you can use var(--bg-light) instead if you have it defined */
-  
+  background: linear-gradient(135deg, #d4e4d4 0%, #f5e6ea 100%);   
   font-family: 'Inter', sans-serif;
 }
 

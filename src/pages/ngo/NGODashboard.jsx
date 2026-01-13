@@ -57,12 +57,7 @@ export default function NGODashboard() {
     return eventDate < today ? 'Completed' : 'Ongoing';
   };
 
-  // --- CALCULATE REAL STATS ---
-  // ✅ UPDATED LOGIC:
-  // We sum the 'approvedCount' field.
-  // 1. Pending users are NOT counted here.
-  // 2. Approved users ARE counted.
-  // 3. If an approved user cancels, Dashboard.js decrements this field, so the count drops automatically.
+
   const totalParticipants = events.reduce((acc, event) => {
     return acc + (parseInt(event.approvedCount) || 0);
   }, 0);
