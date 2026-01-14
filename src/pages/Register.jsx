@@ -26,7 +26,7 @@ export default function Register() {
   // --- UI State ---
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // NEW: Toggle state
+  const [showPassword, setShowPassword] = useState(false); 
 
   // --- Handle Role Selection & Redirect ---
   const handleRoleChange = (e) => {
